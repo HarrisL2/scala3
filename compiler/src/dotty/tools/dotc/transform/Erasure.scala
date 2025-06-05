@@ -926,7 +926,18 @@ object Erasure {
      *  with more than `MaxImplementedFunctionArity` parameters to use a single
      *  parameter of type `[]Object`.
      */
-    override def typedDefDef(ddef: untpd.DefDef, sym: Symbol)(using Context): Tree =
+    override def typedDefDef(ddef: untpd.DefDef, sym: Symbol)(using Context): Tree = // trace(i"typedDefDef $sym,"+s" ${atPhase(ctx.phaseId-1)(sym.info)}") {// Possible Annotation target
+      // atPhase(ctx.phaseId-1)(sym.info) match
+      //   case pt: PolyType =>
+      //     def toTypeB(tp: Type): TypeB = tp match
+      //       case tpr: TypeParamRef => TypeB.M(tpr.paramNum)
+      //       case _ => TypeB.None
+      //     pt.resType match
+      //       case mt: MethodType =>
+      //         sym.addAnnotation(ErasedInfo(pt.paramInfos.size, mt.paramInfos.map(toTypeB), toTypeB(mt.resType)))
+      //       case other =>
+      //         sym.addAnnotation(ErasedInfo(pt.paramInfos.size, Nil, toTypeB(other.widenExpr)))
+      //   case _ => ()
       if sym.isEffectivelyErased || sym.name.is(BodyRetainerName) then
         erasedDef(sym)
       else
@@ -970,6 +981,7 @@ object Erasure {
           tpt = untpd.TypedSplice(TypeTree(restpe).withSpan(ddef.tpt.span)),
           rhs = rhs1)
         super.typedDefDef(ddef1, sym)
+    // }
     end typedDefDef
 
     /** The outer parameter definition of a constructor if it needs one */
