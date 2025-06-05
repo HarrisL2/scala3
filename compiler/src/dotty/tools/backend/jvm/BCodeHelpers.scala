@@ -10,6 +10,7 @@ import scala.tools.asm.AnnotationVisitor
 import scala.tools.asm.ClassWriter
 import scala.collection.mutable
 import scala.compiletime.uninitialized
+import scala.jdk.CollectionConverters.*
 
 import dotty.tools.dotc.CompilationUnit
 import dotty.tools.dotc.ast.tpd
@@ -36,6 +37,12 @@ import dotty.tools.io.AbstractFile
 import dotty.tools.dotc.report
 
 import dotty.tools.backend.jvm.DottyBackendInterface.symExtensions
+
+import dotty.tools.backend.jvm.attributes.MethodTypeParameterCount
+import dotty.tools.backend.jvm.attributes.MethodReturnType
+import dotty.tools.backend.jvm.attributes.MethodParameterType
+import dotty.tools.dotc.transform.TypeB
+import dotty.tools.backend.jvm.attributes.TypeHints
 
 /*
  *  Traits encapsulating functionality to convert Scala AST Trees into ASM ClassNodes.
@@ -216,6 +223,38 @@ trait BCodeHelpers extends BCodeIdiomatic {
         val av = cw.visitAnnotation(typeDescriptor(typ), isRuntimeVisible(annot))
         emitAssocs(av, assocs, BCodeHelpers.this)(this)
       }
+    
+    def toJTypeB(tpe: TypeB): TypeHints.TypeB = 
+      tpe match
+        case TypeB.None => TypeHints.TypeB.NO_HINT
+        case TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
+        // case _ =>
+        //   report.error("unexpected type in to Java TypeB: " + tpe)
+        //   TypeHints.TypeB.NO_HINT // fallback, should not happen
+
+    def addMethodTypeParameterCountAttribute(mw: asm.MethodVisitor, count: Int): Unit = 
+      if (count > 0){
+        val attr = new MethodTypeParameterCount(count)
+        mw.visitAttribute(attr)
+      }
+
+    def addMethodReturnTypeAttribute(mw: asm.MethodVisitor, tpe: TypeB): Unit =
+      tpe match 
+        case TypeB.M(index) => 
+          val typeB = new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
+          val attr = new MethodReturnType(typeB)
+          mw.visitAttribute(attr)
+        case TypeB.None => //do nothing
+        // case _ =>
+        //   report.error("Unexpected type for method return type attribute: " + tpe)
+      
+
+    def addMethodParameterTypeAttribute(mw: asm.MethodVisitor, lst: List[TypeB]) : Unit = 
+        if (lst.isEmpty) return
+        val lstJTypeB = lst.map(toJTypeB)
+        val len = lstJTypeB.length
+        val attr = new MethodParameterType(len, lstJTypeB.asJava)
+        mw.visitAttribute(attr)
 
     /*
      * must-single-thread

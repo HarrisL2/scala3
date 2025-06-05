@@ -1096,4 +1096,8 @@ class ErasedInfo(paramCount: Int, paramType: List[TypeB], returnType: TypeB) ext
 
   override def toString =
     s"$paramCount, $paramType, $returnType"
+
+  def getParamCount: Int = paramCount
+  def getParamType: List[TypeB] = paramType
+  def getReturnType: TypeB = returnType
 }
