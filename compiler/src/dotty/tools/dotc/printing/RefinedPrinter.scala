@@ -27,6 +27,8 @@ import util.Chars.isOperatorPart
 import config.{Config, Feature}
 import config.Feature.sourceVersion
 import config.SourceVersion.*
+import reporting.*
+import dotty.tools.dotc.core.Decorators.i
 
 import dotty.tools.dotc.util.SourcePosition
 import dotty.tools.dotc.ast.untpd.{MemberDef, Modifiers, PackageDef, RefTree, Template, TypeDef, ValOrDefDef}
@@ -34,6 +36,8 @@ import cc.*
 import cc.Mutability.isUpdateMethod
 import dotty.tools.dotc.parsing.JavaParsers
 import dotty.tools.dotc.transform.TreeExtractors.BinaryOp
+import dotty.tools.dotc.transform.InstructionTypeArguments
+import dotty.tools.dotc.transform.InvokeReturnType
 
 class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
 
@@ -467,7 +471,9 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
 
       toTextLocal(expr) ~ "." ~ selectorsText
 
-    tree match {
+    (if tree.hasAttachment(InvokeReturnType) then Str("InvokeReturnType("+tree.attachment(InvokeReturnType).toString + ") ") else Str("")) ~
+    (if tree.hasAttachment(InstructionTypeArguments) then Str("InstructionTypeArguments("+tree.attachment(InstructionTypeArguments).toString + ") ") else Str("")) ~
+    (tree match {
       case id: Trees.SearchFailureIdent[?] =>
         tree.typeOpt match {
           case reason: Implicits.SearchFailureType =>
@@ -851,7 +857,7 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
         toText(pname) ~ " : " ~ toText(tycon) ~ (" as " ~ toText(ownName) `provided` !ownName.isEmpty)
       case _ =>
         tree.fallbackToText(this)
-    }
+    })
   }
 
   override protected def toTextCapturing(tp: Type, refs: GeneralCaptureSet, boxText: Text): Text = tp match
