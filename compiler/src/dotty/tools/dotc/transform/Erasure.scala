@@ -1083,21 +1083,3 @@ object Erasure {
   private def takesBridges(sym: Symbol)(using Context): Boolean =
     sym.isClass && !sym.isOneOf(Flags.Trait | Flags.Package)
 }
-
-enum TypeB:
-  case None
-  case M(x: Int)
-// case class TypeB(tp: Type)
-
-class ErasedInfo(paramCount: Int, paramType: List[TypeB], returnType: TypeB) extends Annotation {
-  override def tree(using Context) =
-    tpd.New(defn.SourceFileAnnot.typeRef,
-            List(tpd.Literal(Constant(toString))))
-
-  override def toString =
-    s"$paramCount, $paramType, $returnType"
-
-  def getParamCount: Int = paramCount
-  def getParamType: List[TypeB] = paramType
-  def getReturnType: TypeB = returnType
-}

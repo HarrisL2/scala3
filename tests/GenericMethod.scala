@@ -18,40 +18,76 @@ class GenericMethod {
   override def toString: String = "Printing GenericMethod"
 }
 
+object testGenericMethod1{
+  val gm = new GenericMethod
+  @main def main1(): Unit =
+    val v = gm.identity[Int](42)
+    println("identity[Int](42):" + v)
+
+  @main def main2(): Unit =
+    val v = gm.first[Double, Long](4.2, 42L)
+    println("first[Double, Long](4.2, 42L)" + v)
+}
+
+object testGenericMethod2{
+  val gm = new GenericMethod
+  @main def main(): Unit =
+    val v = gm.first[Double, Long](4.2, 42L)
+    println("first[Double, Long](4.2, 42L)" + v)
+}
+
 object testGenericMethod {
   @main def testGenericMethodMain(): Unit = {
     println("test1:")
     /* prints:
+       identity[Int](23)
        23
+       identity2(2.2)
        2.2
+       first[Char, Double]('c', 8.8)
        c
+       identity[Foo](new Foo(1))
        Printing Foo 1
+       passRef(new Foo(2))
        Printing Foo 2
+       identity[java.lang.Integer](java.lang.Integer.valueOf(8))
        8
+       identity2(java.lang.Integer.valueOf(87))
        87
+       passInt(88)
        88
     */
     test1()
     println("test2[Int, Char, Double]\nU, X, Y: Int, Char, Double\nvalue: 7; fst: 'v'; snd: 9.9")
     /* prints:
+       identity[Y](snd)
        9.9
+       identity2(value)
        7
+       identity[Any](value)
        7
+       first[X, Y](fst, snd)
        v
+       first[Any, Y](value, snd)
        7
      */
     test2[Int, Char, Double](7, 'v', 9.9)
     println("test2[Foo, Foo, Foo]\nU, X, Y:Foo, Foo, Foo\nvalue: new Foo(-1); fst: new Foo(-2); snd: new Foo(-3)")
     /* prints:
+       identity[Y](snd)
        Printing Foo -3
+       identity2(value)
        Printing Foo -1
+       identity[Any](value)
        Printing Foo -1
+       first[X, Y](fst, snd)
        Printing Foo -2
+       first[Any, Y](value, snd)
        Printing Foo -1
      */
     test2[Foo, Foo, Foo](new Foo(-1), new Foo(-2), new Foo(-3))
   }
-  //if (methodParameterTpye is generic (has generic methodParameterType type hint) &&
+  //if (methodParameterType is generic (has generic methodParameterType type hint) &&
   //    reified type is primitive &&
   //    argument type before invoke is non-generic) {eunbox (before invoke)}
   // if (methodReturnType is generic (has methodReturnType type hint) &&
@@ -62,7 +98,7 @@ object testGenericMethod {
     // passing a primitive type as
     // type argument to a generic method
     // @InstructionTypeArguments: offset, I
-    // @InvokeReturnType: offset, L (?TBD)
+    // special case: generic method return type which is a primitive type at the caller context
     println("identity[Int](23)")
     val v1 = gm.identity[Int](23) //need InstructionTypeArg: I, InvokeReturnType: L (boxing needed in case INVOKE)
     println(v1)
@@ -75,14 +111,12 @@ object testGenericMethod {
     // passing two different primitive types 
     // as type arguments to a generic method
     // @InstructionTypeArguments: offset, C D
-    // @InvokeReturnType: offset, L (?TBD)
     println("first[Char, Double]('c', 8.8)")
     val v3 = gm.first[Char, Double]('c', 8.8) //same as v1, need InstructionTypeArg: CD, InvokeReturnType: L (boxing needed)
     println(v3)
     // passing a scala class as
     // type argument to a generic method
     // @InstructionTypeArguments: offset, L
-    // @InvokeReturnType: offset, L
     println("identity[Foo](new Foo(1))")
     val v4 = gm.identity[Foo](new Foo(1)) //need InstructionTypeArg: L, InvokeReturnType: L (no boxing needed)
     println(v4)
@@ -95,7 +129,6 @@ object testGenericMethod {
     // passing a java class as
     // type argument to a generic method
     // @InstructionTypeArguments: offset, L
-    // @InvokeReturnType: offset, L
     println("identity[java.lang.Integer](java.lang.Integer.valueOf(8))")
     val v6 = gm.identity[java.lang.Integer](java.lang.Integer.valueOf(8))
     println(v6)
@@ -112,9 +145,10 @@ object testGenericMethod {
     println("passInt(88)")
     val v8 = gm.passInt(88)
     println(v8)
+
   }
   //def test2$[U,X,Y](u:U,x:X,y:Y) = test2[U,X,Y](u,x,y)
-  def test2[U, X, Y](value: U, fst: X, snd: Y): Unit = {
+  def test2[U, X, Y](value: U, fst: X, snd: Y): Any = {
     val gm = new GenericMethod
     // passing a type argument of current method
     // and a value
@@ -153,9 +187,19 @@ object testGenericMethod {
     println("first[Any, Y](value, snd)")
     val v5 = gm.first[Any, Y](value, snd)
     println(v5)
+    // passing a value, storing it
+    // into a supertype of the type parameter
+    // @InstructionTypeArguments: offset, M0
+    // @InvokeReturnType: offset, M0
+    // @Casting: L
+    val v6 : Any = gm.identity[U](value)
+    val v7 : U = gm.identity[U](value)
+    val v9 : Any = gm.identity[Int](99)
+    val v8 : Any = v7
   }
 }
 
 class Foo(id: Int) {
-  override def toString: String = s"Printing Foo $id"
+  //arbitrary scala class
+  override def toString: String = "Printing Foo " + id
 }
