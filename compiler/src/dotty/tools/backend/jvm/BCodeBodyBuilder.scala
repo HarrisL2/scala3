@@ -25,6 +25,8 @@ import dotty.tools.dotc.core.Phases.*
 import dotty.tools.dotc.core.Decorators.em
 import dotty.tools.dotc.report
 import dotty.tools.dotc.ast.Trees.SyntheticUnit
+import dotty.tools.dotc.transform.InvokeReturnType
+import dotty.tools.dotc.transform.InstructionTypeArguments
 
 /*
  *
@@ -869,7 +871,11 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
                   defn.ObjectClass
                 } else qualSym
               }
-              generatedType = genCallMethod(sym, invokeStyle, app.span, receiverClass)
+              // println("GenApply.case Apply:" + fun)
+              // println(s"    returnType: ${app.getAttachment(InvokeReturnType)} InstructionTypeArg: ${fun.getAttachment(InstructionTypeArguments)}")
+              // InvokeReturnType, InstructionTypeArguments are fetched here
+              generatedType = genCallMethod(sym, invokeStyle, app.span, receiverClass, 
+                                            app.getAttachment(InvokeReturnType), fun.getAttachment(InstructionTypeArguments))
             }
           }
       }
@@ -1397,7 +1403,8 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
      * invocation instruction, otherwise `method.owner`. A specific receiver class is needed to
      * prevent an IllegalAccessError, (aladdin bug 455).
      */
-    def genCallMethod(method: Symbol, style: InvokeStyle, pos: Span = NoSpan, specificReceiver: Symbol = null): BType = {
+    def genCallMethod(method: Symbol, style: InvokeStyle, pos: Span = NoSpan, specificReceiver: Symbol = null, 
+                      invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None): BType = {
       val methodOwner = method.owner
 
       // the class used in the invocation's method descriptor in the classfile
@@ -1450,8 +1457,10 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
           val staticDesc = MethodBType(ownerBType :: bmType.argumentTypes, bmType.returnType).descriptor
           val staticName = traitSuperAccessorName(method)
           bc.invokestatic(receiverName, staticName, staticDesc, isInterface)
+          // bc.invokestatic(receiverName, staticName, staticDesc, isInterface, invokeReturnType, instrTypeArgs)
         } else {
           bc.invokespecial(receiverName, jname, mdescr, isInterface)
+          // bc.invokespecial(receiverName, jname, mdescr, isInterface, invokeReturnType, instrTypeArgs)
         }
       } else {
         val opc = style match {
@@ -1459,7 +1468,9 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
           case Special => Opcodes.INVOKESPECIAL
           case Virtual => if (isInterface) Opcodes.INVOKEINTERFACE else Opcodes.INVOKEVIRTUAL
         }
-        bc.emitInvoke(opc, receiverName, jname, mdescr, isInterface)
+        // println("genCallMethod" + method.show + " : " + method.getAnnotation(defn.ErasurePreservationAnnot))
+        bc.emitInvoke(opc, receiverName, jname, mdescr, isInterface, invokeReturnType, instrTypeArgs)
+        // bc.emitInvoke(opc, receiverName, jname, mdescr, isInterface, invokeReturnType, instrTypeArgs)
       }
 
       bmType.returnType

@@ -20,6 +20,7 @@ import dotty.tools.dotc.core.Types.*
 import dotty.tools.dotc.core.Contexts.*
 import dotty.tools.dotc.util.Spans.*
 import dotty.tools.dotc.report
+import dotty.tools.dotc.transform.ErasedInfo
 
 
 /*
@@ -717,6 +718,16 @@ trait BCodeSkelBuilder extends BCodeHelpers {
       val (excs, others) = methSymbol.annotations.partition(_.symbol eq defn.ThrowsAnnot)
       val thrownExceptions: List[String] = getExceptions(excs)
 
+      // information for: MethodTypeParameterCount, MethodParameterType, MethodReturnType
+      val methodDeclarationAttrs = methSymbol.getAnnotation(defn.ErasurePreservationAnnot)
+      val (cnt, paramType, retType) = methodDeclarationAttrs match {
+        case Some(e : ErasedInfo) => (e.paramCount, e.paramType, e.returnType)
+        case _ => (0, List.empty[dotty.tools.dotc.transform.TypeB], dotty.tools.dotc.transform.TypeB.None)
+      }
+      //val typeBs = 
+      // println(s"GenBCode.genDefDef.initJMethod: ${methSymbol.show} ${methodDeclarationAttrs} " +
+      //   s"${cnt} ${paramType} ${retType}")
+
       val bytecodeName =
         if (isMethSymStaticCtor) CLASS_CONSTRUCTOR_NAME
         else jMethodName
@@ -731,7 +742,9 @@ trait BCodeSkelBuilder extends BCodeHelpers {
       ).asInstanceOf[MethodNode1]
 
       // TODO param names: (m.params map (p => javaName(p.sym)))
-
+      addMethodTypeParameterCountAttribute(mnode, cnt)
+      addMethodParameterTypeAttribute(mnode, paramType)
+      addMethodReturnTypeAttribute(mnode, retType)
       emitAnnotations(mnode, others)
       emitParamNames(mnode, params)
       emitParamAnnotations(mnode, params.map(_.annotations))
@@ -928,6 +941,7 @@ trait BCodeSkelBuilder extends BCodeHelpers {
       if (AsmUtils.traceMethodEnabled && mnode.name.contains(AsmUtils.traceMethodPattern))
         AsmUtils.traceMethod(mnode)
 
+      mnode.setAttribtues();
       mnode = null
     } // end of method genDefDef()
 

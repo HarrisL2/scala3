@@ -36,6 +36,8 @@ import core.Mode
 import util.Property
 import reporting.*
 import scala.annotation.tailrec
+import core.Annotations.*
+import ast.Trees.*
 
 class Erasure extends Phase with DenotTransformer {
 
