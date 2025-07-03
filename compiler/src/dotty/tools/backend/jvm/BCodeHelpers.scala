@@ -222,34 +222,35 @@ trait BCodeHelpers extends BCodeIdiomatic {
         val av = cw.visitAnnotation(typeDescriptor(typ), isRuntimeVisible(annot))
         emitAssocs(av, assocs, BCodeHelpers.this)(this)
       }
-    
-    def toJTypeB(tpe: dotty.tools.dotc.transform.TypeB): TypeHints.TypeB = 
+
+    def toJTypeB(tpe: dotty.tools.dotc.transform.TypeB): TypeHints.TypeB =
       tpe match
         case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT
         case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
-        case dotty.tools.dotc.transform.TypeB.K(y, x) => new TypeHints.TypeB(TypeHints.TypeB.K_KIND, y, x)
+        case dotty.tools.dotc.transform.TypeB.K(index) => ???
+        // case _ =>
+        //   report.error("unexpected type in to Java TypeB: " + tpe)
+        //   TypeHints.TypeB.NO_HINT // fallback, should not happen
 
-    def addMethodTypeParameterCountAttribute(mw: asm.MethodVisitor, count: Int): Unit = 
+    def addMethodTypeParameterCountAttribute(mw: asm.MethodVisitor, count: Int): Unit =
       if (count > 0){
         val attr = new MethodTypeParameterCount(count)
         mw.visitAttribute(attr)
       }
 
     def addMethodReturnTypeAttribute(mw: asm.MethodVisitor, tpe: dotty.tools.dotc.transform.TypeB): Unit =
-      val typeB  = 
-        tpe match 
-          case dotty.tools.dotc.transform.TypeB.K(outerClassIndex, index) =>
-            new TypeHints.TypeB(TypeHints.TypeB.K_KIND, outerClassIndex, index)
-          case dotty.tools.dotc.transform.TypeB.M(index) => 
-            new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
-          case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT//do nothing
-      if (typeB != TypeHints.TypeB.NO_HINT) {
-        val attr = new MethodReturnType(typeB)
-        mw.visitAttribute(attr)
-      }
-      
+      tpe match
+        case dotty.tools.dotc.transform.TypeB.M(index) =>
+          val typeB = new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
+          val attr = new MethodReturnType(typeB)
+          mw.visitAttribute(attr)
+        case dotty.tools.dotc.transform.TypeB.None => //do nothing
+        case dotty.tools.dotc.transform.TypeB.K(index) => ???
+        // case _ =>
+        //   report.error("Unexpected type for method return type attribute: " + tpe)
 
-    def addMethodParameterTypeAttribute(mw: asm.MethodVisitor, lst: List[dotty.tools.dotc.transform.TypeB]) : Unit = 
+
+    def addMethodParameterTypeAttribute(mw: asm.MethodVisitor, lst: List[dotty.tools.dotc.transform.TypeB]) : Unit =
         if (lst.isEmpty) return
         val lstJTypeB = lst.map(toJTypeB)
         val len = lstJTypeB.length

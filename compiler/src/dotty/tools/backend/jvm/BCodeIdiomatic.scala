@@ -426,13 +426,13 @@ trait BCodeIdiomatic {
       emitInvoke(Opcodes.INVOKEVIRTUAL, owner, name, desc, itf = false)
     }
 
-    def toJTypeB(tpe: dotty.tools.dotc.transform.TypeB): TypeHints.TypeB = 
+    def toJTypeB(tpe: dotty.tools.dotc.transform.TypeB): TypeHints.TypeB =
       tpe match
         case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT
         case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
-        case dotty.tools.dotc.transform.TypeB.K(y, x) => new TypeHints.TypeB(TypeHints.TypeB.K_KIND, y, x)
+        case _ => ???
 
-    def toJTypeA(tpe: dotty.tools.dotc.transform.TypeA): TypeHints.TypeA = 
+    def toJTypeA(tpe: dotty.tools.dotc.transform.TypeA): TypeHints.TypeA =
       tpe match
         case dotty.tools.dotc.transform.TypeA.Byte => TypeHints.TypeA.TYPEA_BYTE
         case dotty.tools.dotc.transform.TypeA.Char => TypeHints.TypeA.TYPEA_CHAR
@@ -445,9 +445,9 @@ trait BCodeIdiomatic {
         case dotty.tools.dotc.transform.TypeA.M(x) => TypeHints.TypeA(TypeHints.TypeA.M_KIND, x)
         case dotty.tools.dotc.transform.TypeA.K(y, x) => TypeHints.TypeA(TypeHints.TypeA.K_KIND, y, x)
         case dotty.tools.dotc.transform.TypeA.Ref => TypeHints.TypeA.TYPEA_REFERENCE
-      
 
-    def emitInvoke(opcode: Int, owner: String, name: String, desc: String, itf: Boolean, 
+
+    def emitInvoke(opcode: Int, owner: String, name: String, desc: String, itf: Boolean,
                    invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None): Unit = {
       val node = new MethodInsnNode(opcode, owner, name, desc, itf)
       jmethod.instructions.add(node)
