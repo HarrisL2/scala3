@@ -73,4 +73,17 @@ public class InvokeReturnType extends Attribute{
         return bv;
     }
     
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("InvokeReturnType{");
+        sb.append("typeList=[");
+        for (TypeHints.TypeBHint typeBHint : typeList) {
+            sb.append(typeBHint.toString()).append(", ");
+        }
+        if (!typeList.isEmpty()) {
+            sb.setLength(sb.length() - 2);
+        }
+        sb.append("]}");
+        return sb.toString();
+    }
 }

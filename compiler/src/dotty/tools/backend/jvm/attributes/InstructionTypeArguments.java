@@ -65,4 +65,17 @@ public class InstructionTypeArguments extends Attribute {
     public List<TypeHints.TypeAHint> getTypeArguments() {
         return typeArguments;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("InstructionTypeArguments{");
+        for (TypeHints.TypeAHint typeHint : typeArguments) {
+            sb.append(typeHint.toString()).append(", ");
+        }
+        if (!typeArguments.isEmpty()) {
+            sb.setLength(sb.length() - 2);
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }

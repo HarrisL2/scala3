@@ -15,7 +15,6 @@ class GenericMethod {
   // @MethodParameterType: M0, M1
   // @MethodReturnType: M0
   def first[A, B](fst: A, snd: B): A = fst
-  override def toString: String = "Printing GenericMethod"
 }
 
 object testGenericMethod1{
@@ -24,18 +23,68 @@ object testGenericMethod1{
     val v = gm.identity[Int](42)
     println("identity[Int](42):" + v)
 
-  @main def main2(): Unit =
+  @main def main2(): Unit = 
+    val v = gm.identity2(2.2)
+    println("identity2(2.2):" + v)
+    
+  @main def main3(): Unit =
     val v = gm.first[Double, Long](4.2, 42L)
-    println("first[Double, Long](4.2, 42L)" + v)
+    println("first[Double, Long](4.2, 42L):" + v)
+
+  @main def main4(): Unit =
+    val v = gm.identity[Foo](new Foo(1))
+    println("identity[Foo](new Foo(1)):" + v)
+
+  @main def main5(): Unit =
+    val v = gm.passRef(new Foo(2))
+    println("passRef(new Foo(2)):" + v)
+
+  @main def main6(): Unit =
+    val v = gm.identity[java.lang.Integer](java.lang.Integer.valueOf(8))
+    println("identity[java.lang.Integer](java.lang.Integer.valueOf(8)):" + v)
+
+  @main def main7(): Unit =
+    val v = gm.identity2(java.lang.Integer.valueOf(87))
+    println("identity2(java.lang.Integer.valueOf(87)):" + v)
+
+  @main def main8(): Unit =
+    val v = gm.passInt(88)
+    println("passInt(88):" + v)
+
+  def genericMethod1[A, B, C](a: A, b: B, c: C): Unit =
+    val v1 = gm.identity[B](b)
+    println("identity[B](b):" + v1)
+    val v2 = gm.first[C, A](c, a)
+    println("first[C, A](c, a):" + v2)
+
+  @main def main9(): Unit =
+    genericMethod1[Int, Char, Double](1, 'a', 3.14)
+    // prints:
+    // identity[B](b): a
+    // first[C, A](c, a): 3.14
+  
+  @main def main10(): Unit =
+    genericMethod1[Foo, Foo, Foo](new Foo(1), new Foo(2), new Foo(3))
+    // prints:
+    // identity[B](b): Printing Foo 2
+    // first[C, A](c, a): Printing Foo 3
+
+  def genericMethod2[A, B, C](a: A, b: B, c: C): Unit =
+    val v1 = gm.identity2(c)
+    println("identity2(c):" + v1)
+
+  @main def main11(): Unit =
+    genericMethod2[Int, Char, Double](1, 'a', 3.14)
+    // prints:
+    // identity2(c): 3.14
+
+  @main def main12(): Unit =
+    genericMethod2[Foo, Foo, Foo](new Foo(1), new Foo(2), new Foo(3))
+    // prints:
+    // identity2(c): Printing Foo 3
 }
 
-object testGenericMethod2{
-  val gm = new GenericMethod
-  @main def main(): Unit =
-    val v = gm.first[Double, Long](4.2, 42L)
-    println("first[Double, Long](4.2, 42L)" + v)
-}
-
+/*
 object testGenericMethod {
   @main def testGenericMethodMain(): Unit = {
     println("test1:")
@@ -198,6 +247,7 @@ object testGenericMethod {
     val v8 : Any = v7
   }
 }
+*/
 
 class Foo(id: Int) {
   //arbitrary scala class
