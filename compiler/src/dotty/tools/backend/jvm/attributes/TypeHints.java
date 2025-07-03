@@ -81,6 +81,21 @@ public class TypeHints{
         public List<TypeA> getTypeList() {
             return typeList;
         }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("TypeAHint{");
+            sb.append("bytecodeOffset=").append(bytecodeOffset);
+            sb.append(", typeList=[");
+            for (TypeA typeA : typeList) {
+                sb.append(typeA.toString()).append(", ");
+            }
+            if (!typeList.isEmpty()) {
+                sb.setLength(sb.length() - 2);
+            }
+            sb.append("]}");
+            return sb.toString();
+        }
     }
 
     public static class TypeB {
@@ -137,6 +152,14 @@ public class TypeHints{
         }
         public TypeB getTypeB() {
             return typeB;
+        }
+
+        @Override
+        public String toString() {
+            return "TypeBHint{" +
+                            "bytecodeOffset=" + bytecodeOffset +
+                            ", typeB=" + typeB +
+                            '}';
         }
     }
 }

@@ -405,6 +405,7 @@ public class MethodNode1 extends MethodNode {
         }
         if (typeBHintList.size() != 0){
             this.invokeReturnTypeAttribute = new InvokeReturnType(typeBHintList.size(), typeBHintList);
+            System.out.println("invokeReturnTypeAttribute: " + invokeReturnTypeAttribute);
             visitAttribute(invokeReturnTypeAttribute);
         }
         List<TypeHints.TypeAHint> typeAHintList = new ArrayList<>();
@@ -421,6 +422,7 @@ public class MethodNode1 extends MethodNode {
         }
         if (typeAHintList.size() != 0){
             this.instructionTypeArgumentsAttribute = new InstructionTypeArguments(typeAHintList);
+            System.out.println("instructionTypeArgumentsAttribute: " + instructionTypeArgumentsAttribute);
             visitAttribute(instructionTypeArgumentsAttribute);
         }
 
