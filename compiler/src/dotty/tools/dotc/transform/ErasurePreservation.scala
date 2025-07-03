@@ -33,12 +33,12 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
       // println(tr.symbol.owner.paramSymss)
       if tr.isRef(defn.ByteClass) then TypeA.Byte else
       if tr.isRef(defn.CharClass) then TypeA.Char else
-      if tr.isRef(defn.DoubleClass) then TypeA.Double else 
-      if tr.isRef(defn.FloatClass) then TypeA.Float else 
+      if tr.isRef(defn.DoubleClass) then TypeA.Double else
+      if tr.isRef(defn.FloatClass) then TypeA.Float else
       if tr.isRef(defn.IntClass) then TypeA.Int else
-      if tr.isRef(defn.LongClass) then TypeA.Long else 
+      if tr.isRef(defn.LongClass) then TypeA.Long else
       if tr.isRef(defn.ShortClass) then TypeA.Short else
-      if tr.isRef(defn.BooleanClass) then TypeA.Boolean else 
+      if tr.isRef(defn.BooleanClass) then TypeA.Boolean else
       if tr.symbol.isTypeParam then
         val ind = tr.symbol.owner.paramSymss.head.indexWhere(tr.isRef(_))
         if ind != -1 then TypeA.M(ind)
@@ -56,6 +56,7 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
         val ind = owner.typeParams.indexOf(tr.symbol)
         if ind != -1 then TypeB.K(ind) else TypeB.None
       else
+        println(i"$tp")
         ???
         // val ind = owner.paramSymss.headOption match
         //   case None =>  assert(false, i"Got unexpected type ${tp}")
