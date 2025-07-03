@@ -30,7 +30,14 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
     case tpr: TypeParamRef => TypeA.M(tpr.paramNum)
     case tr: TypeRef =>
       // println(tr.symbol.owner.paramSymss)
+      if tr.isRef(defn.ByteClass) then TypeA.Byte else
+      if tr.isRef(defn.CharClass) then TypeA.Char else
+      if tr.isRef(defn.DoubleClass) then TypeA.Double else 
+      if tr.isRef(defn.FloatClass) then TypeA.Float else 
       if tr.isRef(defn.IntClass) then TypeA.Int else
+      if tr.isRef(defn.LongClass) then TypeA.Long else 
+      if tr.isRef(defn.ShortClass) then TypeA.Short else
+      if tr.isRef(defn.BooleanClass) then TypeA.Boolean else 
       if tr.symbol.isTypeParam then
         val ind = tr.symbol.owner.paramSymss.head.indexWhere(tr.isRef(_))
         if ind != -1 then TypeA.M(ind)
@@ -83,7 +90,14 @@ object ErasurePreservation {
 }
 
 enum TypeA:
+  case Byte
+  case Char
+  case Double
+  case Float
   case Int
+  case Long
+  case Short
+  case Boolean
   case M(x: Int)
   case K(x: Int)
   case Ref
@@ -96,7 +110,7 @@ enum TypeB:
 object InstructionTypeArguments extends Property.StickyKey[List[TypeA]]
 object InvokeReturnType extends Property.StickyKey[TypeB]
 
-class ErasedInfo(paramCount: Int, paramType: List[TypeB], returnType: TypeB) extends Annotation {
+class ErasedInfo(val paramCount: Int, val paramType: List[TypeB], val returnType: TypeB) extends Annotation {
   override def tree(using Context) =
     tpd.New(defn.ErasurePreservationAnnot.typeRef,
             List(tpd.Literal(Constant(toString))))

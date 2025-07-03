@@ -3,12 +3,15 @@ package backend
 package jvm
 
 import scala.language.unsafeNulls
+import scala.jdk.CollectionConverters.*
 
 import scala.tools.asm
 import scala.annotation.switch
 import Primitives.{NE, EQ, TestOp, ArithmeticOp}
 import scala.tools.asm.tree.MethodInsnNode
 import dotty.tools.dotc.report
+import dotty.tools.backend.jvm.attributes.InvokeReturnType
+import dotty.tools.backend.jvm.attributes.TypeHints
 
 /*
  *  A high-level facade to the ASM API for bytecode generation.
@@ -423,9 +426,42 @@ trait BCodeIdiomatic {
       emitInvoke(Opcodes.INVOKEVIRTUAL, owner, name, desc, itf = false)
     }
 
-    def emitInvoke(opcode: Int, owner: String, name: String, desc: String, itf: Boolean): Unit = {
+    def toJTypeB(tpe: dotty.tools.dotc.transform.TypeB): TypeHints.TypeB = 
+      tpe match
+        case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT
+        case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
+
+    def toJTypeA(tpe: dotty.tools.dotc.transform.TypeA): TypeHints.TypeA = 
+      tpe match
+        case dotty.tools.dotc.transform.TypeA.Byte => TypeHints.TypeA.TYPEA_BYTE
+        case dotty.tools.dotc.transform.TypeA.Char => TypeHints.TypeA.TYPEA_CHAR
+        case dotty.tools.dotc.transform.TypeA.Double => TypeHints.TypeA.TYPEA_DOUBLE
+        case dotty.tools.dotc.transform.TypeA.Float => TypeHints.TypeA.TYPEA_FLOAT
+        case dotty.tools.dotc.transform.TypeA.Int => TypeHints.TypeA.TYPEA_INT
+        case dotty.tools.dotc.transform.TypeA.Long => TypeHints.TypeA.TYPEA_LONG
+        case dotty.tools.dotc.transform.TypeA.Short => TypeHints.TypeA.TYPEA_SHORT
+        case dotty.tools.dotc.transform.TypeA.Boolean => TypeHints.TypeA.TYPEA_BOOLEAN
+        case dotty.tools.dotc.transform.TypeA.M(x) => TypeHints.TypeA(TypeHints.TypeA.M_KIND, x)
+        case dotty.tools.dotc.transform.TypeA.K(x) => TypeHints.TypeA(TypeHints.TypeA.K_KIND, x)
+        case dotty.tools.dotc.transform.TypeA.Ref => TypeHints.TypeA.TYPEA_REFERENCE
+      
+
+    def emitInvoke(opcode: Int, owner: String, name: String, desc: String, itf: Boolean, 
+                   invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None): Unit = {
       val node = new MethodInsnNode(opcode, owner, name, desc, itf)
       jmethod.instructions.add(node)
+      invokeReturnType match {
+        case None => {}
+        case Some(typeB) =>
+          val bcTypeB = toJTypeB(typeB)
+          jmethod.asInstanceOf[MethodNode1].invokeReturnTypeBs.put(node, bcTypeB);
+      }
+      instrTypeArgs match {
+        case None => {}
+        case Some(lstTypeAs) =>
+          val bcTypeAs = lstTypeAs.map(toJTypeA)
+          jmethod.asInstanceOf[MethodNode1].instructionTypeArgTypeAs.put(node, bcTypeAs.asJava);
+      }
     }
 
 
