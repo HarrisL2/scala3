@@ -92,7 +92,7 @@ object testGenericMethod {
   //    argument type before invoke is non-generic) {eunbox (before invoke)}
   // if (methodReturnType is generic (has methodReturnType type hint) &&
   //     reified type is primitive &&
-  //     return type at call site is non-generic, InvokeReturnType is 'L', not 'M0', 'K0') {eBox (in big loop)}
+  //     return type at call site is non-generic, InvokeReturnType is None (or 'L'), not 'M0', 'K0') {eBox (in big loop)}
   def test1() : Unit = {
     val gm = new GenericMethod
     // passing a primitive type as
@@ -100,7 +100,7 @@ object testGenericMethod {
     // @InstructionTypeArguments: offset, I
     // special case: generic method return type which is a primitive type at the caller context
     println("identity[Int](23)")
-    val v1 = gm.identity[Int](23) //need InstructionTypeArg: I, InvokeReturnType: L (boxing needed in case INVOKE)
+    val v1 = gm.identity[Int](23) //need InstructionTypeArg: I
     println(v1)
     // passing to a non-generic method
     // with java.lang.Object as parameter
@@ -112,13 +112,13 @@ object testGenericMethod {
     // as type arguments to a generic method
     // @InstructionTypeArguments: offset, C D
     println("first[Char, Double]('c', 8.8)")
-    val v3 = gm.first[Char, Double]('c', 8.8) //same as v1, need InstructionTypeArg: CD, InvokeReturnType: L (boxing needed)
+    val v3 = gm.first[Char, Double]('c', 8.8) //same as v1, need InstructionTypeArg: CD
     println(v3)
     // passing a scala class as
     // type argument to a generic method
     // @InstructionTypeArguments: offset, L
     println("identity[Foo](new Foo(1))")
-    val v4 = gm.identity[Foo](new Foo(1)) //need InstructionTypeArg: L, InvokeReturnType: L (no boxing needed)
+    val v4 = gm.identity[Foo](new Foo(1)) //need InstructionTypeArg: L
     println(v4)
     // passing a scala class to a method
     // that takes Foo as parameter

@@ -41,7 +41,6 @@ import dotty.tools.backend.jvm.DottyBackendInterface.symExtensions
 import dotty.tools.backend.jvm.attributes.MethodTypeParameterCount
 import dotty.tools.backend.jvm.attributes.MethodReturnType
 import dotty.tools.backend.jvm.attributes.MethodParameterType
-import dotty.tools.dotc.transform.TypeB
 import dotty.tools.backend.jvm.attributes.TypeHints
 
 /*
@@ -224,10 +223,10 @@ trait BCodeHelpers extends BCodeIdiomatic {
         emitAssocs(av, assocs, BCodeHelpers.this)(this)
       }
     
-    def toJTypeB(tpe: TypeB): TypeHints.TypeB = 
+    def toJTypeB(tpe: dotty.tools.dotc.transform.TypeB): TypeHints.TypeB = 
       tpe match
-        case TypeB.None => TypeHints.TypeB.NO_HINT
-        case TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
+        case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT
+        case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
         // case _ =>
         //   report.error("unexpected type in to Java TypeB: " + tpe)
         //   TypeHints.TypeB.NO_HINT // fallback, should not happen
@@ -238,18 +237,18 @@ trait BCodeHelpers extends BCodeIdiomatic {
         mw.visitAttribute(attr)
       }
 
-    def addMethodReturnTypeAttribute(mw: asm.MethodVisitor, tpe: TypeB): Unit =
+    def addMethodReturnTypeAttribute(mw: asm.MethodVisitor, tpe: dotty.tools.dotc.transform.TypeB): Unit =
       tpe match 
-        case TypeB.M(index) => 
+        case dotty.tools.dotc.transform.TypeB.M(index) => 
           val typeB = new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
           val attr = new MethodReturnType(typeB)
           mw.visitAttribute(attr)
-        case TypeB.None => //do nothing
+        case dotty.tools.dotc.transform.TypeB.None => //do nothing
         // case _ =>
         //   report.error("Unexpected type for method return type attribute: " + tpe)
       
 
-    def addMethodParameterTypeAttribute(mw: asm.MethodVisitor, lst: List[TypeB]) : Unit = 
+    def addMethodParameterTypeAttribute(mw: asm.MethodVisitor, lst: List[dotty.tools.dotc.transform.TypeB]) : Unit = 
         if (lst.isEmpty) return
         val lstJTypeB = lst.map(toJTypeB)
         val len = lstJTypeB.length
