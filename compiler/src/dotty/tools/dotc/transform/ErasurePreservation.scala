@@ -19,6 +19,7 @@ import ast.{tpd, untpd}
 import reporting.*
 import dotty.tools.dotc.transform.MegaPhase.MiniPhase
 import dotty.tools.dotc.util.Property
+import dotty.tools.dotc.cc.pathOwner
 
 class ErasurePreservation extends MiniPhase with InfoTransformer {
 
@@ -47,9 +48,21 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
   }
 
 
-  def toTypeB(tp: Type)(using Context): TypeB = tp match
+  def toTypeB(tp: Type)(using Context): TypeB = trace(i"toTypeB ${tp}"){ tp match
     case tpr: TypeParamRef => TypeB.M(tpr.paramNum)
+    case tr: TypeRef if tr.symbol.isTypeParam =>
+      val owner = tr.symbol.owner
+      if owner.isClass then
+        val ind = owner.typeParams.indexOf(tr.symbol)
+        if ind != -1 then TypeB.K(ind) else TypeB.None
+      else
+        ???
+        // val ind = owner.paramSymss.headOption match
+        //   case None =>  assert(false, i"Got unexpected type ${tp}")
+        //   case Some(value) => value.indexWhere(tr.isRef(_))
+        // if ind != -1 then TypeB.M(ind) else TypeB.None
     case _ => TypeB.None
+  }
 
   def toReturnTypeB(tp: Type)(using Context): TypeB = tp match
     case tr: TypeRef =>
@@ -62,7 +75,7 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
     case _ => TypeB.None
 
 
-  override def transformInfo(tp: Type, sym: Symbol)(using Context): Type =
+  override def transformInfo(tp: Type, sym: Symbol)(using Context): Type = trace(i"transformInfo ${tp}, ${sym}") {
     tp match
         case pt: PolyType =>
           pt.resType match
@@ -70,8 +83,19 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
               sym.addAnnotation(ErasedInfo(pt.paramInfos.size, mt.paramInfos.map(toTypeB), toTypeB(mt.resType)))
             case other =>
               sym.addAnnotation(ErasedInfo(pt.paramInfos.size, Nil, toTypeB(other.widenExpr)))
-        case _ => ()
+        case mt: MethodType =>
+          val params = mt.paramInfos.map(toTypeB)
+          val ret = toTypeB(mt.resType)
+          if (params.exists(_ != TypeB.None) || ret != TypeB.None) then
+            sym.addAnnotation(ErasedInfo(0, params, ret))
+        case et: ExprType =>
+          val ret = toTypeB(et.widenExpr)
+          if (ret != TypeB.None) then
+            sym.addAnnotation(ErasedInfo(0, Nil, ret))
+          ()
+        case other =>
     tp
+  }
 
   override def transformApply(tree: tpd.Apply)(using Context): tpd.Tree =
     tree.putAttachment(InvokeReturnType, toReturnTypeB(tree.tpe))
@@ -81,6 +105,10 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
     val args = tree.args.map(_.tpe).map(toTypeA)
     tree.fun.putAttachment(InstructionTypeArguments, args) // Pattern match args based on their types
     tree
+
+  // override def transformTypeDef(tree: tpd.TypeDef)(using Context): tpd.Tree =
+  //   println(s"$tree")
+  //   tree
 
 }
 
@@ -105,7 +133,7 @@ enum TypeA:
 enum TypeB:
   case None
   case M(x: Int)
-  case K(y: Int, x: Int)
+  case K(x: Int)
 // case class TypeB(tp: Type)
 
 object InstructionTypeArguments extends Property.StickyKey[List[TypeA]]
