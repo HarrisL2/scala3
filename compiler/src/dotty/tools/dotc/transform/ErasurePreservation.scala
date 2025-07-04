@@ -40,9 +40,15 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
       if tr.isRef(defn.ShortClass) then TypeA.Short else
       if tr.isRef(defn.BooleanClass) then TypeA.Boolean else
       if tr.symbol.isTypeParam then
-        val ind = tr.symbol.owner.paramSymss.head.indexWhere(tr.isRef(_))
-        if ind != -1 then TypeA.M(ind)
-        else TypeA.Ref
+        val owner = tr.symbol.owner
+        if owner.isClass then
+          val ind = owner.typeParams.indexOf(tr.symbol)
+          if ind != -1 then TypeA.K(ind) else ???
+        else
+          val ind = owner.paramSymss.headOption match
+            case None => assert(false, i"Got unexpected type ${tp}")
+            case Some(value) => value.indexWhere(tr.isRef(_))
+          if ind != -1 then TypeA.M(ind) else ???
       else TypeA.Ref
     case _ => assert(false)
   }
@@ -56,25 +62,25 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
         val ind = owner.typeParams.indexOf(tr.symbol)
         if ind != -1 then TypeB.K(ind) else TypeB.None
       else
-        println(i"$tp")
-        ???
-        // val ind = owner.paramSymss.headOption match
-        //   case None =>  assert(false, i"Got unexpected type ${tp}")
-        //   case Some(value) => value.indexWhere(tr.isRef(_))
-        // if ind != -1 then TypeB.M(ind) else TypeB.None
+        val ind = owner.paramSymss.headOption match
+          case None => assert(false, i"Got unexpected type ${tp}")
+          case Some(value) => value.indexWhere(tr.isRef(_))
+        if ind != -1 then TypeB.M(ind) else TypeB.None
     case _ => TypeB.None
   }
 
   def toReturnTypeB(tp: Type)(using Context): TypeB = tp match
-    case tr: TypeRef =>
-      // println(tr.symbol.owner.paramSymss)
-      if tr.symbol.isTypeParam then
-        val ind = tr.symbol.owner.paramSymss.head.indexWhere(tr.isRef(_))
-        if ind != -1 then TypeB.M(ind)
-        else TypeB.None
-      else TypeB.None
+    case tr: TypeRef if tr.symbol.isTypeParam =>
+      val owner = tr.symbol.owner
+      if owner.isClass then
+        val ind = owner.typeParams.indexOf(tr.symbol)
+        if ind != -1 then TypeB.K(ind) else TypeB.None
+      else
+        val ind = owner.paramSymss.headOption match
+          case None =>  assert(false, i"Got unexpected type ${tp}")
+          case Some(value) => value.indexWhere(tr.isRef(_))
+        if ind != -1 then TypeB.M(ind) else TypeB.None
     case _ => TypeB.None
-
 
   override def transformInfo(tp: Type, sym: Symbol)(using Context): Type = trace(i"transformInfo ${tp}, ${sym}") {
     tp match
@@ -127,14 +133,18 @@ enum TypeA:
   case Long
   case Short
   case Boolean
-  case M(x: Int)
-  case K(y: Int, x: Int)
+  case M(paramNum: Int)
+  case K(
+    // outer: Int,
+    paramNum: Int)
   case Ref
 
 enum TypeB:
   case None
-  case M(x: Int)
-  case K(x: Int)
+  case M(paramNum: Int)
+  case K(
+    // outer: Int,
+    paramNum: Int)
 // case class TypeB(tp: Type)
 
 object InstructionTypeArguments extends Property.StickyKey[List[TypeA]]
