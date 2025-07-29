@@ -430,6 +430,7 @@ trait BCodeIdiomatic {
       tpe match
         case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT
         case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
+        case dotty.tools.dotc.transform.TypeB.K(y, x) => new TypeHints.TypeB(TypeHints.TypeB.K_KIND, y, x)
 
     def toJTypeA(tpe: dotty.tools.dotc.transform.TypeA): TypeHints.TypeA = 
       tpe match
@@ -442,7 +443,7 @@ trait BCodeIdiomatic {
         case dotty.tools.dotc.transform.TypeA.Short => TypeHints.TypeA.TYPEA_SHORT
         case dotty.tools.dotc.transform.TypeA.Boolean => TypeHints.TypeA.TYPEA_BOOLEAN
         case dotty.tools.dotc.transform.TypeA.M(x) => TypeHints.TypeA(TypeHints.TypeA.M_KIND, x)
-        case dotty.tools.dotc.transform.TypeA.K(x) => TypeHints.TypeA(TypeHints.TypeA.K_KIND, x)
+        case dotty.tools.dotc.transform.TypeA.K(y, x) => TypeHints.TypeA(TypeHints.TypeA.K_KIND, y, x)
         case dotty.tools.dotc.transform.TypeA.Ref => TypeHints.TypeA.TYPEA_REFERENCE
       
 

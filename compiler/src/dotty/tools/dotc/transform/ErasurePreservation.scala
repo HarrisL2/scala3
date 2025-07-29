@@ -99,12 +99,13 @@ enum TypeA:
   case Short
   case Boolean
   case M(x: Int)
-  case K(x: Int)
+  case K(y: Int, x: Int)
   case Ref
 
 enum TypeB:
   case None
   case M(x: Int)
+  case K(y: Int, x: Int)
 // case class TypeB(tp: Type)
 
 object InstructionTypeArguments extends Property.StickyKey[List[TypeA]]
