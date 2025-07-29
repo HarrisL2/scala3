@@ -9,6 +9,18 @@ import scala.tools.asm.ClassReader;
 import scala.tools.asm.ClassWriter;
 import scala.tools.asm.Label;
 
+/*
+InvokeReturnType_attribute {
+	u2 attribute_name_index;
+	u4 attribute_length;
+	u2 typehint_length;
+	{ 	u2 byecode_offset
+		u1 K_M_indicator
+        u2 outer_class_indicator
+        u2 index
+    } typeHints[typehint_length];
+}
+*/
 public class InvokeReturnType extends Attribute{
     private final int count;
     private final List<TypeHints.TypeBHint> typeList;
@@ -46,14 +58,13 @@ public class InvokeReturnType extends Attribute{
         for (int i = 0; i < typeHintLength; i++){
             int bytecodeOffset = cr.readUnsignedShort(cur);
             cur += 2;
-            int typeBnum = cr.readUnsignedShort(cur);
-            assert typeBnum == 1 : " can only have one typeB";
-            cur += 2;
             byte kind = (byte) cr.readByte(cur);
             cur += 1;
+            int outerClassIndex = cr.readUnsignedShort(cur);
+            cur += 2;
             int index = cr.readUnsignedShort(cur);
             cur += 2;
-            TypeHints.TypeB typeB = new TypeHints.TypeB(kind, index);
+            TypeHints.TypeB typeB = new TypeHints.TypeB(kind, outerClassIndex, index);
             typeHints.add(new TypeHints.TypeBHint(bytecodeOffset, typeB));
         }
         return new InvokeReturnType(typeHintLength, typeHints);
@@ -65,9 +76,9 @@ public class InvokeReturnType extends Attribute{
         bv.putShort(count);
         for (TypeHints.TypeBHint typeHint : typeList) {
             bv.putShort(typeHint.getBytecodeOffset());
-            bv.putShort(1);
             TypeHints.TypeB typeB = typeHint.getTypeB();
             bv.putByte(typeB.getKind());
+            bv.putShort(typeB.getOuterClassIndex());
             bv.putShort(typeB.getIndex());
         }
         return bv;

@@ -7,20 +7,20 @@ import scala.tools.asm.ClassWriter;
 import scala.tools.asm.Label;
 
 /*
-MethodTypeParameterCount_attribute {
+ClassTypeParameterCount_attribute {
     u2 attribute_name_index;
 	u4 attribute_length;
 	u2 count;
 }
 */
-public class MethodTypeParameterCount extends Attribute{
+public class ClassTypeParameterCount extends Attribute{
     private final int count;
-    public MethodTypeParameterCount() {
-        super("MethodTypeParameterCount");
+    public ClassTypeParameterCount() {
+        super("ClassTypeParameterCount");
         this.count = 0;
     }
-    public MethodTypeParameterCount(int count) {
-        super("MethodTypeParameterCount");
+    public ClassTypeParameterCount(int count) {
+        super("ClassTypeParameterCount");
         this.count = count;
     }
     public int getCount() {

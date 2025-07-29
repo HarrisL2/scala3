@@ -15,11 +15,8 @@ public class TypeHints{
         public static final byte BOOLEAN = 'Z';
         public static final byte REFERENCE = 'L';
 
-        
-
         public static final byte K_KIND = 'K';
         public static final byte M_KIND = 'M';
-        // public static final byte PRIMITIVE_KIND = 'P';
         
         public static final TypeA TYPEA_BYTE = 
             new TypeA(BYTE, 0);
@@ -41,27 +38,31 @@ public class TypeHints{
             new TypeA(REFERENCE, 0);
 
         private final byte kind;
+        private final int outerClassIndex;
         private final int index;
 
         public TypeA(byte kind, int index) {
             this.kind = kind;
             this.index = index;
+            this.outerClassIndex = 0;
         }
 
-        public byte getKind() {
-            return kind;
+        public TypeA(byte kind, int outerClassIndex, int index) {
+            this.kind = kind;
+            this.outerClassIndex = outerClassIndex;
+            this.index = index;
         }
 
-        public int getIndex() {
-            return index;
-        }
+        public byte getKind() { return kind; }
+        public int getOuterClassIndex() { return outerClassIndex; }
+        public int getIndex() { return index; }
 
         @Override
         public String toString() {
-            return "TypeA{" +
-                            "kind=" + (char) kind +
-                            ", index=" + index +
-                            '}';            
+            return "TypeA{kind=" + (char) kind +
+                        ", outerClassIndex=" + outerClassIndex +
+                        ", index=" + index +
+                        '}';            
         }
     }
 
@@ -108,20 +109,24 @@ public class TypeHints{
         public static final byte ARR_M_KIND = 'm';
 
         private final byte kind;
+        private final int outerClassIndex;
         private final int index;
 
         public TypeB(byte kind, int index) {
             this.kind = kind;
             this.index = index;
+            this.outerClassIndex = 0;
         }
 
-        public byte getKind() {
-            return kind;
+        public TypeB(byte kind, int outerClassIndex, int index) {
+            this.kind = kind;
+            this.outerClassIndex = outerClassIndex;
+            this.index = index;
         }
 
-        public int getIndex() {
-            return index;
-        }
+        public byte getKind() { return kind; }
+        public int getOuterClassIndex() { return outerClassIndex; }
+        public int getIndex() { return index; }
 
         public boolean isNoHint() {
             return this == NO_HINT || (this.kind == 0 && this.index == -1);
@@ -132,10 +137,10 @@ public class TypeHints{
             if (isNoHint()) {
                 return "TypeB{NO_HINT}";
             }
-            return "TypeB{" +
-                            "kind=" + (char) kind +
-                            ", index=" + index +
-                            '}';
+            return "TypeB{kind=" + (char) kind +
+                        ", outerClassIndex=" + outerClassIndex +
+                        ", index=" + index +
+                        '}';
         }
     }
 

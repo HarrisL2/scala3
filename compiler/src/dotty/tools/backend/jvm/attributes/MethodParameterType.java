@@ -9,6 +9,17 @@ import scala.tools.asm.ClassReader;
 import scala.tools.asm.ClassWriter;
 import scala.tools.asm.Label;
 
+/*
+MethodParameterType_attribute {
+	u2 attribute_name_index;
+	u4 attribute_length;
+	u2 parameter_count;
+	{	u1 K_M_indicator
+		u2 outer_class_indicator
+        u2 index
+    } typeBs[parameter_count];
+}
+*/
 public class MethodParameterType extends Attribute{
     private final int count;
     private final List<TypeHints.TypeB> typeList;
@@ -46,6 +57,8 @@ public class MethodParameterType extends Attribute{
         for (int i = 0; i < parameterCount; i++) {
             byte kind = (byte) cr.readByte(cur);
             cur += 1;
+            int outerClassIndex = cr.readUnsignedShort(cur);
+            cur += 2;
             int index = cr.readUnsignedShort(cur);
             cur += 2;
             typeBs.add(new TypeHints.TypeB(kind, index));
@@ -59,6 +72,7 @@ public class MethodParameterType extends Attribute{
         bv.putShort(count);
         for (TypeHints.TypeB typeB : typeList) {
             bv.putByte(typeB.getKind());
+            bv.putShort(typeB.getOuterClassIndex());
             bv.putShort(typeB.getIndex());
         }
         return bv;
