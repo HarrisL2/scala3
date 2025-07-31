@@ -443,7 +443,7 @@ trait BCodeIdiomatic {
         case dotty.tools.dotc.transform.TypeA.Short => TypeHints.TypeA.TYPEA_SHORT
         case dotty.tools.dotc.transform.TypeA.Boolean => TypeHints.TypeA.TYPEA_BOOLEAN
         case dotty.tools.dotc.transform.TypeA.M(x) => TypeHints.TypeA(TypeHints.TypeA.M_KIND, x)
-        case dotty.tools.dotc.transform.TypeA.K(y, x) => TypeHints.TypeA(TypeHints.TypeA.K_KIND, y, x)
+        case dotty.tools.dotc.transform.TypeA.K(_, x) => TypeHints.TypeA(TypeHints.TypeA.K_KIND, x)
         case dotty.tools.dotc.transform.TypeA.Ref => TypeHints.TypeA.TYPEA_REFERENCE
 
 
