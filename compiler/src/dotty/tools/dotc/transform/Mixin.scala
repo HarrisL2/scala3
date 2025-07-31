@@ -236,7 +236,7 @@ class Mixin extends MiniPhase with SymTransformer { thisPhase =>
       case _ =>
         val Apply(sel @ Select(New(_), nme.CONSTRUCTOR), args) = tree: @unchecked
         val (callArgs, initArgs) = if (tree.symbol.owner.is(Trait)) (Nil, args) else (args, Nil)
-        (superRef(tree.symbol, tree.span).appliedToTermArgs(callArgs), Nil, initArgs)
+        (superRef(tree.symbol, tree.span).appliedToTermArgs(callArgs).withAttachmentsFrom(sel), Nil, initArgs)
     }
 
     val superCallsAndArgs: Map[Symbol, (Tree, List[Tree], List[Tree])] = (
