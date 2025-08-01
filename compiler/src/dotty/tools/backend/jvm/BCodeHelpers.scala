@@ -221,14 +221,14 @@ trait BCodeHelpers extends BCodeIdiomatic {
         val av = cw.visitAnnotation(typeDescriptor(typ), isRuntimeVisible(annot))
         emitAssocs(av, assocs, BCodeHelpers.this)(this)
       }
-    
-    def toJTypeB(tpe: dotty.tools.dotc.transform.TypeB): TypeHints.TypeB = 
+
+    def toJTypeB(tpe: dotty.tools.dotc.transform.TypeB): TypeHints.TypeB =
       tpe match
         case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT
         case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
         case dotty.tools.dotc.transform.TypeB.K(y, x) => new TypeHints.TypeB(TypeHints.TypeB.K_KIND, y, x)
 
-    def addMethodTypeParameterCountAttribute(mw: asm.MethodVisitor, count: Int): Unit = 
+    def addMethodTypeParameterCountAttribute(mw: asm.MethodVisitor, count: Int): Unit =
       if (count > 0){
         val attr = new MethodTypeParameterCount(count)
         mw.visitAttribute(attr)
@@ -248,7 +248,8 @@ trait BCodeHelpers extends BCodeIdiomatic {
       }
       
 
-    def addMethodParameterTypeAttribute(mw: asm.MethodVisitor, lst: List[dotty.tools.dotc.transform.TypeB]) : Unit = 
+
+    def addMethodParameterTypeAttribute(mw: asm.MethodVisitor, lst: List[dotty.tools.dotc.transform.TypeB]) : Unit =
         if (lst.isEmpty) return
         val lstJTypeB = lst.map(toJTypeB)
         val len = lstJTypeB.length
