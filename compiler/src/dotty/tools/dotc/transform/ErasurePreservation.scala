@@ -52,17 +52,18 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
             case Some(value) => value.indexWhere(tr.isRef(_))
           if ind != -1 then TypeA.M(ind) else ???
       else TypeA.Ref
-    case _ => assert(false)
+    case _ =>
+      TypeA.Ref
   }
 
   def debrujin(source: Symbol, outer: Symbol)(using Context): Int = trace.force(i"debrujin: $source, $outer") {
     if (source.enclosingClass == outer) then 0
     else
-      println(s"$source, $outer, ${outer.owner}")
+      // println(s"$source, $outer, ${outer.owner}")
       debrujin(source.owner, outer)+1
   }
 
-  def toTypeB(tp: Type, sourceSym: Symbol)(using Context): TypeB = trace.force(i"toTypeB ${tp}, ${sourceSym}"){ tp match
+  def toTypeB(tp: Type, sourceSym: Symbol)(using Context): TypeB = trace(i"toTypeB ${tp}, ${sourceSym}"){ tp match
     case tpr: TypeParamRef => TypeB.M(tpr.paramNum)
     case tr: TypeRef if tr.symbol.isTypeParam =>
       val owner = tr.symbol.owner
@@ -93,7 +94,7 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
         if ind != -1 then TypeB.M(ind) else TypeB.None
     case _ => TypeB.None
 
-  override def transformInfo(tp: Type, sym: Symbol)(using Context): Type = trace.force(i"transformInfo ${tp}, ${sym}") {
+  override def transformInfo(tp: Type, sym: Symbol)(using Context): Type = trace(i"transformInfo ${tp}, ${sym}") {
     tp match
         case pt: PolyType =>
           pt.resType match
@@ -103,25 +104,26 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
               sym.addAnnotation(ErasedInfo(pt.paramInfos.size, Nil, toTypeB(other.widenExpr, sym)))
         case mt: MethodType =>
           val params = mt.paramInfos.map(p => toTypeB(p, sym))
-          println(i"MethodType")
-          val ret = toTypeB(mt.resType, ctx.owner)
+          // println(i"MethodType")
+          val ret = toTypeB(mt.resType, sym)
           if (params.exists(_ != TypeB.None) || ret != TypeB.None) then
             sym.addAnnotation(ErasedInfo(0, params, ret))
         case et: ExprType =>
-          println(i"ExprType")
+          // println(i"ExprType")
           val ret = toTypeB(et.widenExpr, sym)
           if (ret != TypeB.None) then
             sym.addAnnotation(ErasedInfo(0, Nil, ret))
           ()
         case other =>
+    tp
   }
 
-  override def transformApply(tree: tpd.Apply)(using Context): tpd.Tree = trace.force(i"transfromApply ${tree}") {
+  override def transformApply(tree: tpd.Apply)(using Context): tpd.Tree = trace(i"transfromApply ${tree}") {
     tree.putAttachment(InvokeReturnType, toReturnTypeB(tree.tpe, ctx.owner))
     tree
   }
 
-  override def transformTypeApply(tree: tpd.TypeApply)(using Context): tpd.Tree = trace.force(i"transfromTypeApply ${tree}") {
+  override def transformTypeApply(tree: tpd.TypeApply)(using Context): tpd.Tree = trace(i"transfromTypeApply ${tree}") {
     val args = tree.args.map(_.tpe).map(p => toTypeA(p, ctx.owner))
     tree.fun.putAttachment(InstructionTypeArguments, args) // Pattern match args based on their types
     tree
