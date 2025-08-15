@@ -800,7 +800,6 @@ object Build {
   // ==============================================================================================
 
   lazy val `scala3-bootstrapped-new` = project
-    .enablePlugins(ScriptedPlugin)
     .aggregate(`scala3-interfaces`, `scala3-library-bootstrapped-new` , `scala-library-bootstrapped`,
       `tasty-core-bootstrapped-new`, `scala3-compiler-bootstrapped-new`, `scala3-sbt-bridge-bootstrapped`,
       `scala3-staging-new`, `scala3-tasty-inspector-new`, `scala-library-sjs`, `scala3-library-sjs`,
@@ -897,7 +896,7 @@ object Build {
       scriptedBatchExecution := true,
       scriptedLaunchOpts ++= Seq(
         s"-Dplugin.scalaVersion=${dottyVersion}",
-        s"-Dplugin.scala2Version=2.13.16",
+        s"-Dplugin.scala2Version=${stdlibVersion(Bootstrapped)}",
         s"-Dplugin.scalaJSVersion=${scalaJSVersion}",
       ),
       scriptedBufferLog := true,
@@ -913,7 +912,6 @@ object Build {
         (`scala3-staging-new` / publishLocalBin),
         (`scala3-tasty-inspector-new` / publishLocalBin),
         (`scaladoc-new` / publishLocalBin),
-        (`scala3-repl` / publishLocalBin),
         publishLocalBin,
       ).evaluated,
     )
