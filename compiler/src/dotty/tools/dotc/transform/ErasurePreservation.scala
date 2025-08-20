@@ -22,13 +22,13 @@ import dotty.tools.dotc.util.Property
 import dotty.tools.dotc.cc.pathOwner
 import scala.annotation.tailrec
 
-class ErasurePreservation extends MiniPhase with InfoTransformer {
+class ErasurePreservation extends MiniPhase {
 
   override def phaseName: String = ErasurePreservation.name
 
   override def description: String = ErasurePreservation.description
 
-  def toTypeA(tp: Type, sourceSym: Symbol)(using Context): TypeA = trace(s"toTypeA ${tp}") {tp match
+  def toTypeA(tp: Type, sourceSym: Symbol)(using Context): TypeA = trace(i"toTypeA ${tp}, ${sourceSym}") {tp.widen match
     case tpr: TypeParamRef => TypeA.M(tpr.paramNum)
     case tr: TypeRef =>
       // println(tr.symbol.owner.paramSymss)
@@ -56,7 +56,7 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
       TypeA.Ref
   }
 
-  def debrujin(source: Symbol, outer: Symbol)(using Context): Int = trace.force(i"debrujin: $source, $outer") {
+  def debrujin(source: Symbol, outer: Symbol)(using Context): Int = trace(i"debrujin: $source, $outer") {
     if (source.enclosingClass == outer) then 0
     else
       // println(s"$source, $outer, ${outer.owner}")
@@ -94,28 +94,32 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
         if ind != -1 then TypeB.M(ind) else TypeB.None
     case _ => TypeB.None
 
-  override def transformInfo(tp: Type, sym: Symbol)(using Context): Type = trace(i"transformInfo ${tp}, ${sym}") {
-    tp match
-        case pt: PolyType =>
-          pt.resType match
-            case mt: MethodType =>
-              sym.addAnnotation(ErasedInfo(pt.paramInfos.size, mt.paramInfos.map(p => toTypeB(p, sym)), toTypeB(mt.resType, sym)))
-            case other =>
-              sym.addAnnotation(ErasedInfo(pt.paramInfos.size, Nil, toTypeB(other.widenExpr, sym)))
-        case mt: MethodType =>
-          val params = mt.paramInfos.map(p => toTypeB(p, sym))
-          // println(i"MethodType")
-          val ret = toTypeB(mt.resType, sym)
-          if (params.exists(_ != TypeB.None) || ret != TypeB.None) then
-            sym.addAnnotation(ErasedInfo(0, params, ret))
-        case et: ExprType =>
-          // println(i"ExprType")
-          val ret = toTypeB(et.widenExpr, sym)
-          if (ret != TypeB.None) then
-            sym.addAnnotation(ErasedInfo(0, Nil, ret))
-          ()
-        case other =>
-    tp
+  override def transformDefDef(tree: tpd.DefDef)(using Context): tpd.Tree = trace(i"transformDefDef $tree, ${tree.tpe}, ${tree.tpe.widen}"){
+    tree.tpe.widen match
+      case pt: PolyType =>
+        pt.resType match
+          case mt: MethodType =>
+            tree.putAttachment(MethodParameterReturnType,
+            (pt.paramInfos.size, mt.paramInfos.map(p => toTypeB(p, ctx.owner)), toTypeB(mt.resType, ctx.owner)))
+          case other =>
+            tree.putAttachment(MethodParameterReturnType,
+            (pt.paramInfos.size, Nil, toTypeB(other.widenExpr, ctx.owner)))
+      case mt: MethodType =>
+        val params = mt.paramInfos.map(p => toTypeB(p, ctx.owner))
+        // println(i"MethodType")
+        val ret = toTypeB(mt.resType, ctx.owner)
+        if (params.exists(_ != TypeB.None) || ret != TypeB.None) then
+          tree.putAttachment(MethodParameterReturnType,
+            (0, params, ret))
+      case tr: TypeRef =>
+        tree.putAttachment(MethodParameterReturnType, (0, Nil, toTypeB(tr, ctx.owner)))
+      case et: ExprType =>
+        ???
+        val ret = toTypeB(et.widenExpr, ctx.owner)
+        if (ret != TypeB.None) then
+          tree.putAttachment(MethodParameterReturnType, (0, Nil, ret))
+      case other => ()
+    tree
   }
 
   override def transformApply(tree: tpd.Apply)(using Context): tpd.Tree = trace(i"transfromApply ${tree}") {
@@ -128,9 +132,6 @@ class ErasurePreservation extends MiniPhase with InfoTransformer {
     tree.fun.putAttachment(InstructionTypeArguments, args) // Pattern match args based on their types
     tree
   }
-  // override def transformTypeDef(tree: tpd.TypeDef)(using Context): tpd.Tree =
-  //   println(s"$tree")
-  //   tree
 
 }
 
@@ -164,6 +165,7 @@ enum TypeB:
 
 object InstructionTypeArguments extends Property.StickyKey[List[TypeA]]
 object InvokeReturnType extends Property.StickyKey[TypeB]
+object MethodParameterReturnType extends Property.StickyKey[(Int, List[TypeB], TypeB)]
 
 class ErasedInfo(val paramCount: Int, val paramType: List[TypeB], val returnType: TypeB) extends Annotation {
   override def tree(using Context) =
