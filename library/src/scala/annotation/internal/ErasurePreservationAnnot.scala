@@ -7,6 +7,6 @@ import scala.annotation.meta.*
 @setter
 @field
 @param
-class ErasurePreservation(path: String) extends Annotation {
+class ErasurePreservationAnnot(path: String) extends Annotation {
 
 }
