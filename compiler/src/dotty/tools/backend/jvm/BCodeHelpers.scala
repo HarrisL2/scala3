@@ -227,6 +227,7 @@ trait BCodeHelpers extends BCodeIdiomatic {
         case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT
         case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
         case dotty.tools.dotc.transform.TypeB.K(_, index) => new TypeHints.TypeB(TypeHints.TypeB.K_KIND, index)
+        case dotty.tools.dotc.transform.TypeB.Array(tp) => TypeHints.TypeB.NO_HINT
         // case _ =>
         //   report.error("unexpected type in to Java TypeB: " + tpe)
         //   TypeHints.TypeB.NO_HINT // fallback, should not happen
@@ -245,6 +246,7 @@ trait BCodeHelpers extends BCodeIdiomatic {
           mw.visitAttribute(attr)
         case dotty.tools.dotc.transform.TypeB.None => //do nothing
         case dotty.tools.dotc.transform.TypeB.K(_, index) =>
+        case dotty.tools.dotc.transform.TypeB.Array(tp) =>
         // case _ =>
         //   report.error("Unexpected type for method return type attribute: " + tpe)
 
