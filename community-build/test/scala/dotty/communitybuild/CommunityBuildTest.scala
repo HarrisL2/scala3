@@ -57,7 +57,7 @@ end CommunityBuildTestB
 
 @Category(Array(classOf[TestCategory]))
 class CommunityBuildTestC:
-  //@Test def akka = projects.akka.run()
+  // @Test def akka = projects.akka.run()
   // Disabled because `javax.xml.bind` is not available since java 11
   // @Test def betterfiles = projects.betterfiles.run()
   @Test def cask = projects.cask.run()
