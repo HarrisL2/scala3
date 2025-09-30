@@ -1100,7 +1100,7 @@ class Definitions {
   @tu lazy val RetainsArgAnnot: ClassSymbol = requiredClass("scala.annotation.retainsArg")
   @tu lazy val PublicInBinaryAnnot: ClassSymbol = requiredClass("scala.annotation.publicInBinary")
   @tu lazy val WitnessNamesAnnot: ClassSymbol = requiredClass("scala.annotation.internal.WitnessNames")
-  @tu lazy val ErasurePreservationAnnot: ClassSymbol = requiredClass("scala.annotation.internal.ErasurePreservation")
+  @tu lazy val ErasurePreservationAnnot: ClassSymbol = requiredClass("scala.annotation.internal.ErasurePreservationAnnot")
 
   @tu lazy val JavaRepeatableAnnot: ClassSymbol = requiredClass("java.lang.annotation.Repeatable")
 

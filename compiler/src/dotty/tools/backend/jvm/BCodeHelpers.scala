@@ -226,7 +226,12 @@ trait BCodeHelpers extends BCodeIdiomatic {
       tpe match
         case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT
         case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
-        case dotty.tools.dotc.transform.TypeB.K(y, x) => new TypeHints.TypeB(TypeHints.TypeB.K_KIND, y, x)
+        case dotty.tools.dotc.transform.TypeB.K(outer, index) => new TypeHints.TypeB(TypeHints.TypeB.K_KIND, outer, index)
+        case dotty.tools.dotc.transform.TypeB.Array(dotty.tools.dotc.transform.TypeB.K(outer, index)) => new TypeHints.TypeB(TypeHints.TypeB.ARR_K_KIND, outer, index)
+        case  dotty.tools.dotc.transform.TypeB.Array(dotty.tools.dotc.transform.TypeB.M(index)) => new TypeHints.TypeB(TypeHints.TypeB.ARR_M_KIND, index)
+        case _ => 
+            report.error("unexpected type in to Java TypeB: " + tpe)
+            TypeHints.TypeB.NO_HINT // fallback, should not happen
 
     def addMethodTypeParameterCountAttribute(mw: asm.MethodVisitor, count: Int): Unit =
       if (count > 0){
@@ -237,17 +242,15 @@ trait BCodeHelpers extends BCodeIdiomatic {
     def addMethodReturnTypeAttribute(mw: asm.MethodVisitor, tpe: dotty.tools.dotc.transform.TypeB): Unit =
       val typeB  = 
         tpe match 
-          case dotty.tools.dotc.transform.TypeB.K(outerClassIndex, index) =>
-            new TypeHints.TypeB(TypeHints.TypeB.K_KIND, outerClassIndex, index)
-          case dotty.tools.dotc.transform.TypeB.M(index) => 
-            new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
-          case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT//do nothing
+          case dotty.tools.dotc.transform.TypeB.K(outerClassIndex, index) => new TypeHints.TypeB(TypeHints.TypeB.K_KIND, outerClassIndex, index)
+          case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
+          case dotty.tools.dotc.transform.TypeB.Array(dotty.tools.dotc.transform.TypeB.K(outerClassIndex, index)) => new TypeHints.TypeB(TypeHints.TypeB.ARR_K_KIND, outerClassIndex, index)
+          case dotty.tools.dotc.transform.TypeB.Array(dotty.tools.dotc.transform.TypeB.M(index)) => new TypeHints.TypeB(TypeHints.TypeB.ARR_M_KIND, index)
+          case _ => TypeHints.TypeB.NO_HINT//do nothing
       if (typeB != TypeHints.TypeB.NO_HINT) {
         val attr = new MethodReturnType(typeB)
         mw.visitAttribute(attr)
       }
-      
-
 
     def addMethodParameterTypeAttribute(mw: asm.MethodVisitor, lst: List[dotty.tools.dotc.transform.TypeB]) : Unit =
         if (lst.isEmpty) return

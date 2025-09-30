@@ -48,6 +48,7 @@ public class TypeHints{
         }
 
         public TypeA(byte kind, int outerClassIndex, int index) {
+            assert kind == K_KIND;
             this.kind = kind;
             this.outerClassIndex = outerClassIndex;
             this.index = index;
@@ -119,6 +120,7 @@ public class TypeHints{
         }
 
         public TypeB(byte kind, int outerClassIndex, int index) {
+            assert kind == K_KIND || kind == ARR_K_KIND;
             this.kind = kind;
             this.outerClassIndex = outerClassIndex;
             this.index = index;
