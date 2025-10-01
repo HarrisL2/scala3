@@ -261,7 +261,7 @@ object projects:
     project = "scalatestplus-testng",
     sbtTestCommand = "test",
     sbtPublishCommand = "publishLocal",
-    scalacOptions = SbtCommunityProject.scalacOptions ++ List("-Yflexify-tasty"),
+    scalacOptions = SbtCommunityProject.scalacOptions ++ List("-Yflexify-tasty")
   )
 
   lazy val scalaXml = SbtCommunityProject(
