@@ -21,6 +21,7 @@ import dotty.tools.dotc.core.Contexts.*
 import dotty.tools.dotc.util.Spans.*
 import dotty.tools.dotc.report
 import dotty.tools.dotc.transform.ErasedInfo
+import dotty.tools.dotc.transform.MethodParameterReturnType
 
 
 /*
@@ -712,21 +713,11 @@ trait BCodeSkelBuilder extends BCodeHelpers {
     /*
      * must-single-thread
      */
-    def initJMethod(flags: Int, params: List[Symbol]): Unit = {
+    def initJMethod(flags: Int, params: List[Symbol], cnt: Int, paramType: List[dotty.tools.dotc.transform.TypeB], retType : dotty.tools.dotc.transform.TypeB): Unit = {
 
       val jgensig = getGenericSignature(methSymbol, claszSymbol)
       val (excs, others) = methSymbol.annotations.partition(_.symbol eq defn.ThrowsAnnot)
       val thrownExceptions: List[String] = getExceptions(excs)
-
-      // information for: MethodTypeParameterCount, MethodParameterType, MethodReturnType
-      val methodDeclarationAttrs = methSymbol.getAnnotation(defn.ErasurePreservationAnnot)
-      val (cnt, paramType, retType) = methodDeclarationAttrs match {
-        case Some(e : ErasedInfo) => (e.paramCount, e.paramType, e.returnType)
-        case _ => (0, List.empty[dotty.tools.dotc.transform.TypeB], dotty.tools.dotc.transform.TypeB.None)
-      }
-      //val typeBs = 
-      // println(s"GenBCode.genDefDef.initJMethod: ${methSymbol.show} ${methodDeclarationAttrs} " +
-      //   s"${cnt} ${paramType} ${retType}")
 
       val bytecodeName =
         if (isMethSymStaticCtor) CLASS_CONSTRUCTOR_NAME
@@ -865,7 +856,16 @@ trait BCodeSkelBuilder extends BCodeHelpers {
 
       // TODO needed? for(ann <- m.symbol.annotations) { ann.symbol.initialize }
       val paramSyms = params.map(_.symbol)
-      initJMethod(flags, paramSyms)
+      val methodDeclarationAttrs = dd.getAttachment(MethodParameterReturnType)
+      // information for: MethodTypeParameterCount, MethodParameterType, MethodReturnType
+      // val methodDeclarationAttrs = methSymbol.getAnnotation(defn.ErasurePreservationAnnot)
+      val (cnt: Int, paramType: List[dotty.tools.dotc.transform.TypeB], retType : dotty.tools.dotc.transform.TypeB) = methodDeclarationAttrs match {
+        case Some((paramCount, paramType, returnType)) => (paramCount, paramType, returnType)
+        case _ => (0, List.empty[dotty.tools.dotc.transform.TypeB], dotty.tools.dotc.transform.TypeB.None)
+      }
+      if (cnt != 0) println(s"GenBCode.genDefDef.initJMethod: ${methSymbol.show} ${methodDeclarationAttrs} " +
+        s"${cnt} ${paramType} ${retType}")
+      initJMethod(flags, paramSyms, cnt, paramType, retType)
 
 
       if (!isAbstractMethod && !isNative) {
