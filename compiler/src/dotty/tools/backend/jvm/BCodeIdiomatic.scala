@@ -452,6 +452,7 @@ trait BCodeIdiomatic {
 
     def emitInvoke(opcode: Int, owner: String, name: String, desc: String, itf: Boolean,
                    invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None): Unit = {
+      // println(s"emitInvoke $opcode $owner $name $desc itf=$itf invokeReturnType=$invokeReturnType instrTypeArgs=$instrTypeArgs")
       val node = new MethodInsnNode(opcode, owner, name, desc, itf)
       jmethod.instructions.add(node)
       invokeReturnType match {

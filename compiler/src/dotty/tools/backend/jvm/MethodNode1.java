@@ -31,11 +31,14 @@ import scala.tools.asm.tree.LabelNode;
 import scala.tools.asm.tree.LineNumberNode;
 import scala.tools.asm.tree.MethodNode;
 import scala.tools.asm.tree.AbstractInsnNode;
+import scala.tools.asm.tree.TypeInsnNode;
 /**
  * A subclass of {@link MethodNode} to customize the representation of
  * label nodes with {@link LabelNode1}.
  */
 public class MethodNode1 extends MethodNode {
+    private final boolean DEBUG = false;
+
     public Map<AbstractInsnNode, TypeHints.TypeB> invokeReturnTypeBs = new LinkedHashMap<>();
 
     public Map<AbstractInsnNode, List<TypeHints.TypeA>> instructionTypeArgTypeAs = new LinkedHashMap<>();
@@ -389,7 +392,7 @@ public class MethodNode1 extends MethodNode {
     public void setAttribtues(){
         if (!hasTypeHints()) return;
         genOffsetMap();
-        printOffsetMap();
+        if (DEBUG) printOffsetMap();
         List<TypeHints.TypeBHint> typeBHintList = new ArrayList<>();
         for (Map.Entry<AbstractInsnNode, TypeHints.TypeB> entry : invokeReturnTypeBs.entrySet()){
             AbstractInsnNode insn = entry.getKey();
@@ -434,5 +437,18 @@ public class MethodNode1 extends MethodNode {
             label.info = new LabelNode1(label);
         }
         return (LabelNode) label.info;
+    }
+
+    public void visitTypeInsn(int opcode, String type, List<TypeHints.TypeA> instrTypeA){
+        if (opcode == Opcodes.NEW && instrTypeA.size() > 0){
+            if (DEBUG) System.out.println("visitTypeInsn NEW with instrTypeA = " + instrTypeA);
+            AbstractInsnNode node = new TypeInsnNode(opcode, type);
+            instructions.add(node);
+            if (instrTypeA != null){
+                instructionTypeArgTypeAs.put(node, instrTypeA);
+            }
+        } else {
+            visitTypeInsn(opcode, type);
+        }
     }
 }
