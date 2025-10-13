@@ -6,6 +6,7 @@ import scala.language.unsafeNulls
 
 import scala.annotation.{switch, tailrec}
 import scala.collection.mutable.SortedMap
+import scala.jdk.CollectionConverters.*
 
 import scala.tools.asm
 import scala.tools.asm.{Handle, Opcodes}
@@ -781,6 +782,7 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
         // we have to 'simulate' it by DUPlicating the freshly created
         // instance (on JVM, <init> methods return VOID).
         case Apply(fun @ DesugaredSelect(New(tpt), nme.CONSTRUCTOR), args) =>
+          println(s"DEBUG: New(tpt = $tpt) at ${app.span}")
           val ctor = fun.symbol
           assert(ctor.isClassConstructor, s"'new' call to non-constructor: ${ctor.name}")
 
@@ -793,13 +795,19 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
 
             case rt: ClassBType =>
               assert(classBTypeFromSymbol(ctor.owner) == rt, s"Symbol ${ctor.owner.showFullName} is different from $rt")
-              mnode.visitTypeInsn(asm.Opcodes.NEW, rt.internalName)
-              bc.dup(generatedType)
+              val retType = app.getAttachment(InvokeReturnType)
+              val instrType = fun.getAttachment(InstructionTypeArguments)
+              val instrJType = instrType.getOrElse(Nil).map(bc.toJTypeA).asJava
+              // println(s"NEW with retType = $retType and instrType = $instrType")
+              mnode.visitTypeInsn(asm.Opcodes.NEW, rt.internalName, instrJType)
+              bc dup generatedType
               stack.push(rt)
               stack.push(rt)
               genLoadArguments(args, paramTKs(app))
               stack.pop(2)
-              genCallMethod(ctor, InvokeStyle.Special, app.span)
+              genCallMethod(ctor, InvokeStyle.Special, app.span, 
+                invokeReturnType = retType,
+                instrTypeArgs = instrType)
 
             case _ =>
               abort(s"Cannot instantiate $tpt of kind: $generatedType")
@@ -1457,10 +1465,8 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
           val staticDesc = MethodBType(ownerBType :: bmType.argumentTypes, bmType.returnType).descriptor
           val staticName = traitSuperAccessorName(method)
           bc.invokestatic(receiverName, staticName, staticDesc, isInterface)
-          // bc.invokestatic(receiverName, staticName, staticDesc, isInterface, invokeReturnType, instrTypeArgs)
         } else {
           bc.invokespecial(receiverName, jname, mdescr, isInterface)
-          // bc.invokespecial(receiverName, jname, mdescr, isInterface, invokeReturnType, instrTypeArgs)
         }
       } else {
         val opc = style match {
@@ -1468,9 +1474,7 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
           case Special => Opcodes.INVOKESPECIAL
           case Virtual => if (isInterface) Opcodes.INVOKEINTERFACE else Opcodes.INVOKEVIRTUAL
         }
-        // println("genCallMethod" + method.show + " : " + method.getAnnotation(defn.ErasurePreservationAnnot))
         bc.emitInvoke(opc, receiverName, jname, mdescr, isInterface, invokeReturnType, instrTypeArgs)
-        // bc.emitInvoke(opc, receiverName, jname, mdescr, isInterface, invokeReturnType, instrTypeArgs)
       }
 
       bmType.returnType

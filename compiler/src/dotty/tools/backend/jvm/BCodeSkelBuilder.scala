@@ -401,6 +401,8 @@ trait BCodeSkelBuilder extends BCodeHelpers {
        *  backend emits them as static).
        *  No code is needed for this module symbol.
        */
+      // println("for class " + claszSymbol + " adding fields:")
+      // println("has methods:" + claszSymbol.info.decls.filter(p => p.is(Method)).toList)
       for (f <- claszSymbol.info.decls.filter(p => p.isTerm && !p.is(Method))) {
         val javagensig = getGenericSignature(f, claszSymbol)
         val flags = javaFieldFlags(f)
@@ -416,6 +418,7 @@ trait BCodeSkelBuilder extends BCodeHelpers {
           null // no initial value
         )
         cnode.fields.add(jfield)
+        // println("Adding field:" + f + " to " + claszSymbol + "with annotations " + f.annotations)
         emitAnnotations(jfield, f.annotations)
       }
 
@@ -714,7 +717,7 @@ trait BCodeSkelBuilder extends BCodeHelpers {
      * must-single-thread
      */
     def initJMethod(flags: Int, params: List[Symbol], cnt: Int, paramType: List[dotty.tools.dotc.transform.TypeB], retType : dotty.tools.dotc.transform.TypeB): Unit = {
-
+      // println(s"emitting method $methSymbol for class $claszSymbol with flags $flags params $params cnt $cnt retType $retType")
       val jgensig = getGenericSignature(methSymbol, claszSymbol)
       val (excs, others) = methSymbol.annotations.partition(_.symbol eq defn.ThrowsAnnot)
       val thrownExceptions: List[String] = getExceptions(excs)
@@ -863,8 +866,8 @@ trait BCodeSkelBuilder extends BCodeHelpers {
         case Some((paramCount, paramType, returnType)) => (paramCount, paramType, returnType)
         case _ => (0, List.empty[dotty.tools.dotc.transform.TypeB], dotty.tools.dotc.transform.TypeB.None)
       }
-      if (cnt != 0) println(s"GenBCode.genDefDef.initJMethod: ${methSymbol.show} ${methodDeclarationAttrs} " +
-        s"${cnt} ${paramType} ${retType}")
+      // println(s"GenBCode.genDefDef.initJMethod: ${methSymbol.show} ${methodDeclarationAttrs} " +
+      //   s"${cnt} ${paramType} ${retType}")
       initJMethod(flags, paramSyms, cnt, paramType, retType)
 
 
