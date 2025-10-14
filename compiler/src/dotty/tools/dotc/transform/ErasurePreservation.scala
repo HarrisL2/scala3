@@ -150,8 +150,8 @@ class ErasurePreservation extends MiniPhase {
           methodToInfos(Nil, other.widenExpr, tree.symbol.paramSymss.head, tree.symbol.isConstructor)
       case mt: MethodType =>
         methodToInfos(mt.paramInfos, mt.resType, Nil, false)
-      // case tr: TypeRef =>
-      //   methodToInfos(Nil, tr, Nil, false)
+      case tr: TypeRef =>
+        methodToInfos(Nil, tr, Nil, false)
       // case et: ExprType =>
       //   ???
       case other =>
