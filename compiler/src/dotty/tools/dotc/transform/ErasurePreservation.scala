@@ -164,7 +164,25 @@ class ErasurePreservation extends MiniPhase {
 
   override def transformApply(tree: tpd.Apply)(using Context): tpd.Tree = trace(i"transfromApply ${tree}") {
     val outers = getOuterParamss(ctx.owner, false)
-    tree.putAttachment(InvokeReturnType, toReturnTypeB(tree.tpe, outers))
+    toReturnTypeB(tree.tpe, outers) match
+      case TypeB.None => 
+      case other => tree.putAttachment(InvokeReturnType, other)
+    tree
+  }
+
+  override def transformIdent(tree: tpd.Ident)(using Context): tpd.Tree = trace(i"transfromIdent ${tree}, ${tree.tpe.widen}") {
+    val outers = getOuterParamss(ctx.owner, false)
+    toReturnTypeB(tree.tpe.widen, outers) match
+      case TypeB.None => 
+      case other => tree.putAttachment(InvokeReturnType, other)
+    tree
+  }
+  
+  override def transformSelect(tree: tpd.Select)(using Context): tpd.Tree = trace(i"transfromSelect ${tree}, ${tree.tpe.widen}") {
+    val outers = getOuterParamss(ctx.owner, false)
+    toReturnTypeB(tree.tpe.widen, outers) match
+      case TypeB.None => 
+      case other => tree.putAttachment(InvokeReturnType, other)
     tree
   }
 
