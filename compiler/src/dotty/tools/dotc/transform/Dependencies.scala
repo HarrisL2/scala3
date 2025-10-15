@@ -223,6 +223,8 @@ abstract class Dependencies(root: ast.tpd.Tree, @constructorOnly rootContext: Co
            * the dynamic and static dependencies between ES modules, which is forbidden.
            */
           ctx.settings.scalajs.value && encClass.isSubClass(jsdefn.DynamicImportThunkClass)
+        ||
+          local.defTree.hasAttachment(MethodParameterReturnType)
 
       logicOwner(sym) = if preferEncClass then encClass else local.enclosingPackageClass
 
