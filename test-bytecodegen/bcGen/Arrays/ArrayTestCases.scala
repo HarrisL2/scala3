@@ -2,7 +2,7 @@ package bcGen.Arrays
 
 import bcGen.Arrays.ArrayTestLib
 
-object testArray{
+object arrayTestCases{
   val size = 1000
   val maxInt = 10000
   val rng = new scala.util.Random(1234)

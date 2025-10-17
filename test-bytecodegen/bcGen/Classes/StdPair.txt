@@ -1,0 +1,287 @@
+Classfile /u0/j523xu/scala3/out/bcGen/Classes/Pair.class
+  Last modified Oct 16, 2025; size 1762 bytes
+  SHA-256 checksum ba938ab8909f3e8f870fa512f7b045049a74650b7ec56baae6820f3b7357fae6
+  Compiled from "Pair.scala"
+public class bcGen.Classes.Pair<K extends java.lang.Object, V extends java.lang.Object> extends java.lang.Object
+  minor version: 0
+  major version: 52
+  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+  this_class: #2                          // bcGen/Classes/Pair
+  super_class: #5                         // java/lang/Object
+  interfaces: 0, fields: 2, methods: 9, attributes: 5
+Constant pool:
+   #1 = Utf8               bcGen/Classes/Pair
+   #2 = Class              #1             // bcGen/Classes/Pair
+   #3 = Utf8               <K:Ljava/lang/Object;V:Ljava/lang/Object;>Ljava/lang/Object;
+   #4 = Utf8               java/lang/Object
+   #5 = Class              #4             // java/lang/Object
+   #6 = Utf8               Pair.scala
+   #7 = Utf8               k
+   #8 = Utf8               Ljava/lang/Object;
+   #9 = Utf8               TK;
+  #10 = Utf8               v
+  #11 = Utf8               TV;
+  #12 = Utf8               <init>
+  #13 = Utf8               (Ljava/lang/Object;Ljava/lang/Object;)V
+  #14 = Utf8               (TK;TV;)V
+  #15 = NameAndType        #7:#8          // k:Ljava/lang/Object;
+  #16 = Fieldref           #2.#15         // bcGen/Classes/Pair.k:Ljava/lang/Object;
+  #17 = NameAndType        #10:#8         // v:Ljava/lang/Object;
+  #18 = Fieldref           #2.#17         // bcGen/Classes/Pair.v:Ljava/lang/Object;
+  #19 = Utf8               ()V
+  #20 = NameAndType        #12:#19        // "<init>":()V
+  #21 = Methodref          #5.#20         // java/lang/Object."<init>":()V
+  #22 = Utf8               this
+  #23 = Utf8               LbcGen/Classes/Pair;
+  #24 = Utf8               ()Ljava/lang/Object;
+  #25 = Utf8               ()TK;
+  #26 = Utf8               k_$eq
+  #27 = Utf8               (Ljava/lang/Object;)V
+  #28 = Utf8               (TK;)V
+  #29 = Utf8               x$1
+  #30 = Utf8               ()TV;
+  #31 = Utf8               v_$eq
+  #32 = Utf8               (TV;)V
+  #33 = Utf8               getKey
+  #34 = NameAndType        #7:#24         // k:()Ljava/lang/Object;
+  #35 = Methodref          #2.#34         // bcGen/Classes/Pair.k:()Ljava/lang/Object;
+  #36 = Utf8               getValue
+  #37 = NameAndType        #10:#24        // v:()Ljava/lang/Object;
+  #38 = Methodref          #2.#37         // bcGen/Classes/Pair.v:()Ljava/lang/Object;
+  #39 = Utf8               setKey
+  #40 = Utf8               newKey
+  #41 = NameAndType        #26:#27        // k_$eq:(Ljava/lang/Object;)V
+  #42 = Methodref          #2.#41         // bcGen/Classes/Pair.k_$eq:(Ljava/lang/Object;)V
+  #43 = Utf8               setValue
+  #44 = Utf8               newValue
+  #45 = NameAndType        #31:#27        // v_$eq:(Ljava/lang/Object;)V
+  #46 = Methodref          #2.#45         // bcGen/Classes/Pair.v_$eq:(Ljava/lang/Object;)V
+  #47 = Utf8               Signature
+  #48 = Utf8               FieldType
+  #49 = Utf8               Code
+  #50 = Utf8               LineNumberTable
+  #51 = Utf8               LocalVariableTable
+  #52 = Utf8               MethodParameters
+  #53 = Utf8               MethodParameterType
+  #54 = Utf8               MethodTypeParameterCount
+  #55 = Utf8               MethodReturnType
+  #56 = Utf8               InvokeReturnType
+  #57 = Utf8               SourceFile
+  #58 = Utf8               TASTY
+  #59 = Utf8               ClassTypeParameterCount
+  #60 = Utf8               Scala
+{
+  private K k;
+    descriptor: Ljava/lang/Object;
+    flags: (0x0002) ACC_PRIVATE
+    Signature: #9                           // TK;
+      FieldType: length = 0x5 (unknown attribute)
+       4B 00 00 00 00
+
+  private V v;
+    descriptor: Ljava/lang/Object;
+    flags: (0x0002) ACC_PRIVATE
+    Signature: #11                          // TV;
+      FieldType: length = 0x5 (unknown attribute)
+       4B 00 00 00 01
+
+  public bcGen.Classes.Pair(K, V);
+    descriptor: (Ljava/lang/Object;Ljava/lang/Object;)V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=3, args_size=3
+         0: aload_0
+         1: aload_1
+         2: putfield      #16                 // Field k:Ljava/lang/Object;
+         5: aload_0
+         6: aload_2
+         7: putfield      #18                 // Field v:Ljava/lang/Object;
+        10: aload_0
+        11: invokespecial #21                 // Method java/lang/Object."<init>":()V
+        14: return
+      LineNumberTable:
+        line 3: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      15     0  this   LbcGen/Classes/Pair;
+            0      15     1     k   Ljava/lang/Object;
+            0      15     2     v   Ljava/lang/Object;
+    Signature: #14                          // (TK;TV;)V
+    MethodParameters:
+      Name                           Flags
+      k                              final
+      v                              final
+      MethodParameterType: length = 0xC (unknown attribute)
+       00 02 4D 00 00 00 00 4D 00 00 00 01
+      MethodTypeParameterCount: length = 0x2 (unknown attribute)
+       00 02
+
+  public K k();
+    descriptor: ()Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: getfield      #16                 // Field k:Ljava/lang/Object;
+         4: areturn
+      LineNumberTable:
+        line 3: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   LbcGen/Classes/Pair;
+    Signature: #25                          // ()TK;
+      MethodReturnType: length = 0x5 (unknown attribute)
+       4B 00 00 00 00
+
+  public void k_$eq(K);
+    descriptor: (Ljava/lang/Object;)V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0
+         1: aload_1
+         2: putfield      #16                 // Field k:Ljava/lang/Object;
+         5: return
+      LineNumberTable:
+        line 3: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       6     0  this   LbcGen/Classes/Pair;
+            0       6     1   x$1   Ljava/lang/Object;
+    Signature: #28                          // (TK;)V
+    MethodParameters:
+      Name                           Flags
+      x$1                            final
+      MethodParameterType: length = 0x7 (unknown attribute)
+       00 01 4B 00 00 00 00
+
+  public V v();
+    descriptor: ()Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: getfield      #18                 // Field v:Ljava/lang/Object;
+         4: areturn
+      LineNumberTable:
+        line 3: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   LbcGen/Classes/Pair;
+    Signature: #30                          // ()TV;
+      MethodReturnType: length = 0x5 (unknown attribute)
+       4B 00 00 00 01
+
+  public void v_$eq(V);
+    descriptor: (Ljava/lang/Object;)V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0
+         1: aload_1
+         2: putfield      #18                 // Field v:Ljava/lang/Object;
+         5: return
+      LineNumberTable:
+        line 3: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       6     0  this   LbcGen/Classes/Pair;
+            0       6     1   x$1   Ljava/lang/Object;
+    Signature: #32                          // (TV;)V
+    MethodParameters:
+      Name                           Flags
+      x$1                            final
+      MethodParameterType: length = 0x7 (unknown attribute)
+       00 01 4B 00 00 00 01
+
+  public K getKey();
+    descriptor: ()Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokevirtual #35                 // Method k:()Ljava/lang/Object;
+         4: areturn
+      LineNumberTable:
+        line 4: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   LbcGen/Classes/Pair;
+    Signature: #25                          // ()TK;
+      InvokeReturnType: length = 0x9 (unknown attribute)
+       00 01 00 01 4B 00 00 00 00
+      MethodReturnType: length = 0x5 (unknown attribute)
+       4B 00 00 00 00
+
+  public V getValue();
+    descriptor: ()Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokevirtual #38                 // Method v:()Ljava/lang/Object;
+         4: areturn
+      LineNumberTable:
+        line 6: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   LbcGen/Classes/Pair;
+    Signature: #30                          // ()TV;
+      InvokeReturnType: length = 0x9 (unknown attribute)
+       00 01 00 01 4B 00 00 00 01
+      MethodReturnType: length = 0x5 (unknown attribute)
+       4B 00 00 00 01
+
+  public void setKey(K);
+    descriptor: (Ljava/lang/Object;)V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0
+         1: aload_1
+         2: invokevirtual #42                 // Method k_$eq:(Ljava/lang/Object;)V
+         5: return
+      LineNumberTable:
+        line 9: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       6     0  this   LbcGen/Classes/Pair;
+            0       6     1 newKey   Ljava/lang/Object;
+    Signature: #28                          // (TK;)V
+    MethodParameters:
+      Name                           Flags
+      newKey                         final
+      MethodParameterType: length = 0x7 (unknown attribute)
+       00 01 4B 00 00 00 00
+
+  public void setValue(V);
+    descriptor: (Ljava/lang/Object;)V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0
+         1: aload_1
+         2: invokevirtual #46                 // Method v_$eq:(Ljava/lang/Object;)V
+         5: return
+      LineNumberTable:
+        line 12: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       6     0  this   LbcGen/Classes/Pair;
+            0       6     1 newValue   Ljava/lang/Object;
+    Signature: #32                          // (TV;)V
+    MethodParameters:
+      Name                           Flags
+      newValue                       final
+      MethodParameterType: length = 0x7 (unknown attribute)
+       00 01 4B 00 00 00 01
+}
+Signature: #3                           // <K:Ljava/lang/Object;V:Ljava/lang/Object;>Ljava/lang/Object;
+SourceFile: "Pair.scala"
+  TASTY: length = 0x10 (unknown attribute)
+   00 4F 6D 8E BE 98 D1 D5 00 E7 6B 61 CB F5 12 26
+
+  ClassTypeParameterCount: length = 0x2 (unknown attribute)
+   00 02
+  Scala: length = 0x0 (unknown attribute)
+
