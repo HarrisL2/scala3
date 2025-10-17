@@ -22,6 +22,7 @@ import dotty.tools.dotc.util.Spans.*
 import dotty.tools.dotc.report
 import dotty.tools.dotc.transform.ErasedInfo
 import dotty.tools.dotc.transform.MethodParameterReturnType
+import dotty.tools.backend.jvm.attributes.*
 
 
 /*
@@ -291,7 +292,21 @@ trait BCodeSkelBuilder extends BCodeHelpers {
         }
       if (optSerial.isDefined) { addSerialVUID(optSerial.get, cnode)}
 
-      addClassFields()
+      val templ = cd.rhs.asInstanceOf[Template]
+      val classTypeParamCnt = 
+        templ.constr.getAttachment(MethodParameterReturnType) match
+          case None => 0
+          case Some(cnt, _, _) => cnt
+      //  println(s"Class ${claszSymbol} has ${classTypeParamCnt} type parameters")
+      if (classTypeParamCnt > 0) cnode.visitAttribute(new ClassTypeParameterCount(classTypeParamCnt))
+      var fieldAttrs: Map[Symbol, (Int, List[dotty.tools.dotc.transform.TypeB], dotty.tools.dotc.transform.TypeB)] = Map.empty
+      fieldAttrs =
+        templ.body.collect {
+          case vd: tpd.ValDef => 
+            vd.getAttachment(MethodParameterReturnType).map(v => vd.symbol -> v)
+        }.flatten.toMap
+
+      addClassFields(fieldAttrs)
       gen(cd.rhs)
 
       if (AsmUtils.traceClassEnabled && cnode.name.contains(AsmUtils.traceClassPattern))
@@ -393,7 +408,7 @@ trait BCodeSkelBuilder extends BCodeHelpers {
       clinit.visitEnd()
     }
 
-    def addClassFields(): Unit = {
+    def addClassFields(fieldAttrs: Map[Symbol, (Int, List[dotty.tools.dotc.transform.TypeB], dotty.tools.dotc.transform.TypeB)] = Map.empty): Unit = {
       /*  Non-method term members are fields, except for module members. Module
        *  members can only happen on .NET (no flatten) for inner traits. There,
        *  a module symbol is generated (transformInfo in mixin) which is used
@@ -401,8 +416,7 @@ trait BCodeSkelBuilder extends BCodeHelpers {
        *  backend emits them as static).
        *  No code is needed for this module symbol.
        */
-      // println("for class " + claszSymbol + " adding fields:")
-      // println("has methods:" + claszSymbol.info.decls.filter(p => p.is(Method)).toList)
+      // println("for class " + claszSymbol + " adding fields attrs:" + fieldAttrs)
       for (f <- claszSymbol.info.decls.filter(p => p.isTerm && !p.is(Method))) {
         val javagensig = getGenericSignature(f, claszSymbol)
         val flags = javaFieldFlags(f)
@@ -418,8 +432,8 @@ trait BCodeSkelBuilder extends BCodeHelpers {
           null // no initial value
         )
         cnode.fields.add(jfield)
-        // println("Adding field:" + f + " to " + claszSymbol + "with annotations " + f.annotations)
-        emitAnnotations(jfield, f.annotations)
+        // println("Adding field:" + f + " to " + claszSymbol + " with annotations " + fieldAttrs.get(f))
+        emitAnnotations(jfield, f.annotations, fieldAttrs.get(f))
       }
 
     } // end of method addClassFields()

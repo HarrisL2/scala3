@@ -775,14 +775,20 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
           stack.push(superQualTK)
           genLoadArguments(args, paramTKs(app))
           stack.pop()
-          generatedType = genCallMethod(fun.symbol, InvokeStyle.Super, app.span)
+          val invokeReturnType = app.getAttachment(InvokeReturnType)
+          assert (invokeReturnType == None, s"Unexpected InvokeReturnType attachment on super call: $invokeReturnType")
+          val instrTypeArgs = app.getAttachment(InstructionTypeArguments)
+          // println("Super:" + fun)
+          // println(s"DEBUG: Super($superQual), invokeReturnType = $invokeReturnType, instrTypeArgs = $instrTypeArgs")
+          generatedType = genCallMethod(fun.symbol, InvokeStyle.Super, app.span, invokeReturnType = invokeReturnType, 
+            instrTypeArgs = instrTypeArgs)
 
         // 'new' constructor call: Note: since constructors are
         // thought to return an instance of what they construct,
         // we have to 'simulate' it by DUPlicating the freshly created
         // instance (on JVM, <init> methods return VOID).
         case Apply(fun @ DesugaredSelect(New(tpt), nme.CONSTRUCTOR), args) =>
-          println(s"DEBUG: New(tpt = $tpt) at ${app.span}")
+          // println(s"DEBUG: New(tpt = $tpt) at ${app.span}")
           val ctor = fun.symbol
           assert(ctor.isClassConstructor, s"'new' call to non-constructor: ${ctor.name}")
 
@@ -879,11 +885,21 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
                   defn.ObjectClass
                 } else qualSym
               }
-              // println("GenApply.case Apply:" + fun)
-              // println(s"    returnType: ${app.getAttachment(InvokeReturnType)} InstructionTypeArg: ${fun.getAttachment(InstructionTypeArguments)}")
+              // println("GenApply.case Apply for " + sym + " in " + sym.owner)
+              // println(s"--fun: $fun, attachments: ${fun.getAttachment(InvokeReturnType)} : ${fun.getAttachment(InstructionTypeArguments)}")
+              // println(s"--app: $app, attachments: ${app.getAttachment(InvokeReturnType)} : ${app.getAttachment(InstructionTypeArguments)}")
+              val invokeReturnType = fun.getAttachment(InvokeReturnType) match {
+                case None => app.getAttachment(InvokeReturnType)
+                case some => some
+              }
+              val instrTypeArgs = fun.getAttachment(InstructionTypeArguments) match {
+                case None => app.getAttachment(InstructionTypeArguments)
+                case some => some
+              }
+              //println(s"--returnType: ${app.getAttachment(InvokeReturnType)} InstructionTypeArg: ${fun.getAttachment(InstructionTypeArguments)}")
               // InvokeReturnType, InstructionTypeArguments are fetched here
-              generatedType = genCallMethod(sym, invokeStyle, app.span, receiverClass, 
-                                            app.getAttachment(InvokeReturnType), fun.getAttachment(InstructionTypeArguments))
+              generatedType = genCallMethod(sym, invokeStyle, app.span, receiverClass,
+                                            invokeReturnType, instrTypeArgs)
             }
           }
       }
@@ -1464,9 +1480,9 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
           bmType.argumentTypes.copyToArray(args, 1)
           val staticDesc = MethodBType(ownerBType :: bmType.argumentTypes, bmType.returnType).descriptor
           val staticName = traitSuperAccessorName(method)
-          bc.invokestatic(receiverName, staticName, staticDesc, isInterface)
+          bc.invokestatic(receiverName, staticName, staticDesc, isInterface, invokeReturnType, instrTypeArgs)
         } else {
-          bc.invokespecial(receiverName, jname, mdescr, isInterface)
+          bc.invokespecial(receiverName, jname, mdescr, isInterface, invokeReturnType, instrTypeArgs)
         }
       } else {
         val opc = style match {
