@@ -1,0 +1,147 @@
+Classfile /u0/j523xu/scala3/out/bcGen/Classes/Nested1.class
+  Last modified Oct 16, 2025; size 1056 bytes
+  SHA-256 checksum ced1afda8106a4f638ed50c00e9a1387e06cf72ef18a23734c290577cc629008
+  Compiled from "Nested1.scala"
+public class bcGen.Classes.Nested1<T extends java.lang.Object> extends java.lang.Object
+  minor version: 0
+  major version: 52
+  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+  this_class: #2                          // bcGen/Classes/Nested1
+  super_class: #5                         // java/lang/Object
+  interfaces: 0, fields: 2, methods: 3, attributes: 6
+Constant pool:
+   #1 = Utf8               bcGen/Classes/Nested1
+   #2 = Class              #1             // bcGen/Classes/Nested1
+   #3 = Utf8               <T:Ljava/lang/Object;>Ljava/lang/Object;
+   #4 = Utf8               java/lang/Object
+   #5 = Class              #4             // java/lang/Object
+   #6 = Utf8               Nested1.scala
+   #7 = Utf8               bcGen/Classes/Nested1$Inner1
+   #8 = Class              #7             // bcGen/Classes/Nested1$Inner1
+   #9 = Utf8               Inner1
+  #10 = Utf8               bcGen/Classes/Nested1$Inner1_1
+  #11 = Class              #10            // bcGen/Classes/Nested1$Inner1_1
+  #12 = Utf8               Inner1_1
+  #13 = Utf8               initOuterT
+  #14 = Utf8               Ljava/lang/Object;
+  #15 = Utf8               TT;
+  #16 = Utf8               outer1T
+  #17 = Utf8               <init>
+  #18 = Utf8               (Ljava/lang/Object;)V
+  #19 = Utf8               (TT;)V
+  #20 = NameAndType        #13:#14        // initOuterT:Ljava/lang/Object;
+  #21 = Fieldref           #2.#20         // bcGen/Classes/Nested1.initOuterT:Ljava/lang/Object;
+  #22 = Utf8               ()V
+  #23 = NameAndType        #17:#22        // "<init>":()V
+  #24 = Methodref          #5.#23         // java/lang/Object."<init>":()V
+  #25 = NameAndType        #16:#14        // outer1T:Ljava/lang/Object;
+  #26 = Fieldref           #2.#25         // bcGen/Classes/Nested1.outer1T:Ljava/lang/Object;
+  #27 = Utf8               this
+  #28 = Utf8               LbcGen/Classes/Nested1;
+  #29 = Utf8               ()Ljava/lang/Object;
+  #30 = Utf8               ()TT;
+  #31 = Utf8               Signature
+  #32 = Utf8               FieldType
+  #33 = Utf8               Code
+  #34 = Utf8               LineNumberTable
+  #35 = Utf8               LocalVariableTable
+  #36 = Utf8               MethodParameters
+  #37 = Utf8               MethodParameterType
+  #38 = Utf8               MethodTypeParameterCount
+  #39 = Utf8               MethodReturnType
+  #40 = Utf8               InnerClasses
+  #41 = Utf8               SourceFile
+  #42 = Utf8               TASTY
+  #43 = Utf8               ClassTypeParameterCount
+  #44 = Utf8               Scala
+{
+  private final T initOuterT;
+    descriptor: Ljava/lang/Object;
+    flags: (0x0012) ACC_PRIVATE, ACC_FINAL
+    Signature: #15                          // TT;
+      FieldType: length = 0x5 (unknown attribute)
+       4B 00 00 00 00
+
+  private final T outer1T;
+    descriptor: Ljava/lang/Object;
+    flags: (0x0012) ACC_PRIVATE, ACC_FINAL
+    Signature: #15                          // TT;
+      FieldType: length = 0x5 (unknown attribute)
+       4B 00 00 00 00
+
+  public bcGen.Classes.Nested1(T);
+    descriptor: (Ljava/lang/Object;)V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0
+         1: aload_1
+         2: putfield      #21                 // Field initOuterT:Ljava/lang/Object;
+         5: aload_0
+         6: invokespecial #24                 // Method java/lang/Object."<init>":()V
+         9: aload_0
+        10: aload_1
+        11: putfield      #26                 // Field outer1T:Ljava/lang/Object;
+        14: return
+      LineNumberTable:
+        line 3: 0
+        line 4: 9
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      15     0  this   LbcGen/Classes/Nested1;
+            0      15     1 initOuterT   Ljava/lang/Object;
+    Signature: #19                          // (TT;)V
+    MethodParameters:
+      Name                           Flags
+      initOuterT                     final
+      MethodParameterType: length = 0x7 (unknown attribute)
+       00 01 4D 00 00 00 00
+      MethodTypeParameterCount: length = 0x2 (unknown attribute)
+       00 01
+
+  public T initOuterT();
+    descriptor: ()Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: getfield      #21                 // Field initOuterT:Ljava/lang/Object;
+         4: areturn
+      LineNumberTable:
+        line 3: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   LbcGen/Classes/Nested1;
+    Signature: #30                          // ()TT;
+      MethodReturnType: length = 0x5 (unknown attribute)
+       4B 00 00 00 00
+
+  public T outer1T();
+    descriptor: ()Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: getfield      #26                 // Field outer1T:Ljava/lang/Object;
+         4: areturn
+      LineNumberTable:
+        line 4: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   LbcGen/Classes/Nested1;
+    Signature: #30                          // ()TT;
+      MethodReturnType: length = 0x5 (unknown attribute)
+       4B 00 00 00 00
+}
+InnerClasses:
+  public #9= #8 of #2;                    // Inner1=class bcGen/Classes/Nested1$Inner1 of class bcGen/Classes/Nested1
+  public #12= #11 of #2;                  // Inner1_1=class bcGen/Classes/Nested1$Inner1_1 of class bcGen/Classes/Nested1
+Signature: #3                           // <T:Ljava/lang/Object;>Ljava/lang/Object;
+SourceFile: "Nested1.scala"
+  TASTY: length = 0x10 (unknown attribute)
+   00 0C 77 8F 00 BD 74 B6 00 00 47 A6 92 EF 9A 1D
+
+  ClassTypeParameterCount: length = 0x2 (unknown attribute)
+   00 01
+  Scala: length = 0x0 (unknown attribute)
+

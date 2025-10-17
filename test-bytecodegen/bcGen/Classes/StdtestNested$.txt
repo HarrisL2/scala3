@@ -1,0 +1,307 @@
+Classfile /u0/j523xu/scala3/out/bcGen/Classes/testNested$.class
+  Last modified Oct 16, 2025; size 2567 bytes
+  SHA-256 checksum 6312fd94931e54c06e7000c45ebd5ed1f894dfff43c5c051b9439746c8d0f655
+  Compiled from "Nested1.scala"
+public final class bcGen.Classes.testNested$ implements java.io.Serializable
+  minor version: 0
+  major version: 52
+  flags: (0x0031) ACC_PUBLIC, ACC_FINAL, ACC_SUPER
+  this_class: #2                          // bcGen/Classes/testNested$
+  super_class: #4                         // java/lang/Object
+  interfaces: 1, fields: 4, methods: 8, attributes: 3
+Constant pool:
+    #1 = Utf8               bcGen/Classes/testNested$
+    #2 = Class              #1            // bcGen/Classes/testNested$
+    #3 = Utf8               java/lang/Object
+    #4 = Class              #3            // java/lang/Object
+    #5 = Utf8               java/io/Serializable
+    #6 = Class              #5            // java/io/Serializable
+    #7 = Utf8               Nested1.scala
+    #8 = Utf8               bcGen/Classes/Nested1$Inner1
+    #9 = Class              #8            // bcGen/Classes/Nested1$Inner1
+   #10 = Utf8               bcGen/Classes/Nested1
+   #11 = Class              #10           // bcGen/Classes/Nested1
+   #12 = Utf8               Inner1
+   #13 = Utf8               bcGen/Classes/Nested1$Inner1$Inner2_0
+   #14 = Class              #13           // bcGen/Classes/Nested1$Inner1$Inner2_0
+   #15 = Utf8               Inner2_0
+   #16 = Utf8               intOuter1
+   #17 = Utf8               LbcGen/Classes/Nested1;
+   #18 = Utf8               LbcGen/Classes/Nested1<Ljava/lang/Object;>;
+   #19 = Utf8               refInner1
+   #20 = Utf8               LbcGen/Classes/Nested1$Inner1;
+   #21 = Utf8               LbcGen/Classes/Nested1$Inner1<Ljava/lang/String;>;
+   #22 = Utf8               doubleInner2_0
+   #23 = Utf8               LbcGen/Classes/Nested1$Inner1$Inner2_0;
+   #24 = Utf8               LbcGen/Classes/Nested1$Inner1$Inner2_0<Ljava/lang/Object;>;
+   #25 = Utf8               MODULE$
+   #26 = Utf8               LbcGen/Classes/testNested$;
+   #27 = Utf8               <init>
+   #28 = Utf8               ()V
+   #29 = NameAndType        #27:#28       // "<init>":()V
+   #30 = Methodref          #4.#29        // java/lang/Object."<init>":()V
+   #31 = Utf8               this
+   #32 = Utf8               <clinit>
+   #33 = Methodref          #2.#29        // bcGen/Classes/testNested$."<init>":()V
+   #34 = NameAndType        #25:#26       // MODULE$:LbcGen/Classes/testNested$;
+   #35 = Fieldref           #2.#34        // bcGen/Classes/testNested$.MODULE$:LbcGen/Classes/testNested$;
+   #36 = Utf8               scala/runtime/BoxesRunTime
+   #37 = Class              #36           // scala/runtime/BoxesRunTime
+   #38 = Utf8               boxToInteger
+   #39 = Utf8               (I)Ljava/lang/Integer;
+   #40 = NameAndType        #38:#39       // boxToInteger:(I)Ljava/lang/Integer;
+   #41 = Methodref          #37.#40       // scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+   #42 = Utf8               (Ljava/lang/Object;)V
+   #43 = NameAndType        #27:#42       // "<init>":(Ljava/lang/Object;)V
+   #44 = Methodref          #11.#43       // bcGen/Classes/Nested1."<init>":(Ljava/lang/Object;)V
+   #45 = NameAndType        #16:#17       // intOuter1:LbcGen/Classes/Nested1;
+   #46 = Fieldref           #2.#45        // bcGen/Classes/testNested$.intOuter1:LbcGen/Classes/Nested1;
+   #47 = Utf8               ()LbcGen/Classes/Nested1;
+   #48 = NameAndType        #16:#47       // intOuter1:()LbcGen/Classes/Nested1;
+   #49 = Methodref          #2.#48        // bcGen/Classes/testNested$.intOuter1:()LbcGen/Classes/Nested1;
+   #50 = Utf8               Hello
+   #51 = String             #50           // Hello
+   #52 = Utf8               outer1T
+   #53 = Utf8               ()Ljava/lang/Object;
+   #54 = NameAndType        #52:#53       // outer1T:()Ljava/lang/Object;
+   #55 = Methodref          #11.#54       // bcGen/Classes/Nested1.outer1T:()Ljava/lang/Object;
+   #56 = Utf8               (LbcGen/Classes/Nested1;Ljava/lang/Object;Ljava/lang/Object;)V
+   #57 = NameAndType        #27:#56       // "<init>":(LbcGen/Classes/Nested1;Ljava/lang/Object;Ljava/lang/Object;)V
+   #58 = Methodref          #9.#57        // bcGen/Classes/Nested1$Inner1."<init>":(LbcGen/Classes/Nested1;Ljava/lang/Object;Ljava/lang/Object;)V
+   #59 = NameAndType        #19:#20       // refInner1:LbcGen/Classes/Nested1$Inner1;
+   #60 = Fieldref           #2.#59        // bcGen/Classes/testNested$.refInner1:LbcGen/Classes/Nested1$Inner1;
+   #61 = Utf8               ()LbcGen/Classes/Nested1$Inner1;
+   #62 = NameAndType        #19:#61       // refInner1:()LbcGen/Classes/Nested1$Inner1;
+   #63 = Methodref          #2.#62        // bcGen/Classes/testNested$.refInner1:()LbcGen/Classes/Nested1$Inner1;
+   #64 = Double             3.14d
+   #66 = Utf8               boxToDouble
+   #67 = Utf8               (D)Ljava/lang/Double;
+   #68 = NameAndType        #66:#67       // boxToDouble:(D)Ljava/lang/Double;
+   #69 = Methodref          #37.#68       // scala/runtime/BoxesRunTime.boxToDouble:(D)Ljava/lang/Double;
+   #70 = Utf8               (LbcGen/Classes/Nested1$Inner1;Ljava/lang/Object;)V
+   #71 = NameAndType        #27:#70       // "<init>":(LbcGen/Classes/Nested1$Inner1;Ljava/lang/Object;)V
+   #72 = Methodref          #14.#71       // bcGen/Classes/Nested1$Inner1$Inner2_0."<init>":(LbcGen/Classes/Nested1$Inner1;Ljava/lang/Object;)V
+   #73 = NameAndType        #22:#23       // doubleInner2_0:LbcGen/Classes/Nested1$Inner1$Inner2_0;
+   #74 = Fieldref           #2.#73        // bcGen/Classes/testNested$.doubleInner2_0:LbcGen/Classes/Nested1$Inner1$Inner2_0;
+   #75 = Utf8               writeReplace
+   #76 = Utf8               scala/runtime/ModuleSerializationProxy
+   #77 = Class              #76           // scala/runtime/ModuleSerializationProxy
+   #78 = Utf8               (Ljava/lang/Class;)V
+   #79 = NameAndType        #27:#78       // "<init>":(Ljava/lang/Class;)V
+   #80 = Methodref          #77.#79       // scala/runtime/ModuleSerializationProxy."<init>":(Ljava/lang/Class;)V
+   #81 = Utf8               ()LbcGen/Classes/Nested1<Ljava/lang/Object;>;
+   #82 = Utf8               ()LbcGen/Classes/Nested1$Inner1<Ljava/lang/String;>;
+   #83 = Utf8               ()LbcGen/Classes/Nested1$Inner1$Inner2_0;
+   #84 = Utf8               ()LbcGen/Classes/Nested1$Inner1$Inner2_0<Ljava/lang/Object;>;
+   #85 = Utf8               testNested1
+   #86 = Utf8               scala/Predef$
+   #87 = Class              #86           // scala/Predef$
+   #88 = Utf8               Lscala/Predef$;
+   #89 = NameAndType        #25:#88       // MODULE$:Lscala/Predef$;
+   #90 = Fieldref           #87.#89       // scala/Predef$.MODULE$:Lscala/Predef$;
+   #91 = NameAndType        #22:#83       // doubleInner2_0:()LbcGen/Classes/Nested1$Inner1$Inner2_0;
+   #92 = Methodref          #2.#91        // bcGen/Classes/testNested$.doubleInner2_0:()LbcGen/Classes/Nested1$Inner1$Inner2_0;
+   #93 = Utf8               World
+   #94 = String             #93           // World
+   #95 = Double             2.71d
+   #97 = Utf8               foo
+   #98 = Utf8               (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/String;
+   #99 = NameAndType        #97:#98       // foo:(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/String;
+  #100 = Methodref          #14.#99       // bcGen/Classes/Nested1$Inner1$Inner2_0.foo:(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/String;
+  #101 = Utf8               println
+  #102 = NameAndType        #101:#42      // println:(Ljava/lang/Object;)V
+  #103 = Methodref          #87.#102      // scala/Predef$.println:(Ljava/lang/Object;)V
+  #104 = Utf8               testNested2
+  #105 = Utf8               bar
+  #106 = Utf8               ()Ljava/lang/String;
+  #107 = NameAndType        #105:#106     // bar:()Ljava/lang/String;
+  #108 = Methodref          #14.#107      // bcGen/Classes/Nested1$Inner1$Inner2_0.bar:()Ljava/lang/String;
+  #109 = Utf8               Signature
+  #110 = Utf8               Code
+  #111 = Utf8               LineNumberTable
+  #112 = Utf8               LocalVariableTable
+  #113 = Utf8               InstructionTypeArguments
+  #114 = Utf8               InnerClasses
+  #115 = Utf8               SourceFile
+  #116 = Utf8               Scala
+{
+  private static final bcGen.Classes.Nested1<java.lang.Object> intOuter1;
+    descriptor: LbcGen/Classes/Nested1;
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #18                          // LbcGen/Classes/Nested1<Ljava/lang/Object;>;
+
+  private static final bcGen.Classes.Nested1$Inner1<java.lang.String> refInner1;
+    descriptor: LbcGen/Classes/Nested1$Inner1;
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #21                          // LbcGen/Classes/Nested1$Inner1<Ljava/lang/String;>;
+
+  private static final bcGen.Classes.Nested1$Inner1$Inner2_0<java.lang.Object> doubleInner2_0;
+    descriptor: LbcGen/Classes/Nested1$Inner1$Inner2_0;
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #24                          // LbcGen/Classes/Nested1$Inner1$Inner2_0<Ljava/lang/Object;>;
+
+  public static final bcGen.Classes.testNested$ MODULE$;
+    descriptor: LbcGen/Classes/testNested$;
+    flags: (0x0019) ACC_PUBLIC, ACC_STATIC, ACC_FINAL
+
+  private bcGen.Classes.testNested$();
+    descriptor: ()V
+    flags: (0x0002) ACC_PRIVATE
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #30                 // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 27: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   LbcGen/Classes/testNested$;
+
+  public static {};
+    descriptor: ()V
+    flags: (0x0009) ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=5, locals=0, args_size=0
+         0: new           #2                  // class bcGen/Classes/testNested$
+         3: dup
+         4: invokespecial #33                 // Method "<init>":()V
+         7: putstatic     #35                 // Field MODULE$:LbcGen/Classes/testNested$;
+        10: new           #11                 // class bcGen/Classes/Nested1
+        13: dup
+        14: bipush        42
+        16: invokestatic  #41                 // Method scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+        19: invokespecial #44                 // Method bcGen/Classes/Nested1."<init>":(Ljava/lang/Object;)V
+        22: putstatic     #46                 // Field intOuter1:LbcGen/Classes/Nested1;
+        25: new           #9                  // class bcGen/Classes/Nested1$Inner1
+        28: dup
+        29: getstatic     #35                 // Field MODULE$:LbcGen/Classes/testNested$;
+        32: invokevirtual #49                 // Method intOuter1:()LbcGen/Classes/Nested1;
+        35: ldc           #51                 // String Hello
+        37: getstatic     #35                 // Field MODULE$:LbcGen/Classes/testNested$;
+        40: invokevirtual #49                 // Method intOuter1:()LbcGen/Classes/Nested1;
+        43: invokevirtual #55                 // Method bcGen/Classes/Nested1.outer1T:()Ljava/lang/Object;
+        46: invokespecial #58                 // Method bcGen/Classes/Nested1$Inner1."<init>":(LbcGen/Classes/Nested1;Ljava/lang/Object;Ljava/lang/Object;)V
+        49: putstatic     #60                 // Field refInner1:LbcGen/Classes/Nested1$Inner1;
+        52: new           #14                 // class bcGen/Classes/Nested1$Inner1$Inner2_0
+        55: dup
+        56: getstatic     #35                 // Field MODULE$:LbcGen/Classes/testNested$;
+        59: invokevirtual #63                 // Method refInner1:()LbcGen/Classes/Nested1$Inner1;
+        62: ldc2_w        #64                 // double 3.14d
+        65: invokestatic  #69                 // Method scala/runtime/BoxesRunTime.boxToDouble:(D)Ljava/lang/Double;
+        68: invokespecial #72                 // Method bcGen/Classes/Nested1$Inner1$Inner2_0."<init>":(LbcGen/Classes/Nested1$Inner1;Ljava/lang/Object;)V
+        71: putstatic     #74                 // Field doubleInner2_0:LbcGen/Classes/Nested1$Inner1$Inner2_0;
+        74: return
+      LineNumberTable:
+        line 28: 0
+        line 29: 25
+        line 30: 52
+      InstructionTypeArguments: length = 0x38 (unknown attribute)
+       00 06 00 0A 00 01 49 00 00 00 00 00 13 00 01 49
+       00 00 00 00 00 19 00 01 4C 00 00 00 00 00 2E 00
+       01 4C 00 00 00 00 00 34 00 01 44 00 00 00 00 00
+       44 00 01 44 00 00 00 00
+
+  private java.lang.Object writeReplace();
+    descriptor: ()Ljava/lang/Object;
+    flags: (0x0002) ACC_PRIVATE
+    Code:
+      stack=3, locals=1, args_size=1
+         0: new           #77                 // class scala/runtime/ModuleSerializationProxy
+         3: dup
+         4: ldc           #2                  // class bcGen/Classes/testNested$
+         6: invokespecial #80                 // Method scala/runtime/ModuleSerializationProxy."<init>":(Ljava/lang/Class;)V
+         9: areturn
+      LineNumberTable:
+        line 27: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      10     0  this   LbcGen/Classes/testNested$;
+
+  public bcGen.Classes.Nested1<java.lang.Object> intOuter1();
+    descriptor: ()LbcGen/Classes/Nested1;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #46                 // Field intOuter1:LbcGen/Classes/Nested1;
+         3: areturn
+      LineNumberTable:
+        line 28: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Classes/testNested$;
+    Signature: #81                          // ()LbcGen/Classes/Nested1<Ljava/lang/Object;>;
+
+  public bcGen.Classes.Nested1$Inner1<java.lang.String> refInner1();
+    descriptor: ()LbcGen/Classes/Nested1$Inner1;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #60                 // Field refInner1:LbcGen/Classes/Nested1$Inner1;
+         3: areturn
+      LineNumberTable:
+        line 29: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Classes/testNested$;
+    Signature: #82                          // ()LbcGen/Classes/Nested1$Inner1<Ljava/lang/String;>;
+
+  public bcGen.Classes.Nested1$Inner1$Inner2_0<java.lang.Object> doubleInner2_0();
+    descriptor: ()LbcGen/Classes/Nested1$Inner1$Inner2_0;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #74                 // Field doubleInner2_0:LbcGen/Classes/Nested1$Inner1$Inner2_0;
+         3: areturn
+      LineNumberTable:
+        line 30: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Classes/testNested$;
+    Signature: #84                          // ()LbcGen/Classes/Nested1$Inner1$Inner2_0<Ljava/lang/Object;>;
+
+  public void testNested1();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=6, locals=1, args_size=1
+         0: getstatic     #90                 // Field scala/Predef$.MODULE$:Lscala/Predef$;
+         3: aload_0
+         4: invokevirtual #92                 // Method doubleInner2_0:()LbcGen/Classes/Nested1$Inner1$Inner2_0;
+         7: bipush        41
+         9: invokestatic  #41                 // Method scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+        12: ldc           #94                 // String World
+        14: ldc2_w        #95                 // double 2.71d
+        17: invokestatic  #69                 // Method scala/runtime/BoxesRunTime.boxToDouble:(D)Ljava/lang/Double;
+        20: invokevirtual #100                // Method bcGen/Classes/Nested1$Inner1$Inner2_0.foo:(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/String;
+        23: invokevirtual #103                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+        26: return
+      LineNumberTable:
+        line 32: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      27     0  this   LbcGen/Classes/testNested$;
+
+  public void testNested2();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: getstatic     #90                 // Field scala/Predef$.MODULE$:Lscala/Predef$;
+         3: aload_0
+         4: invokevirtual #92                 // Method doubleInner2_0:()LbcGen/Classes/Nested1$Inner1$Inner2_0;
+         7: invokevirtual #108                // Method bcGen/Classes/Nested1$Inner1$Inner2_0.bar:()Ljava/lang/String;
+        10: invokevirtual #103                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+        13: return
+      LineNumberTable:
+        line 36: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      14     0  this   LbcGen/Classes/testNested$;
+}
+InnerClasses:
+  public #12= #9 of #11;                  // Inner1=class bcGen/Classes/Nested1$Inner1 of class bcGen/Classes/Nested1
+  public #15= #14 of #9;                  // Inner2_0=class bcGen/Classes/Nested1$Inner1$Inner2_0 of class bcGen/Classes/Nested1$Inner1
+SourceFile: "Nested1.scala"
+  Scala: length = 0x0 (unknown attribute)
+

@@ -1,0 +1,115 @@
+Classfile /u0/j523xu/scala3/out/bcGen/Classes/Nested1$Inner1_1.class
+  Last modified Oct 16, 2025; size 979 bytes
+  SHA-256 checksum ebd419957fc84648a49793c28aec306291e645dc9c86379b941f465cc08af8c9
+  Compiled from "Nested1.scala"
+public class bcGen.Classes.Nested1$Inner1_1<U extends java.lang.Object> extends java.lang.Object
+  minor version: 0
+  major version: 52
+  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+  this_class: #2                          // bcGen/Classes/Nested1$Inner1_1
+  super_class: #5                         // java/lang/Object
+  interfaces: 0, fields: 1, methods: 2, attributes: 5
+Constant pool:
+   #1 = Utf8               bcGen/Classes/Nested1$Inner1_1
+   #2 = Class              #1             // bcGen/Classes/Nested1$Inner1_1
+   #3 = Utf8               <U:Ljava/lang/Object;>Ljava/lang/Object;
+   #4 = Utf8               java/lang/Object
+   #5 = Class              #4             // java/lang/Object
+   #6 = Utf8               Nested1.scala
+   #7 = Utf8               bcGen/Classes/Nested1
+   #8 = Class              #7             // bcGen/Classes/Nested1
+   #9 = Utf8               Inner1_1
+  #10 = Utf8               bcGen/Classes/Nested1$Inner1_1$Inner2_0
+  #11 = Class              #10            // bcGen/Classes/Nested1$Inner1_1$Inner2_0
+  #12 = Utf8               Inner2_0
+  #13 = Utf8               bcGen/Classes/Nested1$Inner1_1$Inner2_1
+  #14 = Class              #13            // bcGen/Classes/Nested1$Inner1_1$Inner2_1
+  #15 = Utf8               Inner2_1
+  #16 = Utf8               $outer
+  #17 = Utf8               LbcGen/Classes/Nested1;
+  #18 = Utf8               <init>
+  #19 = Utf8               (LbcGen/Classes/Nested1;)V
+  #20 = Utf8               ()V
+  #21 = Utf8               java/lang/NullPointerException
+  #22 = Class              #21            // java/lang/NullPointerException
+  #23 = NameAndType        #18:#20        // "<init>":()V
+  #24 = Methodref          #22.#23        // java/lang/NullPointerException."<init>":()V
+  #25 = NameAndType        #16:#17        // $outer:LbcGen/Classes/Nested1;
+  #26 = Fieldref           #2.#25         // bcGen/Classes/Nested1$Inner1_1.$outer:LbcGen/Classes/Nested1;
+  #27 = Methodref          #5.#23         // java/lang/Object."<init>":()V
+  #28 = Utf8               this
+  #29 = Utf8               LbcGen/Classes/Nested1$Inner1_1;
+  #30 = Utf8               bcGen$Classes$Nested1$Inner1_1$$$outer
+  #31 = Utf8               ()LbcGen/Classes/Nested1;
+  #32 = Utf8               Code
+  #33 = Utf8               StackMapTable
+  #34 = Utf8               LineNumberTable
+  #35 = Utf8               LocalVariableTable
+  #36 = Utf8               Signature
+  #37 = Utf8               MethodParameters
+  #38 = Utf8               MethodTypeParameterCount
+  #39 = Utf8               InnerClasses
+  #40 = Utf8               SourceFile
+  #41 = Utf8               ClassTypeParameterCount
+  #42 = Utf8               Scala
+{
+  private final bcGen.Classes.Nested1 $outer;
+    descriptor: LbcGen/Classes/Nested1;
+    flags: (0x1012) ACC_PRIVATE, ACC_FINAL, ACC_SYNTHETIC
+
+  public bcGen.Classes.Nested1$Inner1_1();
+    descriptor: (LbcGen/Classes/Nested1;)V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_1
+         1: ifnonnull     12
+         4: new           #22                 // class java/lang/NullPointerException
+         7: dup
+         8: invokespecial #24                 // Method java/lang/NullPointerException."<init>":()V
+        11: athrow
+        12: aload_0
+        13: aload_1
+        14: putfield      #26                 // Field $outer:LbcGen/Classes/Nested1;
+        17: aload_0
+        18: invokespecial #27                 // Method java/lang/Object."<init>":()V
+        21: return
+      StackMapTable: number_of_entries = 1
+        frame_type = 12 /* same */
+      LineNumberTable:
+        line 17: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      22     0  this   LbcGen/Classes/Nested1$Inner1_1;
+            0      22     1 $outer   LbcGen/Classes/Nested1;
+    Signature: #20                          // ()V
+    MethodParameters:
+      Name                           Flags
+      $outer                         final synthetic
+      MethodTypeParameterCount: length = 0x2 (unknown attribute)
+       00 01
+
+  public final bcGen.Classes.Nested1 bcGen$Classes$Nested1$Inner1_1$$$outer();
+    descriptor: ()LbcGen/Classes/Nested1;
+    flags: (0x1011) ACC_PUBLIC, ACC_FINAL, ACC_SYNTHETIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: getfield      #26                 // Field $outer:LbcGen/Classes/Nested1;
+         4: areturn
+      LineNumberTable:
+        line 23: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   LbcGen/Classes/Nested1$Inner1_1;
+}
+InnerClasses:
+  public #9= #2 of #8;                    // Inner1_1=class bcGen/Classes/Nested1$Inner1_1 of class bcGen/Classes/Nested1
+  public #12= #11 of #2;                  // Inner2_0=class bcGen/Classes/Nested1$Inner1_1$Inner2_0 of class bcGen/Classes/Nested1$Inner1_1
+  public #15= #14 of #2;                  // Inner2_1=class bcGen/Classes/Nested1$Inner1_1$Inner2_1 of class bcGen/Classes/Nested1$Inner1_1
+Signature: #3                           // <U:Ljava/lang/Object;>Ljava/lang/Object;
+SourceFile: "Nested1.scala"
+  ClassTypeParameterCount: length = 0x2 (unknown attribute)
+   00 01
+  Scala: length = 0x0 (unknown attribute)
+

@@ -1,0 +1,2501 @@
+Classfile /u0/j523xu/scala3/out/bcGen/Arrays/arrayTestCases$.class
+  Last modified Oct 16, 2025; size 12582 bytes
+  SHA-256 checksum 6684c02431acfa660cabeb54aaded6f55bd9fcc16fa54b7947a2af54d9b1c432
+  Compiled from "ArrayTestCases.scala"
+public final class bcGen.Arrays.arrayTestCases$ implements java.io.Serializable
+  minor version: 0
+  major version: 52
+  flags: (0x0031) ACC_PUBLIC, ACC_FINAL, ACC_SUPER
+  this_class: #2                          // bcGen/Arrays/arrayTestCases$
+  super_class: #4                         // java/lang/Object
+  interfaces: 1, fields: 20, methods: 54, attributes: 4
+Constant pool:
+    #1 = Utf8               bcGen/Arrays/arrayTestCases$
+    #2 = Class              #1            // bcGen/Arrays/arrayTestCases$
+    #3 = Utf8               java/lang/Object
+    #4 = Class              #3            // java/lang/Object
+    #5 = Utf8               java/io/Serializable
+    #6 = Class              #5            // java/io/Serializable
+    #7 = Utf8               ArrayTestCases.scala
+    #8 = Utf8               java/lang/invoke/MethodHandles$Lookup
+    #9 = Class              #8            // java/lang/invoke/MethodHandles$Lookup
+   #10 = Utf8               java/lang/invoke/MethodHandles
+   #11 = Class              #10           // java/lang/invoke/MethodHandles
+   #12 = Utf8               Lookup
+   #13 = Utf8               size
+   #14 = Utf8               I
+   #15 = Utf8               maxInt
+   #16 = Utf8               rng
+   #17 = Utf8               Lscala/util/Random;
+   #18 = Utf8               intArr
+   #19 = Utf8               [I
+   #20 = Utf8               objArr
+   #21 = Utf8               [Ljava/lang/Object;
+   #22 = Utf8               doubleArr
+   #23 = Utf8               [D
+   #24 = Utf8               intDoubleArr
+   #25 = Utf8               shortArrInt
+   #26 = Utf8               shortArrDouble
+   #27 = Utf8               shortArrObj
+   #28 = Utf8               shorArrIntCp
+   #29 = Utf8               shorArrDoubleCp
+   #30 = Utf8               shorArrObjCp
+   #31 = Utf8               intArrCp
+   #32 = Utf8               anyArrCp
+   #33 = Utf8               doubleArrCp
+   #34 = Utf8               intDoubleArrCp
+   #35 = Utf8               hashState
+   #36 = Utf8               J
+   #37 = Utf8               hashMod
+   #38 = Utf8               MODULE$
+   #39 = Utf8               LbcGen/Arrays/arrayTestCases$;
+   #40 = Utf8               <init>
+   #41 = Utf8               ()V
+   #42 = NameAndType        #40:#41       // "<init>":()V
+   #43 = Methodref          #4.#42        // java/lang/Object."<init>":()V
+   #44 = Utf8               this
+   #45 = Utf8               <clinit>
+   #46 = Methodref          #2.#42        // bcGen/Arrays/arrayTestCases$."<init>":()V
+   #47 = NameAndType        #38:#39       // MODULE$:LbcGen/Arrays/arrayTestCases$;
+   #48 = Fieldref           #2.#47        // bcGen/Arrays/arrayTestCases$.MODULE$:LbcGen/Arrays/arrayTestCases$;
+   #49 = NameAndType        #13:#14       // size:I
+   #50 = Fieldref           #2.#49        // bcGen/Arrays/arrayTestCases$.size:I
+   #51 = NameAndType        #15:#14       // maxInt:I
+   #52 = Fieldref           #2.#51        // bcGen/Arrays/arrayTestCases$.maxInt:I
+   #53 = Utf8               scala/util/Random
+   #54 = Class              #53           // scala/util/Random
+   #55 = Utf8               (I)V
+   #56 = NameAndType        #40:#55       // "<init>":(I)V
+   #57 = Methodref          #54.#56       // scala/util/Random."<init>":(I)V
+   #58 = NameAndType        #16:#17       // rng:Lscala/util/Random;
+   #59 = Fieldref           #2.#58        // bcGen/Arrays/arrayTestCases$.rng:Lscala/util/Random;
+   #60 = Utf8               scala/Array$
+   #61 = Class              #60           // scala/Array$
+   #62 = Utf8               Lscala/Array$;
+   #63 = NameAndType        #38:#62       // MODULE$:Lscala/Array$;
+   #64 = Fieldref           #61.#63       // scala/Array$.MODULE$:Lscala/Array$;
+   #65 = Utf8               ()I
+   #66 = NameAndType        #13:#65       // size:()I
+   #67 = Methodref          #2.#66        // bcGen/Arrays/arrayTestCases$.size:()I
+   #68 = Utf8               ()Ljava/lang/Object;
+   #69 = MethodType         #68           //  ()Ljava/lang/Object;
+   #70 = Utf8               $init$$$anonfun$1
+   #71 = NameAndType        #70:#65       // $init$$$anonfun$1:()I
+   #72 = Methodref          #2.#71        // bcGen/Arrays/arrayTestCases$.$init$$$anonfun$1:()I
+   #73 = MethodHandle       7:#72         // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$1:()I
+   #74 = Utf8               ()Ljava/lang/Integer;
+   #75 = MethodType         #74           //  ()Ljava/lang/Integer;
+   #76 = Integer            5
+   #77 = Integer            1
+   #78 = Utf8               java/lang/invoke/LambdaMetafactory
+   #79 = Class              #78           // java/lang/invoke/LambdaMetafactory
+   #80 = Utf8               altMetafactory
+   #81 = Utf8               (Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+   #82 = NameAndType        #80:#81       // altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+   #83 = Methodref          #79.#82       // java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+   #84 = MethodHandle       6:#83         // REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+   #85 = Utf8               apply
+   #86 = Utf8               (LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+   #87 = NameAndType        #85:#86       // apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+   #88 = InvokeDynamic      #0:#87        // #0:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+   #89 = Utf8               scala/reflect/ClassTag$
+   #90 = Class              #89           // scala/reflect/ClassTag$
+   #91 = Utf8               Lscala/reflect/ClassTag$;
+   #92 = NameAndType        #38:#91       // MODULE$:Lscala/reflect/ClassTag$;
+   #93 = Fieldref           #90.#92       // scala/reflect/ClassTag$.MODULE$:Lscala/reflect/ClassTag$;
+   #94 = Utf8               java/lang/Integer
+   #95 = Class              #94           // java/lang/Integer
+   #96 = Utf8               TYPE
+   #97 = Utf8               Ljava/lang/Class;
+   #98 = NameAndType        #96:#97       // TYPE:Ljava/lang/Class;
+   #99 = Fieldref           #95.#98       // java/lang/Integer.TYPE:Ljava/lang/Class;
+  #100 = Utf8               (Ljava/lang/Class;)Lscala/reflect/ClassTag;
+  #101 = NameAndType        #85:#100      // apply:(Ljava/lang/Class;)Lscala/reflect/ClassTag;
+  #102 = Methodref          #90.#101      // scala/reflect/ClassTag$.apply:(Ljava/lang/Class;)Lscala/reflect/ClassTag;
+  #103 = Utf8               fill
+  #104 = Utf8               (ILscala/Function0;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+  #105 = NameAndType        #103:#104     // fill:(ILscala/Function0;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+  #106 = Methodref          #61.#105      // scala/Array$.fill:(ILscala/Function0;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+  #107 = Class              #19           // "[I"
+  #108 = NameAndType        #18:#19       // intArr:[I
+  #109 = Fieldref           #2.#108       // bcGen/Arrays/arrayTestCases$.intArr:[I
+  #110 = Utf8               $init$$$anonfun$2
+  #111 = NameAndType        #110:#68      // $init$$$anonfun$2:()Ljava/lang/Object;
+  #112 = Methodref          #2.#111       // bcGen/Arrays/arrayTestCases$.$init$$$anonfun$2:()Ljava/lang/Object;
+  #113 = MethodHandle       7:#112        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$2:()Ljava/lang/Object;
+  #114 = InvokeDynamic      #1:#87        // #1:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+  #115 = Utf8               Any
+  #116 = Utf8               ()Lscala/reflect/ClassTag;
+  #117 = NameAndType        #115:#116     // Any:()Lscala/reflect/ClassTag;
+  #118 = Methodref          #90.#117      // scala/reflect/ClassTag$.Any:()Lscala/reflect/ClassTag;
+  #119 = Class              #21           // "[Ljava/lang/Object;"
+  #120 = NameAndType        #20:#21       // objArr:[Ljava/lang/Object;
+  #121 = Fieldref           #2.#120       // bcGen/Arrays/arrayTestCases$.objArr:[Ljava/lang/Object;
+  #122 = Utf8               $init$$$anonfun$3
+  #123 = Utf8               ()D
+  #124 = NameAndType        #122:#123     // $init$$$anonfun$3:()D
+  #125 = Methodref          #2.#124       // bcGen/Arrays/arrayTestCases$.$init$$$anonfun$3:()D
+  #126 = MethodHandle       7:#125        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$3:()D
+  #127 = Utf8               ()Ljava/lang/Double;
+  #128 = MethodType         #127          //  ()Ljava/lang/Double;
+  #129 = InvokeDynamic      #2:#87        // #2:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+  #130 = Utf8               java/lang/Double
+  #131 = Class              #130          // java/lang/Double
+  #132 = Fieldref           #131.#98      // java/lang/Double.TYPE:Ljava/lang/Class;
+  #133 = Class              #23           // "[D"
+  #134 = NameAndType        #22:#23       // doubleArr:[D
+  #135 = Fieldref           #2.#134       // bcGen/Arrays/arrayTestCases$.doubleArr:[D
+  #136 = Utf8               (Ljava/lang/Object;)Ljava/lang/Object;
+  #137 = MethodType         #136          //  (Ljava/lang/Object;)Ljava/lang/Object;
+  #138 = Utf8               $init$$$anonfun$adapted$1
+  #139 = NameAndType        #138:#136     // $init$$$anonfun$adapted$1:(Ljava/lang/Object;)Ljava/lang/Object;
+  #140 = Methodref          #2.#139       // bcGen/Arrays/arrayTestCases$.$init$$$anonfun$adapted$1:(Ljava/lang/Object;)Ljava/lang/Object;
+  #141 = MethodHandle       7:#140        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$adapted$1:(Ljava/lang/Object;)Ljava/lang/Object;
+  #142 = Utf8               (LbcGen/Arrays/arrayTestCases$;)Lscala/Function1;
+  #143 = NameAndType        #85:#142      // apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function1;
+  #144 = InvokeDynamic      #3:#143       // #3:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function1;
+  #145 = Utf8               tabulate
+  #146 = Utf8               (ILscala/Function1;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+  #147 = NameAndType        #145:#146     // tabulate:(ILscala/Function1;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+  #148 = Methodref          #61.#147      // scala/Array$.tabulate:(ILscala/Function1;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+  #149 = NameAndType        #24:#21       // intDoubleArr:[Ljava/lang/Object;
+  #150 = Fieldref           #2.#149       // bcGen/Arrays/arrayTestCases$.intDoubleArr:[Ljava/lang/Object;
+  #151 = Utf8               $init$$$anonfun$5
+  #152 = NameAndType        #151:#65      // $init$$$anonfun$5:()I
+  #153 = Methodref          #2.#152       // bcGen/Arrays/arrayTestCases$.$init$$$anonfun$5:()I
+  #154 = MethodHandle       7:#153        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$5:()I
+  #155 = InvokeDynamic      #4:#87        // #4:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+  #156 = NameAndType        #25:#19       // shortArrInt:[I
+  #157 = Fieldref           #2.#156       // bcGen/Arrays/arrayTestCases$.shortArrInt:[I
+  #158 = Utf8               $init$$$anonfun$6
+  #159 = NameAndType        #158:#123     // $init$$$anonfun$6:()D
+  #160 = Methodref          #2.#159       // bcGen/Arrays/arrayTestCases$.$init$$$anonfun$6:()D
+  #161 = MethodHandle       7:#160        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$6:()D
+  #162 = InvokeDynamic      #5:#87        // #5:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+  #163 = NameAndType        #26:#23       // shortArrDouble:[D
+  #164 = Fieldref           #2.#163       // bcGen/Arrays/arrayTestCases$.shortArrDouble:[D
+  #165 = Utf8               $init$$$anonfun$7
+  #166 = NameAndType        #165:#68      // $init$$$anonfun$7:()Ljava/lang/Object;
+  #167 = Methodref          #2.#166       // bcGen/Arrays/arrayTestCases$.$init$$$anonfun$7:()Ljava/lang/Object;
+  #168 = MethodHandle       7:#167        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$7:()Ljava/lang/Object;
+  #169 = InvokeDynamic      #6:#87        // #6:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+  #170 = NameAndType        #27:#21       // shortArrObj:[Ljava/lang/Object;
+  #171 = Fieldref           #2.#170       // bcGen/Arrays/arrayTestCases$.shortArrObj:[Ljava/lang/Object;
+  #172 = NameAndType        #28:#19       // shorArrIntCp:[I
+  #173 = Fieldref           #2.#172       // bcGen/Arrays/arrayTestCases$.shorArrIntCp:[I
+  #174 = NameAndType        #29:#23       // shorArrDoubleCp:[D
+  #175 = Fieldref           #2.#174       // bcGen/Arrays/arrayTestCases$.shorArrDoubleCp:[D
+  #176 = NameAndType        #30:#21       // shorArrObjCp:[Ljava/lang/Object;
+  #177 = Fieldref           #2.#176       // bcGen/Arrays/arrayTestCases$.shorArrObjCp:[Ljava/lang/Object;
+  #178 = NameAndType        #31:#19       // intArrCp:[I
+  #179 = Fieldref           #2.#178       // bcGen/Arrays/arrayTestCases$.intArrCp:[I
+  #180 = NameAndType        #32:#21       // anyArrCp:[Ljava/lang/Object;
+  #181 = Fieldref           #2.#180       // bcGen/Arrays/arrayTestCases$.anyArrCp:[Ljava/lang/Object;
+  #182 = NameAndType        #33:#23       // doubleArrCp:[D
+  #183 = Fieldref           #2.#182       // bcGen/Arrays/arrayTestCases$.doubleArrCp:[D
+  #184 = NameAndType        #34:#21       // intDoubleArrCp:[Ljava/lang/Object;
+  #185 = Fieldref           #2.#184       // bcGen/Arrays/arrayTestCases$.intDoubleArrCp:[Ljava/lang/Object;
+  #186 = NameAndType        #35:#36       // hashState:J
+  #187 = Fieldref           #2.#186       // bcGen/Arrays/arrayTestCases$.hashState:J
+  #188 = Long               998244353l
+  #190 = NameAndType        #37:#36       // hashMod:J
+  #191 = Fieldref           #2.#190       // bcGen/Arrays/arrayTestCases$.hashMod:J
+  #192 = Utf8               writeReplace
+  #193 = Utf8               scala/runtime/ModuleSerializationProxy
+  #194 = Class              #193          // scala/runtime/ModuleSerializationProxy
+  #195 = Utf8               (Ljava/lang/Class;)V
+  #196 = NameAndType        #40:#195      // "<init>":(Ljava/lang/Class;)V
+  #197 = Methodref          #194.#196     // scala/runtime/ModuleSerializationProxy."<init>":(Ljava/lang/Class;)V
+  #198 = Utf8               ()Lscala/util/Random;
+  #199 = Utf8               ()[I
+  #200 = Utf8               ()[Ljava/lang/Object;
+  #201 = Utf8               ()[D
+  #202 = Utf8               ()J
+  #203 = Utf8               hashState_$eq
+  #204 = Utf8               (J)V
+  #205 = Utf8               x$1
+  #206 = Utf8               mainArr1
+  #207 = Utf8               bcGen/Arrays/ArrayTestLib$
+  #208 = Class              #207          // bcGen/Arrays/ArrayTestLib$
+  #209 = Utf8               LbcGen/Arrays/ArrayTestLib$;
+  #210 = NameAndType        #38:#209      // MODULE$:LbcGen/Arrays/ArrayTestLib$;
+  #211 = Fieldref           #208.#210     // bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+  #212 = NameAndType        #18:#199      // intArr:()[I
+  #213 = Methodref          #2.#212       // bcGen/Arrays/arrayTestCases$.intArr:()[I
+  #214 = NameAndType        #31:#199      // intArrCp:()[I
+  #215 = Methodref          #2.#214       // bcGen/Arrays/arrayTestCases$.intArrCp:()[I
+  #216 = Utf8               copy
+  #217 = Utf8               (Ljava/lang/Object;Ljava/lang/Object;)V
+  #218 = NameAndType        #216:#217     // copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+  #219 = Methodref          #208.#218     // bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+  #220 = Utf8               scala/Predef$
+  #221 = Class              #220          // scala/Predef$
+  #222 = Utf8               Lscala/Predef$;
+  #223 = NameAndType        #38:#222      // MODULE$:Lscala/Predef$;
+  #224 = Fieldref           #221.#223     // scala/Predef$.MODULE$:Lscala/Predef$;
+  #225 = Utf8               intArrayOps
+  #226 = Utf8               ([I)Ljava/lang/Object;
+  #227 = NameAndType        #225:#226     // intArrayOps:([I)Ljava/lang/Object;
+  #228 = Methodref          #221.#227     // scala/Predef$.intArrayOps:([I)Ljava/lang/Object;
+  #229 = Utf8               scala/collection/ArrayOps$
+  #230 = Class              #229          // scala/collection/ArrayOps$
+  #231 = Utf8               Lscala/collection/ArrayOps$;
+  #232 = NameAndType        #38:#231      // MODULE$:Lscala/collection/ArrayOps$;
+  #233 = Fieldref           #230.#232     // scala/collection/ArrayOps$.MODULE$:Lscala/collection/ArrayOps$;
+  #234 = MethodType         #55           //  (I)V
+  #235 = Utf8               mainArr1$$anonfun$1
+  #236 = NameAndType        #235:#55      // mainArr1$$anonfun$1:(I)V
+  #237 = Methodref          #2.#236       // bcGen/Arrays/arrayTestCases$.mainArr1$$anonfun$1:(I)V
+  #238 = MethodHandle       7:#237        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr1$$anonfun$1:(I)V
+  #239 = Utf8               apply$mcVI$sp
+  #240 = Utf8               (LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVI$sp;
+  #241 = NameAndType        #239:#240     // apply$mcVI$sp:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVI$sp;
+  #242 = InvokeDynamic      #7:#241       // #7:apply$mcVI$sp:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVI$sp;
+  #243 = Utf8               foreach$extension
+  #244 = Utf8               (Ljava/lang/Object;Lscala/Function1;)V
+  #245 = NameAndType        #243:#244     // foreach$extension:(Ljava/lang/Object;Lscala/Function1;)V
+  #246 = Methodref          #230.#245     // scala/collection/ArrayOps$.foreach$extension:(Ljava/lang/Object;Lscala/Function1;)V
+  #247 = Utf8               mainArr2
+  #248 = NameAndType        #20:#200      // objArr:()[Ljava/lang/Object;
+  #249 = Methodref          #2.#248       // bcGen/Arrays/arrayTestCases$.objArr:()[Ljava/lang/Object;
+  #250 = NameAndType        #32:#200      // anyArrCp:()[Ljava/lang/Object;
+  #251 = Methodref          #2.#250       // bcGen/Arrays/arrayTestCases$.anyArrCp:()[Ljava/lang/Object;
+  #252 = Utf8               genericArrayOps
+  #253 = NameAndType        #252:#136     // genericArrayOps:(Ljava/lang/Object;)Ljava/lang/Object;
+  #254 = Methodref          #221.#253     // scala/Predef$.genericArrayOps:(Ljava/lang/Object;)Ljava/lang/Object;
+  #255 = Utf8               (Ljava/lang/Object;)V
+  #256 = MethodType         #255          //  (Ljava/lang/Object;)V
+  #257 = Utf8               mainArr2$$anonfun$1
+  #258 = NameAndType        #257:#255     // mainArr2$$anonfun$1:(Ljava/lang/Object;)V
+  #259 = Methodref          #2.#258       // bcGen/Arrays/arrayTestCases$.mainArr2$$anonfun$1:(Ljava/lang/Object;)V
+  #260 = MethodHandle       7:#259        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr2$$anonfun$1:(Ljava/lang/Object;)V
+  #261 = Utf8               applyVoid
+  #262 = Utf8               (LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/function/JProcedure1;
+  #263 = NameAndType        #261:#262     // applyVoid:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/function/JProcedure1;
+  #264 = InvokeDynamic      #8:#263       // #8:applyVoid:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/function/JProcedure1;
+  #265 = Utf8               mainArr3
+  #266 = NameAndType        #22:#201      // doubleArr:()[D
+  #267 = Methodref          #2.#266       // bcGen/Arrays/arrayTestCases$.doubleArr:()[D
+  #268 = NameAndType        #33:#201      // doubleArrCp:()[D
+  #269 = Methodref          #2.#268       // bcGen/Arrays/arrayTestCases$.doubleArrCp:()[D
+  #270 = Utf8               doubleArrayOps
+  #271 = Utf8               ([D)Ljava/lang/Object;
+  #272 = NameAndType        #270:#271     // doubleArrayOps:([D)Ljava/lang/Object;
+  #273 = Methodref          #221.#272     // scala/Predef$.doubleArrayOps:([D)Ljava/lang/Object;
+  #274 = Utf8               (D)V
+  #275 = MethodType         #274          //  (D)V
+  #276 = Utf8               mainArr3$$anonfun$1
+  #277 = NameAndType        #276:#274     // mainArr3$$anonfun$1:(D)V
+  #278 = Methodref          #2.#277       // bcGen/Arrays/arrayTestCases$.mainArr3$$anonfun$1:(D)V
+  #279 = MethodHandle       7:#278        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr3$$anonfun$1:(D)V
+  #280 = Utf8               apply$mcVD$sp
+  #281 = Utf8               (LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVD$sp;
+  #282 = NameAndType        #280:#281     // apply$mcVD$sp:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVD$sp;
+  #283 = InvokeDynamic      #9:#282       // #9:apply$mcVD$sp:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVD$sp;
+  #284 = Utf8               mainArr4
+  #285 = NameAndType        #24:#200      // intDoubleArr:()[Ljava/lang/Object;
+  #286 = Methodref          #2.#285       // bcGen/Arrays/arrayTestCases$.intDoubleArr:()[Ljava/lang/Object;
+  #287 = NameAndType        #34:#200      // intDoubleArrCp:()[Ljava/lang/Object;
+  #288 = Methodref          #2.#287       // bcGen/Arrays/arrayTestCases$.intDoubleArrCp:()[Ljava/lang/Object;
+  #289 = Utf8               mainArr4$$anonfun$1
+  #290 = NameAndType        #289:#255     // mainArr4$$anonfun$1:(Ljava/lang/Object;)V
+  #291 = Methodref          #2.#290       // bcGen/Arrays/arrayTestCases$.mainArr4$$anonfun$1:(Ljava/lang/Object;)V
+  #292 = MethodHandle       7:#291        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr4$$anonfun$1:(Ljava/lang/Object;)V
+  #293 = InvokeDynamic      #10:#263      // #10:applyVoid:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/function/JProcedure1;
+  #294 = Utf8               genericCopy
+  #295 = Utf8               <T:Ljava/lang/Object;>(Ljava/lang/Object;Ljava/lang/Object;)V
+  #296 = Utf8               src
+  #297 = Utf8               dst
+  #298 = Utf8               Ljava/lang/Object;
+  #299 = Utf8               mainArr5
+  #300 = NameAndType        #294:#217     // genericCopy:(Ljava/lang/Object;Ljava/lang/Object;)V
+  #301 = Methodref          #2.#300       // bcGen/Arrays/arrayTestCases$.genericCopy:(Ljava/lang/Object;Ljava/lang/Object;)V
+  #302 = Utf8               mainArr5$$anonfun$1
+  #303 = NameAndType        #302:#55      // mainArr5$$anonfun$1:(I)V
+  #304 = Methodref          #2.#303       // bcGen/Arrays/arrayTestCases$.mainArr5$$anonfun$1:(I)V
+  #305 = MethodHandle       7:#304        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr5$$anonfun$1:(I)V
+  #306 = InvokeDynamic      #11:#241      // #11:apply$mcVI$sp:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVI$sp;
+  #307 = Utf8               mainArr6
+  #308 = Utf8               mainArr6$$anonfun$1
+  #309 = NameAndType        #308:#255     // mainArr6$$anonfun$1:(Ljava/lang/Object;)V
+  #310 = Methodref          #2.#309       // bcGen/Arrays/arrayTestCases$.mainArr6$$anonfun$1:(Ljava/lang/Object;)V
+  #311 = MethodHandle       7:#310        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr6$$anonfun$1:(Ljava/lang/Object;)V
+  #312 = InvokeDynamic      #12:#263      // #12:applyVoid:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/function/JProcedure1;
+  #313 = Utf8               mainArr7
+  #314 = Utf8               mainArr7$$anonfun$1
+  #315 = NameAndType        #314:#274     // mainArr7$$anonfun$1:(D)V
+  #316 = Methodref          #2.#315       // bcGen/Arrays/arrayTestCases$.mainArr7$$anonfun$1:(D)V
+  #317 = MethodHandle       7:#316        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr7$$anonfun$1:(D)V
+  #318 = InvokeDynamic      #13:#282      // #13:apply$mcVD$sp:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVD$sp;
+  #319 = Utf8               mainArr8
+  #320 = Utf8               mainArr8$$anonfun$1
+  #321 = NameAndType        #320:#255     // mainArr8$$anonfun$1:(Ljava/lang/Object;)V
+  #322 = Methodref          #2.#321       // bcGen/Arrays/arrayTestCases$.mainArr8$$anonfun$1:(Ljava/lang/Object;)V
+  #323 = MethodHandle       7:#322        // REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr8$$anonfun$1:(Ljava/lang/Object;)V
+  #324 = InvokeDynamic      #14:#263      // #14:applyVoid:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/function/JProcedure1;
+  #325 = Utf8               runChecksumInt
+  #326 = Utf8               checksum
+  #327 = Utf8               (Ljava/lang/Object;)I
+  #328 = NameAndType        #326:#327     // checksum:(Ljava/lang/Object;)I
+  #329 = Methodref          #208.#328     // bcGen/Arrays/ArrayTestLib$.checksum:(Ljava/lang/Object;)I
+  #330 = Utf8               scala/runtime/BoxesRunTime
+  #331 = Class              #330          // scala/runtime/BoxesRunTime
+  #332 = Utf8               boxToLong
+  #333 = Utf8               (J)Ljava/lang/Long;
+  #334 = NameAndType        #332:#333     // boxToLong:(J)Ljava/lang/Long;
+  #335 = Methodref          #331.#334     // scala/runtime/BoxesRunTime.boxToLong:(J)Ljava/lang/Long;
+  #336 = Utf8               println
+  #337 = NameAndType        #336:#255     // println:(Ljava/lang/Object;)V
+  #338 = Methodref          #221.#337     // scala/Predef$.println:(Ljava/lang/Object;)V
+  #339 = Utf8               repeat
+  #340 = Utf8               i
+  #341 = Utf8               sum
+  #342 = Utf8               runChecksumInt2
+  #343 = NameAndType        #25:#199      // shortArrInt:()[I
+  #344 = Methodref          #2.#343       // bcGen/Arrays/arrayTestCases$.shortArrInt:()[I
+  #345 = Utf8               java/lang/StringBuilder
+  #346 = Class              #345          // java/lang/StringBuilder
+  #347 = Integer            3
+  #348 = Methodref          #346.#56      // java/lang/StringBuilder."<init>":(I)V
+  #349 = Utf8               append
+  #350 = Utf8               (I)Ljava/lang/StringBuilder;
+  #351 = NameAndType        #349:#350     // append:(I)Ljava/lang/StringBuilder;
+  #352 = Methodref          #346.#351     // java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+  #353 = Utf8                :
+  #354 = String             #353          //  :
+  #355 = Utf8               (Ljava/lang/String;)Ljava/lang/StringBuilder;
+  #356 = NameAndType        #349:#355     // append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+  #357 = Methodref          #346.#356     // java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+  #358 = Utf8               boxToInteger
+  #359 = Utf8               (I)Ljava/lang/Integer;
+  #360 = NameAndType        #358:#359     // boxToInteger:(I)Ljava/lang/Integer;
+  #361 = Methodref          #331.#360     // scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+  #362 = Utf8               scala/runtime/Statics
+  #363 = Class              #362          // scala/runtime/Statics
+  #364 = Utf8               anyHash
+  #365 = NameAndType        #364:#327     // anyHash:(Ljava/lang/Object;)I
+  #366 = Methodref          #363.#365     // scala/runtime/Statics.anyHash:(Ljava/lang/Object;)I
+  #367 = Utf8               toString
+  #368 = Utf8               ()Ljava/lang/String;
+  #369 = NameAndType        #367:#368     // toString:()Ljava/lang/String;
+  #370 = Methodref          #346.#369     // java/lang/StringBuilder.toString:()Ljava/lang/String;
+  #371 = Utf8               sum2
+  #372 = Utf8               runAllArr
+  #373 = NameAndType        #206:#41      // mainArr1:()V
+  #374 = Methodref          #2.#373       // bcGen/Arrays/arrayTestCases$.mainArr1:()V
+  #375 = NameAndType        #247:#41      // mainArr2:()V
+  #376 = Methodref          #2.#375       // bcGen/Arrays/arrayTestCases$.mainArr2:()V
+  #377 = NameAndType        #265:#41      // mainArr3:()V
+  #378 = Methodref          #2.#377       // bcGen/Arrays/arrayTestCases$.mainArr3:()V
+  #379 = NameAndType        #284:#41      // mainArr4:()V
+  #380 = Methodref          #2.#379       // bcGen/Arrays/arrayTestCases$.mainArr4:()V
+  #381 = NameAndType        #299:#41      // mainArr5:()V
+  #382 = Methodref          #2.#381       // bcGen/Arrays/arrayTestCases$.mainArr5:()V
+  #383 = NameAndType        #307:#41      // mainArr6:()V
+  #384 = Methodref          #2.#383       // bcGen/Arrays/arrayTestCases$.mainArr6:()V
+  #385 = NameAndType        #313:#41      // mainArr7:()V
+  #386 = Methodref          #2.#385       // bcGen/Arrays/arrayTestCases$.mainArr7:()V
+  #387 = NameAndType        #319:#41      // mainArr8:()V
+  #388 = Methodref          #2.#387       // bcGen/Arrays/arrayTestCases$.mainArr8:()V
+  #389 = NameAndType        #35:#202      // hashState:()J
+  #390 = Methodref          #2.#389       // bcGen/Arrays/arrayTestCases$.hashState:()J
+  #391 = Utf8               runInt
+  #392 = Utf8               runMixed
+  #393 = NameAndType        #16:#198      // rng:()Lscala/util/Random;
+  #394 = Methodref          #2.#393       // bcGen/Arrays/arrayTestCases$.rng:()Lscala/util/Random;
+  #395 = Utf8               nextInt
+  #396 = Utf8               (I)I
+  #397 = NameAndType        #395:#396     // nextInt:(I)I
+  #398 = Methodref          #54.#397      // scala/util/Random.nextInt:(I)I
+  #399 = Utf8               java/lang/System
+  #400 = Class              #399          // java/lang/System
+  #401 = Utf8               nanoTime
+  #402 = NameAndType        #401:#202     // nanoTime:()J
+  #403 = Methodref          #400.#402     // java/lang/System.nanoTime:()J
+  #404 = Utf8               n
+  #405 = Utf8               is
+  #406 = Utf8               anys
+  #407 = Utf8               ds
+  #408 = Utf8               elses
+  #409 = NameAndType        #15:#65       // maxInt:()I
+  #410 = Methodref          #2.#409       // bcGen/Arrays/arrayTestCases$.maxInt:()I
+  #411 = Utf8               bcGen/Foo
+  #412 = Class              #411          // bcGen/Foo
+  #413 = Methodref          #412.#56      // bcGen/Foo."<init>":(I)V
+  #414 = Utf8               nextDouble
+  #415 = NameAndType        #414:#123     // nextDouble:()D
+  #416 = Methodref          #54.#415      // scala/util/Random.nextDouble:()D
+  #417 = Utf8               $init$$$anonfun$4
+  #418 = Utf8               (I)Ljava/lang/Object;
+  #419 = NameAndType        #395:#65      // nextInt:()I
+  #420 = Methodref          #54.#419      // scala/util/Random.nextInt:()I
+  #421 = Utf8               boxToDouble
+  #422 = Utf8               (D)Ljava/lang/Double;
+  #423 = NameAndType        #421:#422     // boxToDouble:(D)Ljava/lang/Double;
+  #424 = Methodref          #331.#423     // scala/runtime/BoxesRunTime.boxToDouble:(D)Ljava/lang/Double;
+  #425 = Utf8               unboxToInt
+  #426 = NameAndType        #425:#327     // unboxToInt:(Ljava/lang/Object;)I
+  #427 = Methodref          #331.#426     // scala/runtime/BoxesRunTime.unboxToInt:(Ljava/lang/Object;)I
+  #428 = NameAndType        #417:#418     // $init$$$anonfun$4:(I)Ljava/lang/Object;
+  #429 = Methodref          #2.#428       // bcGen/Arrays/arrayTestCases$.$init$$$anonfun$4:(I)Ljava/lang/Object;
+  #430 = Utf8               e
+  #431 = Long               23l
+  #433 = NameAndType        #37:#202      // hashMod:()J
+  #434 = Methodref          #2.#433       // bcGen/Arrays/arrayTestCases$.hashMod:()J
+  #435 = NameAndType        #203:#204     // hashState_$eq:(J)V
+  #436 = Methodref          #2.#435       // bcGen/Arrays/arrayTestCases$.hashState_$eq:(J)V
+  #437 = Utf8               id
+  #438 = NameAndType        #437:#65      // id:()I
+  #439 = Methodref          #412.#438     // bcGen/Foo.id:()I
+  #440 = Utf8               doubleToRawLongBits
+  #441 = Utf8               (D)J
+  #442 = NameAndType        #440:#441     // doubleToRawLongBits:(D)J
+  #443 = Methodref          #131.#442     // java/lang/Double.doubleToRawLongBits:(D)J
+  #444 = Utf8               D
+  #445 = Utf8               unboxToDouble
+  #446 = Utf8               (Ljava/lang/Object;)D
+  #447 = NameAndType        #445:#446     // unboxToDouble:(Ljava/lang/Object;)D
+  #448 = Methodref          #331.#447     // scala/runtime/BoxesRunTime.unboxToDouble:(Ljava/lang/Object;)D
+  #449 = Utf8               d
+  #450 = Utf8               $deserializeLambda$
+  #451 = Utf8               (Ljava/lang/invoke/SerializedLambda;)Ljava/lang/Object;
+  #452 = Utf8               scala/runtime/LambdaDeserialize
+  #453 = Class              #452          // scala/runtime/LambdaDeserialize
+  #454 = Utf8               bootstrap
+  #455 = Utf8               (Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/CallSite;
+  #456 = NameAndType        #454:#455     // bootstrap:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/CallSite;
+  #457 = Methodref          #453.#456     // scala/runtime/LambdaDeserialize.bootstrap:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/CallSite;
+  #458 = MethodHandle       6:#457        // REF_invokeStatic scala/runtime/LambdaDeserialize.bootstrap:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/CallSite;
+  #459 = Utf8               lambdaDeserialize
+  #460 = NameAndType        #459:#451     // lambdaDeserialize:(Ljava/lang/invoke/SerializedLambda;)Ljava/lang/Object;
+  #461 = InvokeDynamic      #15:#460      // #15:lambdaDeserialize:(Ljava/lang/invoke/SerializedLambda;)Ljava/lang/Object;
+  #462 = Utf8               Signature
+  #463 = Utf8               Code
+  #464 = Utf8               LineNumberTable
+  #465 = Utf8               LocalVariableTable
+  #466 = Utf8               InstructionTypeArguments
+  #467 = Utf8               MethodParameters
+  #468 = Utf8               MethodParameterType
+  #469 = Utf8               MethodTypeParameterCount
+  #470 = Utf8               StackMapTable
+  #471 = Utf8               InnerClasses
+  #472 = Utf8               SourceFile
+  #473 = Utf8               BootstrapMethods
+  #474 = Utf8               Scala
+{
+  private static final int size;
+    descriptor: I
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+
+  private static final int maxInt;
+    descriptor: I
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+
+  private static final scala.util.Random rng;
+    descriptor: Lscala/util/Random;
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+
+  private static final int[] intArr;
+    descriptor: [I
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #19                          // [I
+
+  private static final java.lang.Object[] objArr;
+    descriptor: [Ljava/lang/Object;
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #21                          // [Ljava/lang/Object;
+
+  private static final double[] doubleArr;
+    descriptor: [D
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #23                          // [D
+
+  private static final java.lang.Object[] intDoubleArr;
+    descriptor: [Ljava/lang/Object;
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #21                          // [Ljava/lang/Object;
+
+  private static final int[] shortArrInt;
+    descriptor: [I
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #19                          // [I
+
+  private static final double[] shortArrDouble;
+    descriptor: [D
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #23                          // [D
+
+  private static final java.lang.Object[] shortArrObj;
+    descriptor: [Ljava/lang/Object;
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #21                          // [Ljava/lang/Object;
+
+  private static final int[] shorArrIntCp;
+    descriptor: [I
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #19                          // [I
+
+  private static final double[] shorArrDoubleCp;
+    descriptor: [D
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #23                          // [D
+
+  private static final java.lang.Object[] shorArrObjCp;
+    descriptor: [Ljava/lang/Object;
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #21                          // [Ljava/lang/Object;
+
+  private static final int[] intArrCp;
+    descriptor: [I
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #19                          // [I
+
+  private static final java.lang.Object[] anyArrCp;
+    descriptor: [Ljava/lang/Object;
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #21                          // [Ljava/lang/Object;
+
+  private static final double[] doubleArrCp;
+    descriptor: [D
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #23                          // [D
+
+  private static final java.lang.Object[] intDoubleArrCp;
+    descriptor: [Ljava/lang/Object;
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+    Signature: #21                          // [Ljava/lang/Object;
+
+  private static long hashState;
+    descriptor: J
+    flags: (0x000a) ACC_PRIVATE, ACC_STATIC
+
+  private static final long hashMod;
+    descriptor: J
+    flags: (0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL
+
+  public static final bcGen.Arrays.arrayTestCases$ MODULE$;
+    descriptor: LbcGen/Arrays/arrayTestCases$;
+    flags: (0x0019) ACC_PUBLIC, ACC_STATIC, ACC_FINAL
+
+  private bcGen.Arrays.arrayTestCases$();
+    descriptor: ()V
+    flags: (0x0002) ACC_PRIVATE
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #43                 // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 5: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   LbcGen/Arrays/arrayTestCases$;
+
+  public static {};
+    descriptor: ()V
+    flags: (0x0009) ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=5, locals=0, args_size=0
+         0: new           #2                  // class bcGen/Arrays/arrayTestCases$
+         3: dup
+         4: invokespecial #46                 // Method "<init>":()V
+         7: putstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+        10: sipush        1000
+        13: putstatic     #50                 // Field size:I
+        16: sipush        10000
+        19: putstatic     #52                 // Field maxInt:I
+        22: new           #54                 // class scala/util/Random
+        25: dup
+        26: sipush        1234
+        29: invokespecial #57                 // Method scala/util/Random."<init>":(I)V
+        32: putstatic     #59                 // Field rng:Lscala/util/Random;
+        35: getstatic     #64                 // Field scala/Array$.MODULE$:Lscala/Array$;
+        38: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+        41: invokevirtual #67                 // Method size:()I
+        44: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+        47: invokedynamic #88,  0             // InvokeDynamic #0:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+        52: getstatic     #93                 // Field scala/reflect/ClassTag$.MODULE$:Lscala/reflect/ClassTag$;
+        55: getstatic     #99                 // Field java/lang/Integer.TYPE:Ljava/lang/Class;
+        58: invokevirtual #102                // Method scala/reflect/ClassTag$.apply:(Ljava/lang/Class;)Lscala/reflect/ClassTag;
+        61: invokevirtual #106                // Method scala/Array$.fill:(ILscala/Function0;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+        64: checkcast     #107                // class "[I"
+        67: putstatic     #109                // Field intArr:[I
+        70: getstatic     #64                 // Field scala/Array$.MODULE$:Lscala/Array$;
+        73: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+        76: invokevirtual #67                 // Method size:()I
+        79: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+        82: invokedynamic #114,  0            // InvokeDynamic #1:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+        87: getstatic     #93                 // Field scala/reflect/ClassTag$.MODULE$:Lscala/reflect/ClassTag$;
+        90: invokevirtual #118                // Method scala/reflect/ClassTag$.Any:()Lscala/reflect/ClassTag;
+        93: invokevirtual #106                // Method scala/Array$.fill:(ILscala/Function0;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+        96: checkcast     #119                // class "[Ljava/lang/Object;"
+        99: putstatic     #121                // Field objArr:[Ljava/lang/Object;
+       102: getstatic     #64                 // Field scala/Array$.MODULE$:Lscala/Array$;
+       105: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       108: invokevirtual #67                 // Method size:()I
+       111: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       114: invokedynamic #129,  0            // InvokeDynamic #2:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+       119: getstatic     #93                 // Field scala/reflect/ClassTag$.MODULE$:Lscala/reflect/ClassTag$;
+       122: getstatic     #132                // Field java/lang/Double.TYPE:Ljava/lang/Class;
+       125: invokevirtual #102                // Method scala/reflect/ClassTag$.apply:(Ljava/lang/Class;)Lscala/reflect/ClassTag;
+       128: invokevirtual #106                // Method scala/Array$.fill:(ILscala/Function0;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+       131: checkcast     #133                // class "[D"
+       134: putstatic     #135                // Field doubleArr:[D
+       137: getstatic     #64                 // Field scala/Array$.MODULE$:Lscala/Array$;
+       140: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       143: invokevirtual #67                 // Method size:()I
+       146: iconst_2
+       147: imul
+       148: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       151: invokedynamic #144,  0            // InvokeDynamic #3:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function1;
+       156: getstatic     #93                 // Field scala/reflect/ClassTag$.MODULE$:Lscala/reflect/ClassTag$;
+       159: invokevirtual #118                // Method scala/reflect/ClassTag$.Any:()Lscala/reflect/ClassTag;
+       162: invokevirtual #148                // Method scala/Array$.tabulate:(ILscala/Function1;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+       165: checkcast     #119                // class "[Ljava/lang/Object;"
+       168: putstatic     #150                // Field intDoubleArr:[Ljava/lang/Object;
+       171: getstatic     #64                 // Field scala/Array$.MODULE$:Lscala/Array$;
+       174: bipush        10
+       176: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       179: invokedynamic #155,  0            // InvokeDynamic #4:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+       184: getstatic     #93                 // Field scala/reflect/ClassTag$.MODULE$:Lscala/reflect/ClassTag$;
+       187: getstatic     #99                 // Field java/lang/Integer.TYPE:Ljava/lang/Class;
+       190: invokevirtual #102                // Method scala/reflect/ClassTag$.apply:(Ljava/lang/Class;)Lscala/reflect/ClassTag;
+       193: invokevirtual #106                // Method scala/Array$.fill:(ILscala/Function0;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+       196: checkcast     #107                // class "[I"
+       199: putstatic     #157                // Field shortArrInt:[I
+       202: getstatic     #64                 // Field scala/Array$.MODULE$:Lscala/Array$;
+       205: bipush        10
+       207: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       210: invokedynamic #162,  0            // InvokeDynamic #5:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+       215: getstatic     #93                 // Field scala/reflect/ClassTag$.MODULE$:Lscala/reflect/ClassTag$;
+       218: getstatic     #132                // Field java/lang/Double.TYPE:Ljava/lang/Class;
+       221: invokevirtual #102                // Method scala/reflect/ClassTag$.apply:(Ljava/lang/Class;)Lscala/reflect/ClassTag;
+       224: invokevirtual #106                // Method scala/Array$.fill:(ILscala/Function0;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+       227: checkcast     #133                // class "[D"
+       230: putstatic     #164                // Field shortArrDouble:[D
+       233: getstatic     #64                 // Field scala/Array$.MODULE$:Lscala/Array$;
+       236: bipush        10
+       238: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       241: invokedynamic #169,  0            // InvokeDynamic #6:apply:(LbcGen/Arrays/arrayTestCases$;)Lscala/Function0;
+       246: getstatic     #93                 // Field scala/reflect/ClassTag$.MODULE$:Lscala/reflect/ClassTag$;
+       249: invokevirtual #118                // Method scala/reflect/ClassTag$.Any:()Lscala/reflect/ClassTag;
+       252: invokevirtual #106                // Method scala/Array$.fill:(ILscala/Function0;Lscala/reflect/ClassTag;)Ljava/lang/Object;
+       255: checkcast     #119                // class "[Ljava/lang/Object;"
+       258: putstatic     #171                // Field shortArrObj:[Ljava/lang/Object;
+       261: bipush        10
+       263: newarray       int
+       265: checkcast     #107                // class "[I"
+       268: putstatic     #173                // Field shorArrIntCp:[I
+       271: bipush        10
+       273: newarray       double
+       275: checkcast     #133                // class "[D"
+       278: putstatic     #175                // Field shorArrDoubleCp:[D
+       281: bipush        10
+       283: anewarray     #4                  // class java/lang/Object
+       286: checkcast     #119                // class "[Ljava/lang/Object;"
+       289: putstatic     #177                // Field shorArrObjCp:[Ljava/lang/Object;
+       292: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       295: invokevirtual #67                 // Method size:()I
+       298: newarray       int
+       300: checkcast     #107                // class "[I"
+       303: putstatic     #179                // Field intArrCp:[I
+       306: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       309: invokevirtual #67                 // Method size:()I
+       312: anewarray     #4                  // class java/lang/Object
+       315: checkcast     #119                // class "[Ljava/lang/Object;"
+       318: putstatic     #181                // Field anyArrCp:[Ljava/lang/Object;
+       321: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       324: invokevirtual #67                 // Method size:()I
+       327: newarray       double
+       329: checkcast     #133                // class "[D"
+       332: putstatic     #183                // Field doubleArrCp:[D
+       335: getstatic     #48                 // Field MODULE$:LbcGen/Arrays/arrayTestCases$;
+       338: invokevirtual #67                 // Method size:()I
+       341: iconst_2
+       342: imul
+       343: anewarray     #4                  // class java/lang/Object
+       346: checkcast     #119                // class "[Ljava/lang/Object;"
+       349: putstatic     #185                // Field intDoubleArrCp:[Ljava/lang/Object;
+       352: lconst_0
+       353: putstatic     #187                // Field hashState:J
+       356: ldc2_w        #188                // long 998244353l
+       359: putstatic     #191                // Field hashMod:J
+       362: return
+      LineNumberTable:
+        line 6: 0
+        line 7: 16
+        line 8: 22
+        line 9: 35
+        line 10: 70
+        line 11: 102
+        line 12: 137
+        line 14: 156
+        line 12: 168
+        line 15: 171
+        line 16: 202
+        line 17: 233
+        line 18: 261
+        line 19: 271
+        line 20: 281
+        line 21: 292
+        line 22: 306
+        line 23: 321
+        line 24: 335
+        line 26: 352
+        line 27: 356
+      InstructionTypeArguments: length = 0x65 (unknown attribute)
+       00 0B 00 3A 00 01 49 00 00 00 00 00 3D 00 01 49
+       00 00 00 00 00 5D 00 01 4C 00 00 00 00 00 7D 00
+       01 44 00 00 00 00 00 80 00 01 44 00 00 00 00 00
+       A2 00 01 4C 00 00 00 00 00 BE 00 01 49 00 00 00
+       00 00 C1 00 01 49 00 00 00 00 00 DD 00 01 44 00
+       00 00 00 00 E0 00 01 44 00 00 00 00 00 FC 00 01
+       4C 00 00 00 00
+
+  private java.lang.Object writeReplace();
+    descriptor: ()Ljava/lang/Object;
+    flags: (0x0002) ACC_PRIVATE
+    Code:
+      stack=3, locals=1, args_size=1
+         0: new           #194                // class scala/runtime/ModuleSerializationProxy
+         3: dup
+         4: ldc           #2                  // class bcGen/Arrays/arrayTestCases$
+         6: invokespecial #197                // Method scala/runtime/ModuleSerializationProxy."<init>":(Ljava/lang/Class;)V
+         9: areturn
+      LineNumberTable:
+        line 5: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      10     0  this   LbcGen/Arrays/arrayTestCases$;
+
+  public int size();
+    descriptor: ()I
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #50                 // Field size:I
+         3: ireturn
+      LineNumberTable:
+        line 6: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #65                          // ()I
+
+  public int maxInt();
+    descriptor: ()I
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #52                 // Field maxInt:I
+         3: ireturn
+      LineNumberTable:
+        line 7: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #65                          // ()I
+
+  public scala.util.Random rng();
+    descriptor: ()Lscala/util/Random;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #59                 // Field rng:Lscala/util/Random;
+         3: areturn
+      LineNumberTable:
+        line 8: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #198                         // ()Lscala/util/Random;
+
+  public int[] intArr();
+    descriptor: ()[I
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #109                // Field intArr:[I
+         3: areturn
+      LineNumberTable:
+        line 9: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #199                         // ()[I
+
+  public java.lang.Object[] objArr();
+    descriptor: ()[Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #121                // Field objArr:[Ljava/lang/Object;
+         3: areturn
+      LineNumberTable:
+        line 10: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #200                         // ()[Ljava/lang/Object;
+
+  public double[] doubleArr();
+    descriptor: ()[D
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #135                // Field doubleArr:[D
+         3: areturn
+      LineNumberTable:
+        line 11: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #201                         // ()[D
+
+  public java.lang.Object[] intDoubleArr();
+    descriptor: ()[Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #150                // Field intDoubleArr:[Ljava/lang/Object;
+         3: areturn
+      LineNumberTable:
+        line 12: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #200                         // ()[Ljava/lang/Object;
+
+  public int[] shortArrInt();
+    descriptor: ()[I
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #157                // Field shortArrInt:[I
+         3: areturn
+      LineNumberTable:
+        line 15: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #199                         // ()[I
+
+  public double[] shortArrDouble();
+    descriptor: ()[D
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #164                // Field shortArrDouble:[D
+         3: areturn
+      LineNumberTable:
+        line 16: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #201                         // ()[D
+
+  public java.lang.Object[] shortArrObj();
+    descriptor: ()[Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #171                // Field shortArrObj:[Ljava/lang/Object;
+         3: areturn
+      LineNumberTable:
+        line 17: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #200                         // ()[Ljava/lang/Object;
+
+  public int[] shorArrIntCp();
+    descriptor: ()[I
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #173                // Field shorArrIntCp:[I
+         3: areturn
+      LineNumberTable:
+        line 18: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #199                         // ()[I
+
+  public double[] shorArrDoubleCp();
+    descriptor: ()[D
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #175                // Field shorArrDoubleCp:[D
+         3: areturn
+      LineNumberTable:
+        line 19: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #201                         // ()[D
+
+  public java.lang.Object[] shorArrObjCp();
+    descriptor: ()[Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #177                // Field shorArrObjCp:[Ljava/lang/Object;
+         3: areturn
+      LineNumberTable:
+        line 20: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #200                         // ()[Ljava/lang/Object;
+
+  public int[] intArrCp();
+    descriptor: ()[I
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #179                // Field intArrCp:[I
+         3: areturn
+      LineNumberTable:
+        line 21: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #199                         // ()[I
+
+  public java.lang.Object[] anyArrCp();
+    descriptor: ()[Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #181                // Field anyArrCp:[Ljava/lang/Object;
+         3: areturn
+      LineNumberTable:
+        line 22: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #200                         // ()[Ljava/lang/Object;
+
+  public double[] doubleArrCp();
+    descriptor: ()[D
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #183                // Field doubleArrCp:[D
+         3: areturn
+      LineNumberTable:
+        line 23: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #201                         // ()[D
+
+  public java.lang.Object[] intDoubleArrCp();
+    descriptor: ()[Ljava/lang/Object;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: getstatic     #185                // Field intDoubleArrCp:[Ljava/lang/Object;
+         3: areturn
+      LineNumberTable:
+        line 24: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #200                         // ()[Ljava/lang/Object;
+
+  public long hashState();
+    descriptor: ()J
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: getstatic     #187                // Field hashState:J
+         3: lreturn
+      LineNumberTable:
+        line 26: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #202                         // ()J
+
+  public void hashState_$eq(long);
+    descriptor: (J)V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=3, args_size=2
+         0: lload_1
+         1: putstatic     #187                // Field hashState:J
+         4: return
+      LineNumberTable:
+        line 26: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   LbcGen/Arrays/arrayTestCases$;
+            0       5     1   x$1   J
+    MethodParameters:
+      Name                           Flags
+      x$1                            final
+
+  public long hashMod();
+    descriptor: ()J
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: getstatic     #191                // Field hashMod:J
+         3: lreturn
+      LineNumberTable:
+        line 27: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       4     0  this   LbcGen/Arrays/arrayTestCases$;
+    Signature: #202                         // ()J
+
+  public void mainArr1();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=1
+         0: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+         3: aload_0
+         4: invokevirtual #213                // Method intArr:()[I
+         7: aload_0
+         8: invokevirtual #215                // Method intArrCp:()[I
+        11: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        14: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        17: aload_0
+        18: invokevirtual #215                // Method intArrCp:()[I
+        21: invokevirtual #228                // Method scala/Predef$.intArrayOps:([I)Ljava/lang/Object;
+        24: astore_1
+        25: getstatic     #233                // Field scala/collection/ArrayOps$.MODULE$:Lscala/collection/ArrayOps$;
+        28: aload_1
+        29: aload_0
+        30: invokedynamic #242,  0            // InvokeDynamic #7:apply$mcVI$sp:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVI$sp;
+        35: invokevirtual #246                // Method scala/collection/ArrayOps$.foreach$extension:(Ljava/lang/Object;Lscala/Function1;)V
+        38: return
+      LineNumberTable:
+        line 29: 0
+        line 30: 14
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      39     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0x19 (unknown attribute)
+       00 02 00 0B 00 01 49 00 00 00 00 00 23 00 02 4C
+       00 00 00 00 49 00 00 00 00
+
+  public void mainArr2();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=1
+         0: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+         3: aload_0
+         4: invokevirtual #249                // Method objArr:()[Ljava/lang/Object;
+         7: aload_0
+         8: invokevirtual #251                // Method anyArrCp:()[Ljava/lang/Object;
+        11: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        14: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        17: aload_0
+        18: invokevirtual #251                // Method anyArrCp:()[Ljava/lang/Object;
+        21: invokevirtual #254                // Method scala/Predef$.genericArrayOps:(Ljava/lang/Object;)Ljava/lang/Object;
+        24: astore_1
+        25: getstatic     #233                // Field scala/collection/ArrayOps$.MODULE$:Lscala/collection/ArrayOps$;
+        28: aload_1
+        29: aload_0
+        30: invokedynamic #264,  0            // InvokeDynamic #8:applyVoid:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/function/JProcedure1;
+        35: invokevirtual #246                // Method scala/collection/ArrayOps$.foreach$extension:(Ljava/lang/Object;Lscala/Function1;)V
+        38: return
+      LineNumberTable:
+        line 35: 0
+        line 36: 14
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      39     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0x22 (unknown attribute)
+       00 03 00 0B 00 01 4C 00 00 00 00 00 15 00 01 4C
+       00 00 00 00 00 23 00 02 4C 00 00 00 00 4C 00 00
+       00 00
+
+  public void mainArr3();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=1
+         0: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+         3: aload_0
+         4: invokevirtual #267                // Method doubleArr:()[D
+         7: aload_0
+         8: invokevirtual #269                // Method doubleArrCp:()[D
+        11: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        14: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        17: aload_0
+        18: invokevirtual #269                // Method doubleArrCp:()[D
+        21: invokevirtual #273                // Method scala/Predef$.doubleArrayOps:([D)Ljava/lang/Object;
+        24: astore_1
+        25: getstatic     #233                // Field scala/collection/ArrayOps$.MODULE$:Lscala/collection/ArrayOps$;
+        28: aload_1
+        29: aload_0
+        30: invokedynamic #283,  0            // InvokeDynamic #9:apply$mcVD$sp:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVD$sp;
+        35: invokevirtual #246                // Method scala/collection/ArrayOps$.foreach$extension:(Ljava/lang/Object;Lscala/Function1;)V
+        38: return
+      LineNumberTable:
+        line 41: 0
+        line 42: 14
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      39     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0x19 (unknown attribute)
+       00 02 00 0B 00 01 44 00 00 00 00 00 23 00 02 4C
+       00 00 00 00 44 00 00 00 00
+
+  public void mainArr4();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=1
+         0: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+         3: aload_0
+         4: invokevirtual #286                // Method intDoubleArr:()[Ljava/lang/Object;
+         7: aload_0
+         8: invokevirtual #288                // Method intDoubleArrCp:()[Ljava/lang/Object;
+        11: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        14: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        17: aload_0
+        18: invokevirtual #288                // Method intDoubleArrCp:()[Ljava/lang/Object;
+        21: invokevirtual #254                // Method scala/Predef$.genericArrayOps:(Ljava/lang/Object;)Ljava/lang/Object;
+        24: astore_1
+        25: getstatic     #233                // Field scala/collection/ArrayOps$.MODULE$:Lscala/collection/ArrayOps$;
+        28: aload_1
+        29: aload_0
+        30: invokedynamic #293,  0            // InvokeDynamic #10:applyVoid:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/function/JProcedure1;
+        35: invokevirtual #246                // Method scala/collection/ArrayOps$.foreach$extension:(Ljava/lang/Object;Lscala/Function1;)V
+        38: return
+      LineNumberTable:
+        line 47: 0
+        line 48: 14
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      39     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0x22 (unknown attribute)
+       00 03 00 0B 00 01 4C 00 00 00 00 00 15 00 01 4C
+       00 00 00 00 00 23 00 02 4C 00 00 00 00 4C 00 00
+       00 00
+
+  public <T extends java.lang.Object> void genericCopy(java.lang.Object, java.lang.Object);
+    descriptor: (Ljava/lang/Object;Ljava/lang/Object;)V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=3, args_size=3
+         0: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+         3: aload_1
+         4: aload_2
+         5: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+         8: return
+      LineNumberTable:
+        line 57: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       9     0  this   LbcGen/Arrays/arrayTestCases$;
+            0       9     1   src   Ljava/lang/Object;
+            0       9     2   dst   Ljava/lang/Object;
+    Signature: #295                         // <T:Ljava/lang/Object;>(Ljava/lang/Object;Ljava/lang/Object;)V
+    MethodParameters:
+      Name                           Flags
+      src                            final
+      dst                            final
+      InstructionTypeArguments: length = 0xB (unknown attribute)
+       00 01 00 05 00 01 4D 00 00 00 00
+      MethodParameterType: length = 0xC (unknown attribute)
+       00 02 6D 00 00 00 00 6D 00 00 00 00
+      MethodTypeParameterCount: length = 0x2 (unknown attribute)
+       00 01
+
+  public void mainArr5();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=1
+         0: aload_0
+         1: aload_0
+         2: invokevirtual #213                // Method intArr:()[I
+         5: aload_0
+         6: invokevirtual #215                // Method intArrCp:()[I
+         9: invokevirtual #301                // Method genericCopy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        12: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        15: aload_0
+        16: invokevirtual #215                // Method intArrCp:()[I
+        19: invokevirtual #228                // Method scala/Predef$.intArrayOps:([I)Ljava/lang/Object;
+        22: astore_1
+        23: getstatic     #233                // Field scala/collection/ArrayOps$.MODULE$:Lscala/collection/ArrayOps$;
+        26: aload_1
+        27: aload_0
+        28: invokedynamic #306,  0            // InvokeDynamic #11:apply$mcVI$sp:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVI$sp;
+        33: invokevirtual #246                // Method scala/collection/ArrayOps$.foreach$extension:(Ljava/lang/Object;Lscala/Function1;)V
+        36: return
+      LineNumberTable:
+        line 61: 0
+        line 62: 12
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      37     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0x19 (unknown attribute)
+       00 02 00 09 00 01 49 00 00 00 00 00 21 00 02 4C
+       00 00 00 00 49 00 00 00 00
+
+  public void mainArr6();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=1
+         0: aload_0
+         1: aload_0
+         2: invokevirtual #249                // Method objArr:()[Ljava/lang/Object;
+         5: aload_0
+         6: invokevirtual #251                // Method anyArrCp:()[Ljava/lang/Object;
+         9: invokevirtual #301                // Method genericCopy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        12: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        15: aload_0
+        16: invokevirtual #251                // Method anyArrCp:()[Ljava/lang/Object;
+        19: invokevirtual #254                // Method scala/Predef$.genericArrayOps:(Ljava/lang/Object;)Ljava/lang/Object;
+        22: astore_1
+        23: getstatic     #233                // Field scala/collection/ArrayOps$.MODULE$:Lscala/collection/ArrayOps$;
+        26: aload_1
+        27: aload_0
+        28: invokedynamic #312,  0            // InvokeDynamic #12:applyVoid:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/function/JProcedure1;
+        33: invokevirtual #246                // Method scala/collection/ArrayOps$.foreach$extension:(Ljava/lang/Object;Lscala/Function1;)V
+        36: return
+      LineNumberTable:
+        line 67: 0
+        line 68: 12
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      37     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0x22 (unknown attribute)
+       00 03 00 09 00 01 4C 00 00 00 00 00 13 00 01 4C
+       00 00 00 00 00 21 00 02 4C 00 00 00 00 4C 00 00
+       00 00
+
+  public void mainArr7();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=1
+         0: aload_0
+         1: aload_0
+         2: invokevirtual #267                // Method doubleArr:()[D
+         5: aload_0
+         6: invokevirtual #269                // Method doubleArrCp:()[D
+         9: invokevirtual #301                // Method genericCopy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        12: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        15: aload_0
+        16: invokevirtual #269                // Method doubleArrCp:()[D
+        19: invokevirtual #273                // Method scala/Predef$.doubleArrayOps:([D)Ljava/lang/Object;
+        22: astore_1
+        23: getstatic     #233                // Field scala/collection/ArrayOps$.MODULE$:Lscala/collection/ArrayOps$;
+        26: aload_1
+        27: aload_0
+        28: invokedynamic #318,  0            // InvokeDynamic #13:apply$mcVD$sp:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/java8/JFunction1$mcVD$sp;
+        33: invokevirtual #246                // Method scala/collection/ArrayOps$.foreach$extension:(Ljava/lang/Object;Lscala/Function1;)V
+        36: return
+      LineNumberTable:
+        line 73: 0
+        line 74: 12
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      37     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0x19 (unknown attribute)
+       00 02 00 09 00 01 44 00 00 00 00 00 21 00 02 4C
+       00 00 00 00 44 00 00 00 00
+
+  public void mainArr8();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=2, args_size=1
+         0: aload_0
+         1: aload_0
+         2: invokevirtual #286                // Method intDoubleArr:()[Ljava/lang/Object;
+         5: aload_0
+         6: invokevirtual #288                // Method intDoubleArrCp:()[Ljava/lang/Object;
+         9: invokevirtual #301                // Method genericCopy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        12: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        15: aload_0
+        16: invokevirtual #288                // Method intDoubleArrCp:()[Ljava/lang/Object;
+        19: invokevirtual #254                // Method scala/Predef$.genericArrayOps:(Ljava/lang/Object;)Ljava/lang/Object;
+        22: astore_1
+        23: getstatic     #233                // Field scala/collection/ArrayOps$.MODULE$:Lscala/collection/ArrayOps$;
+        26: aload_1
+        27: aload_0
+        28: invokedynamic #324,  0            // InvokeDynamic #14:applyVoid:(LbcGen/Arrays/arrayTestCases$;)Lscala/runtime/function/JProcedure1;
+        33: invokevirtual #246                // Method scala/collection/ArrayOps$.foreach$extension:(Ljava/lang/Object;Lscala/Function1;)V
+        36: return
+      LineNumberTable:
+        line 79: 0
+        line 80: 12
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      37     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0x22 (unknown attribute)
+       00 03 00 09 00 01 4C 00 00 00 00 00 13 00 01 4C
+       00 00 00 00 00 21 00 02 4C 00 00 00 00 4C 00 00
+       00 00
+
+  public void runChecksumInt();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=4, locals=5, args_size=1
+         0: sipush        10000
+         3: istore_1
+         4: iconst_1
+         5: istore_2
+         6: lconst_0
+         7: lstore_3
+         8: iload_2
+         9: iload_1
+        10: if_icmpgt     33
+        13: lload_3
+        14: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+        17: aload_0
+        18: invokevirtual #213                // Method intArr:()[I
+        21: invokevirtual #329                // Method bcGen/Arrays/ArrayTestLib$.checksum:(Ljava/lang/Object;)I
+        24: i2l
+        25: ladd
+        26: lstore_3
+        27: iinc          2, 1
+        30: goto          8
+        33: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        36: lload_3
+        37: invokestatic  #335                // Method scala/runtime/BoxesRunTime.boxToLong:(J)Ljava/lang/Long;
+        40: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+        43: return
+      StackMapTable: number_of_entries = 2
+        frame_type = 254 /* append */
+          offset_delta = 8
+          locals = [ int, int, long ]
+        frame_type = 24 /* same */
+      LineNumberTable:
+        line 89: 0
+        line 90: 4
+        line 91: 6
+        line 92: 8
+        line 93: 13
+        line 94: 27
+        line 95: 33
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            4      40     1 repeat   I
+            6      38     2     i   I
+            8      36     3   sum   J
+            0      44     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0xB (unknown attribute)
+       00 01 00 15 00 01 49 00 00 00 00
+
+  public void runChecksumInt2();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=4, locals=4, args_size=1
+         0: iconst_0
+         1: istore_1
+         2: iload_1
+         3: aload_0
+         4: invokevirtual #344                // Method shortArrInt:()[I
+         7: arraylength
+         8: if_icmpge     66
+        11: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        14: new           #346                // class java/lang/StringBuilder
+        17: dup
+        18: ldc_w         #347                // int 3
+        21: invokespecial #348                // Method java/lang/StringBuilder."<init>":(I)V
+        24: aload_0
+        25: invokevirtual #344                // Method shortArrInt:()[I
+        28: iload_1
+        29: iaload
+        30: invokevirtual #352                // Method java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        33: ldc_w         #354                // String  :
+        36: invokevirtual #357                // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        39: aload_0
+        40: invokevirtual #344                // Method shortArrInt:()[I
+        43: iload_1
+        44: iaload
+        45: invokestatic  #361                // Method scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+        48: invokestatic  #366                // Method scala/runtime/Statics.anyHash:(Ljava/lang/Object;)I
+        51: invokevirtual #352                // Method java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        54: invokevirtual #370                // Method java/lang/StringBuilder.toString:()Ljava/lang/String;
+        57: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+        60: iinc          1, 1
+        63: goto          2
+        66: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+        69: aload_0
+        70: invokevirtual #344                // Method shortArrInt:()[I
+        73: invokevirtual #329                // Method bcGen/Arrays/ArrayTestLib$.checksum:(Ljava/lang/Object;)I
+        76: istore_2
+        77: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+        80: iload_2
+        81: invokestatic  #361                // Method scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+        84: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+        87: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+        90: aload_0
+        91: invokevirtual #344                // Method shortArrInt:()[I
+        94: invokevirtual #329                // Method bcGen/Arrays/ArrayTestLib$.checksum:(Ljava/lang/Object;)I
+        97: istore_3
+        98: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+       101: iload_3
+       102: invokestatic  #361                // Method scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+       105: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+       108: return
+      StackMapTable: number_of_entries = 2
+        frame_type = 252 /* append */
+          offset_delta = 2
+          locals = [ int ]
+        frame_type = 63 /* same */
+      LineNumberTable:
+        line 98: 0
+        line 99: 2
+        line 100: 11
+        line 101: 60
+        line 103: 66
+        line 104: 77
+        line 105: 87
+        line 106: 98
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            2     107     1     i   I
+           77      32     2   sum   I
+           98      11     3  sum2   I
+            0     109     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0x14 (unknown attribute)
+       00 02 00 47 00 01 49 00 00 00 00 00 5C 00 01 49
+       00 00 00 00
+
+  public void runAllArr();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=3, args_size=1
+         0: sipush        1000
+         3: istore_1
+         4: iconst_1
+         5: istore_2
+         6: iload_2
+         7: iload_1
+         8: if_icmpgt     21
+        11: aload_0
+        12: invokevirtual #374                // Method mainArr1:()V
+        15: iinc          2, 1
+        18: goto          6
+        21: iconst_1
+        22: istore_2
+        23: iload_2
+        24: iload_1
+        25: if_icmpgt     38
+        28: aload_0
+        29: invokevirtual #376                // Method mainArr2:()V
+        32: iinc          2, 1
+        35: goto          23
+        38: iconst_1
+        39: istore_2
+        40: iload_2
+        41: iload_1
+        42: if_icmpgt     55
+        45: aload_0
+        46: invokevirtual #378                // Method mainArr3:()V
+        49: iinc          2, 1
+        52: goto          40
+        55: iconst_1
+        56: istore_2
+        57: iload_2
+        58: iload_1
+        59: if_icmpgt     72
+        62: aload_0
+        63: invokevirtual #380                // Method mainArr4:()V
+        66: iinc          2, 1
+        69: goto          57
+        72: iconst_1
+        73: istore_2
+        74: iload_2
+        75: iload_1
+        76: if_icmpgt     89
+        79: aload_0
+        80: invokevirtual #382                // Method mainArr5:()V
+        83: iinc          2, 1
+        86: goto          74
+        89: iconst_1
+        90: istore_2
+        91: iload_2
+        92: iload_1
+        93: if_icmpgt     106
+        96: aload_0
+        97: invokevirtual #384                // Method mainArr6:()V
+       100: iinc          2, 1
+       103: goto          91
+       106: iconst_1
+       107: istore_2
+       108: iload_2
+       109: iload_1
+       110: if_icmpgt     123
+       113: aload_0
+       114: invokevirtual #386                // Method mainArr7:()V
+       117: iinc          2, 1
+       120: goto          108
+       123: iconst_1
+       124: istore_2
+       125: iload_2
+       126: iload_1
+       127: if_icmpgt     140
+       130: aload_0
+       131: invokevirtual #388                // Method mainArr8:()V
+       134: iinc          2, 1
+       137: goto          125
+       140: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+       143: aload_0
+       144: invokevirtual #390                // Method hashState:()J
+       147: invokestatic  #335                // Method scala/runtime/BoxesRunTime.boxToLong:(J)Ljava/lang/Long;
+       150: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+       153: return
+      StackMapTable: number_of_entries = 16
+        frame_type = 253 /* append */
+          offset_delta = 6
+          locals = [ int, int ]
+        frame_type = 14 /* same */
+        frame_type = 1 /* same */
+        frame_type = 14 /* same */
+        frame_type = 1 /* same */
+        frame_type = 14 /* same */
+        frame_type = 1 /* same */
+        frame_type = 14 /* same */
+        frame_type = 1 /* same */
+        frame_type = 14 /* same */
+        frame_type = 1 /* same */
+        frame_type = 14 /* same */
+        frame_type = 1 /* same */
+        frame_type = 14 /* same */
+        frame_type = 1 /* same */
+        frame_type = 14 /* same */
+      LineNumberTable:
+        line 109: 0
+        line 110: 4
+        line 111: 6
+        line 112: 11
+        line 113: 15
+        line 115: 21
+        line 116: 23
+        line 117: 28
+        line 118: 32
+        line 120: 38
+        line 121: 40
+        line 122: 45
+        line 123: 49
+        line 125: 55
+        line 126: 57
+        line 127: 62
+        line 128: 66
+        line 130: 72
+        line 131: 74
+        line 132: 79
+        line 133: 83
+        line 135: 89
+        line 136: 91
+        line 137: 96
+        line 138: 100
+        line 140: 106
+        line 141: 108
+        line 142: 113
+        line 143: 117
+        line 145: 123
+        line 146: 125
+        line 147: 130
+        line 148: 134
+        line 150: 140
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            4     150     1 repeat   I
+            6     148     2     i   I
+            0     154     0  this   LbcGen/Arrays/arrayTestCases$;
+
+  public void runInt();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=3, args_size=1
+         0: sipush        10000
+         3: istore_1
+         4: iconst_1
+         5: istore_2
+         6: iload_2
+         7: iload_1
+         8: if_icmpgt     31
+        11: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+        14: aload_0
+        15: invokevirtual #213                // Method intArr:()[I
+        18: aload_0
+        19: invokevirtual #215                // Method intArrCp:()[I
+        22: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        25: iinc          2, 1
+        28: goto          6
+        31: return
+      StackMapTable: number_of_entries = 2
+        frame_type = 253 /* append */
+          offset_delta = 6
+          locals = [ int, int ]
+        frame_type = 24 /* same */
+      LineNumberTable:
+        line 153: 0
+        line 154: 4
+        line 155: 6
+        line 156: 11
+        line 157: 25
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            4      28     1 repeat   I
+            6      26     2     i   I
+            0      32     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0xB (unknown attribute)
+       00 01 00 16 00 01 49 00 00 00 00
+
+  public void runMixed();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=9, args_size=1
+         0: sipush        20000
+         3: istore_1
+         4: iconst_1
+         5: istore_2
+         6: iconst_0
+         7: istore_3
+         8: iconst_0
+         9: istore        4
+        11: iconst_0
+        12: istore        5
+        14: iconst_0
+        15: istore        6
+        17: iload_2
+        18: iload_1
+        19: if_icmpgt     133
+        22: aload_0
+        23: invokevirtual #394                // Method rng:()Lscala/util/Random;
+        26: iconst_4
+        27: invokevirtual #398                // Method scala/util/Random.nextInt:(I)I
+        30: istore        7
+        32: iload         7
+        34: iconst_0
+        35: if_icmpne     58
+        38: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+        41: aload_0
+        42: invokevirtual #213                // Method intArr:()[I
+        45: aload_0
+        46: invokevirtual #215                // Method intArrCp:()[I
+        49: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        52: iinc          3, 1
+        55: goto          127
+        58: iload         7
+        60: iconst_1
+        61: if_icmpne     84
+        64: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+        67: aload_0
+        68: invokevirtual #249                // Method objArr:()[Ljava/lang/Object;
+        71: aload_0
+        72: invokevirtual #251                // Method anyArrCp:()[Ljava/lang/Object;
+        75: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+        78: iinc          4, 1
+        81: goto          127
+        84: iload         7
+        86: iconst_2
+        87: if_icmpne     110
+        90: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+        93: aload_0
+        94: invokevirtual #267                // Method doubleArr:()[D
+        97: aload_0
+        98: invokevirtual #269                // Method doubleArrCp:()[D
+       101: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+       104: iinc          5, 1
+       107: goto          127
+       110: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+       113: aload_0
+       114: invokevirtual #286                // Method intDoubleArr:()[Ljava/lang/Object;
+       117: aload_0
+       118: invokevirtual #288                // Method intDoubleArrCp:()[Ljava/lang/Object;
+       121: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+       124: iinc          6, 1
+       127: iinc          2, 1
+       130: goto          17
+       133: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+       136: invokestatic  #403                // Method java/lang/System.nanoTime:()J
+       139: invokestatic  #335                // Method scala/runtime/BoxesRunTime.boxToLong:(J)Ljava/lang/Long;
+       142: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+       145: iconst_1
+       146: istore_2
+       147: iconst_0
+       148: istore_3
+       149: iconst_0
+       150: istore        4
+       152: iconst_0
+       153: istore        5
+       155: iconst_0
+       156: istore        6
+       158: iload_2
+       159: iload_1
+       160: if_icmpgt     274
+       163: aload_0
+       164: invokevirtual #394                // Method rng:()Lscala/util/Random;
+       167: iconst_4
+       168: invokevirtual #398                // Method scala/util/Random.nextInt:(I)I
+       171: istore        8
+       173: iload         8
+       175: iconst_0
+       176: if_icmpne     199
+       179: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+       182: aload_0
+       183: invokevirtual #213                // Method intArr:()[I
+       186: aload_0
+       187: invokevirtual #215                // Method intArrCp:()[I
+       190: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+       193: iinc          3, 1
+       196: goto          268
+       199: iload         8
+       201: iconst_1
+       202: if_icmpne     225
+       205: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+       208: aload_0
+       209: invokevirtual #249                // Method objArr:()[Ljava/lang/Object;
+       212: aload_0
+       213: invokevirtual #251                // Method anyArrCp:()[Ljava/lang/Object;
+       216: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+       219: iinc          4, 1
+       222: goto          268
+       225: iload         8
+       227: iconst_2
+       228: if_icmpne     251
+       231: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+       234: aload_0
+       235: invokevirtual #267                // Method doubleArr:()[D
+       238: aload_0
+       239: invokevirtual #269                // Method doubleArrCp:()[D
+       242: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+       245: iinc          5, 1
+       248: goto          268
+       251: getstatic     #211                // Field bcGen/Arrays/ArrayTestLib$.MODULE$:LbcGen/Arrays/ArrayTestLib$;
+       254: aload_0
+       255: invokevirtual #286                // Method intDoubleArr:()[Ljava/lang/Object;
+       258: aload_0
+       259: invokevirtual #288                // Method intDoubleArrCp:()[Ljava/lang/Object;
+       262: invokevirtual #219                // Method bcGen/Arrays/ArrayTestLib$.copy:(Ljava/lang/Object;Ljava/lang/Object;)V
+       265: iinc          6, 1
+       268: iinc          2, 1
+       271: goto          158
+       274: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+       277: iload_3
+       278: invokestatic  #361                // Method scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+       281: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+       284: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+       287: iload         4
+       289: invokestatic  #361                // Method scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+       292: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+       295: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+       298: iload         5
+       300: invokestatic  #361                // Method scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+       303: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+       306: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+       309: iload         6
+       311: invokestatic  #361                // Method scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+       314: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+       317: getstatic     #224                // Field scala/Predef$.MODULE$:Lscala/Predef$;
+       320: invokestatic  #403                // Method java/lang/System.nanoTime:()J
+       323: invokestatic  #335                // Method scala/runtime/BoxesRunTime.boxToLong:(J)Ljava/lang/Long;
+       326: invokevirtual #338                // Method scala/Predef$.println:(Ljava/lang/Object;)V
+       329: return
+      StackMapTable: number_of_entries = 12
+        frame_type = 255 /* full_frame */
+          offset_delta = 17
+          locals = [ class bcGen/Arrays/arrayTestCases$, int, int, int, int, int, int ]
+          stack = []
+        frame_type = 252 /* append */
+          offset_delta = 40
+          locals = [ int ]
+        frame_type = 25 /* same */
+        frame_type = 25 /* same */
+        frame_type = 16 /* same */
+        frame_type = 250 /* chop */
+          offset_delta = 5
+        frame_type = 24 /* same */
+        frame_type = 253 /* append */
+          offset_delta = 40
+          locals = [ top, int ]
+        frame_type = 25 /* same */
+        frame_type = 25 /* same */
+        frame_type = 16 /* same */
+        frame_type = 249 /* chop */
+          offset_delta = 5
+      LineNumberTable:
+        line 160: 0
+        line 161: 4
+        line 162: 6
+        line 163: 8
+        line 164: 11
+        line 165: 14
+        line 166: 17
+        line 167: 22
+        line 168: 32
+        line 169: 38
+        line 170: 52
+        line 171: 58
+        line 172: 64
+        line 173: 78
+        line 174: 84
+        line 175: 90
+        line 176: 104
+        line 178: 110
+        line 179: 124
+        line 181: 127
+        line 182: 133
+        line 183: 145
+        line 184: 147
+        line 185: 149
+        line 186: 152
+        line 187: 155
+        line 188: 158
+        line 189: 163
+        line 190: 173
+        line 191: 179
+        line 192: 193
+        line 193: 199
+        line 194: 205
+        line 195: 219
+        line 196: 225
+        line 197: 231
+        line 198: 245
+        line 200: 251
+        line 201: 265
+        line 203: 268
+        line 204: 274
+        line 205: 284
+        line 206: 295
+        line 207: 306
+        line 208: 317
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+           32     101     7     n   I
+          173     101     8     n   I
+            4     326     1 repeat   I
+            6     324     2     i   I
+            8     322     3    is   I
+           11     319     4  anys   I
+           14     316     5    ds   I
+           17     313     6 elses   I
+            0     330     0  this   LbcGen/Arrays/arrayTestCases$;
+      InstructionTypeArguments: length = 0x4A (unknown attribute)
+       00 08 00 31 00 01 49 00 00 00 00 00 4B 00 01 4C
+       00 00 00 00 00 65 00 01 44 00 00 00 00 00 79 00
+       01 4C 00 00 00 00 00 BE 00 01 49 00 00 00 00 00
+       D8 00 01 4C 00 00 00 00 00 F2 00 01 44 00 00 00
+       00 01 06 00 01 4C 00 00 00 00
+
+  private final int $init$$$anonfun$1();
+    descriptor: ()I
+    flags: (0x0012) ACC_PRIVATE, ACC_FINAL
+    Code:
+      stack=2, locals=1, args_size=1
+         0: aload_0
+         1: invokevirtual #394                // Method rng:()Lscala/util/Random;
+         4: aload_0
+         5: invokevirtual #410                // Method maxInt:()I
+         8: invokevirtual #398                // Method scala/util/Random.nextInt:(I)I
+        11: ireturn
+      LineNumberTable:
+        line 9: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      12     0  this   LbcGen/Arrays/arrayTestCases$;
+
+  private final java.lang.Object $init$$$anonfun$2();
+    descriptor: ()Ljava/lang/Object;
+    flags: (0x0012) ACC_PRIVATE, ACC_FINAL
+    Code:
+      stack=4, locals=1, args_size=1
+         0: new           #412                // class bcGen/Foo
+         3: dup
+         4: aload_0
+         5: invokevirtual #394                // Method rng:()Lscala/util/Random;
+         8: aload_0
+         9: invokevirtual #410                // Method maxInt:()I
+        12: invokevirtual #398                // Method scala/util/Random.nextInt:(I)I
+        15: invokespecial #413                // Method bcGen/Foo."<init>":(I)V
+        18: areturn
+      LineNumberTable:
+        line 10: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      19     0  this   LbcGen/Arrays/arrayTestCases$;
+
+  private final double $init$$$anonfun$3();
+    descriptor: ()D
+    flags: (0x0012) ACC_PRIVATE, ACC_FINAL
+    Code:
+      stack=2, locals=1, args_size=1
+         0: aload_0
+         1: invokevirtual #394                // Method rng:()Lscala/util/Random;
+         4: invokevirtual #416                // Method scala/util/Random.nextDouble:()D
+         7: dreturn
+      LineNumberTable:
+        line 11: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       8     0  this   LbcGen/Arrays/arrayTestCases$;
+
+  private final java.lang.Object $init$$$anonfun$4(int);
+    descriptor: (I)Ljava/lang/Object;
+    flags: (0x1012) ACC_PRIVATE, ACC_FINAL, ACC_SYNTHETIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0
+         1: invokevirtual #394                // Method rng:()Lscala/util/Random;
+         4: invokevirtual #420                // Method scala/util/Random.nextInt:()I
+         7: iconst_2
+         8: irem
+         9: iconst_0
+        10: if_icmpne     28
+        13: aload_0
+        14: invokevirtual #394                // Method rng:()Lscala/util/Random;
+        17: aload_0
+        18: invokevirtual #410                // Method maxInt:()I
+        21: invokevirtual #398                // Method scala/util/Random.nextInt:(I)I
+        24: invokestatic  #361                // Method scala/runtime/BoxesRunTime.boxToInteger:(I)Ljava/lang/Integer;
+        27: areturn
+        28: aload_0
+        29: invokevirtual #394                // Method rng:()Lscala/util/Random;
+        32: invokevirtual #416                // Method scala/util/Random.nextDouble:()D
+        35: invokestatic  #424                // Method scala/runtime/BoxesRunTime.boxToDouble:(D)Ljava/lang/Double;
+        38: areturn
+      StackMapTable: number_of_entries = 1
+        frame_type = 28 /* same */
+      LineNumberTable:
+        line 13: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      39     0  this   LbcGen/Arrays/arrayTestCases$;
+            0      39     1     i   I
+    MethodParameters:
+      Name                           Flags
+      i                              final
+
+  private java.lang.Object $init$$$anonfun$adapted$1(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Ljava/lang/Object;
+    flags: (0x1042) ACC_PRIVATE, ACC_BRIDGE, ACC_SYNTHETIC
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0
+         1: aload_1
+         2: invokestatic  #427                // Method scala/runtime/BoxesRunTime.unboxToInt:(Ljava/lang/Object;)I
+         5: invokespecial #429                // Method $init$$$anonfun$4:(I)Ljava/lang/Object;
+         8: areturn
+      LineNumberTable:
+        line 12: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       9     0  this   LbcGen/Arrays/arrayTestCases$;
+            0       9     1     i   Ljava/lang/Object;
+    MethodParameters:
+      Name                           Flags
+      i                              final
+
+  private final int $init$$$anonfun$5();
+    descriptor: ()I
+    flags: (0x0012) ACC_PRIVATE, ACC_FINAL
+    Code:
+      stack=2, locals=1, args_size=1
+         0: aload_0
+         1: invokevirtual #394                // Method rng:()Lscala/util/Random;
+         4: aload_0
+         5: invokevirtual #410                // Method maxInt:()I
+         8: invokevirtual #398                // Method scala/util/Random.nextInt:(I)I
+        11: ireturn
+      LineNumberTable:
+        line 15: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      12     0  this   LbcGen/Arrays/arrayTestCases$;
+
+  private final double $init$$$anonfun$6();
+    descriptor: ()D
+    flags: (0x0012) ACC_PRIVATE, ACC_FINAL
+    Code:
+      stack=2, locals=1, args_size=1
+         0: aload_0
+         1: invokevirtual #394                // Method rng:()Lscala/util/Random;
+         4: invokevirtual #416                // Method scala/util/Random.nextDouble:()D
+         7: dreturn
+      LineNumberTable:
+        line 16: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       8     0  this   LbcGen/Arrays/arrayTestCases$;
+
+  private final java.lang.Object $init$$$anonfun$7();
+    descriptor: ()Ljava/lang/Object;
+    flags: (0x0012) ACC_PRIVATE, ACC_FINAL
+    Code:
+      stack=4, locals=1, args_size=1
+         0: new           #412                // class bcGen/Foo
+         3: dup
+         4: aload_0
+         5: invokevirtual #394                // Method rng:()Lscala/util/Random;
+         8: aload_0
+         9: invokevirtual #410                // Method maxInt:()I
+        12: invokevirtual #398                // Method scala/util/Random.nextInt:(I)I
+        15: invokespecial #413                // Method bcGen/Foo."<init>":(I)V
+        18: areturn
+      LineNumberTable:
+        line 17: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      19     0  this   LbcGen/Arrays/arrayTestCases$;
+
+  private final void mainArr1$$anonfun$1(int);
+    descriptor: (I)V
+    flags: (0x1012) ACC_PRIVATE, ACC_FINAL, ACC_SYNTHETIC
+    Code:
+      stack=5, locals=2, args_size=2
+         0: aload_0
+         1: aload_0
+         2: invokevirtual #390                // Method hashState:()J
+         5: ldc2_w        #431                // long 23l
+         8: lmul
+         9: iload_1
+        10: i2l
+        11: ladd
+        12: aload_0
+        13: invokevirtual #434                // Method hashMod:()J
+        16: lrem
+        17: invokevirtual #436                // Method hashState_$eq:(J)V
+        20: return
+      LineNumberTable:
+        line 31: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      21     0  this   LbcGen/Arrays/arrayTestCases$;
+            0      21     1     e   I
+    MethodParameters:
+      Name                           Flags
+      e                              final
+
+  private final void mainArr2$$anonfun$1(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)V
+    flags: (0x1012) ACC_PRIVATE, ACC_FINAL, ACC_SYNTHETIC
+    Code:
+      stack=5, locals=2, args_size=2
+         0: aload_0
+         1: aload_0
+         2: invokevirtual #390                // Method hashState:()J
+         5: ldc2_w        #431                // long 23l
+         8: lmul
+         9: aload_1
+        10: checkcast     #412                // class bcGen/Foo
+        13: invokevirtual #439                // Method bcGen/Foo.id:()I
+        16: i2l
+        17: ladd
+        18: aload_0
+        19: invokevirtual #434                // Method hashMod:()J
+        22: lrem
+        23: invokevirtual #436                // Method hashState_$eq:(J)V
+        26: return
+      LineNumberTable:
+        line 37: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      27     0  this   LbcGen/Arrays/arrayTestCases$;
+            0      27     1     e   Ljava/lang/Object;
+    MethodParameters:
+      Name                           Flags
+      e                              final
+
+  private final void mainArr3$$anonfun$1(double);
+    descriptor: (D)V
+    flags: (0x1012) ACC_PRIVATE, ACC_FINAL, ACC_SYNTHETIC
+    Code:
+      stack=7, locals=3, args_size=2
+         0: aload_0
+         1: aload_0
+         2: invokevirtual #390                // Method hashState:()J
+         5: ldc2_w        #431                // long 23l
+         8: lmul
+         9: dload_1
+        10: invokestatic  #443                // Method java/lang/Double.doubleToRawLongBits:(D)J
+        13: aload_0
+        14: invokevirtual #434                // Method hashMod:()J
+        17: lrem
+        18: ladd
+        19: aload_0
+        20: invokevirtual #434                // Method hashMod:()J
+        23: lrem
+        24: invokevirtual #436                // Method hashState_$eq:(J)V
+        27: return
+      LineNumberTable:
+        line 43: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      28     0  this   LbcGen/Arrays/arrayTestCases$;
+            0      28     1     e   D
+    MethodParameters:
+      Name                           Flags
+      e                              final
+
+  private final void mainArr4$$anonfun$1(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)V
+    flags: (0x1012) ACC_PRIVATE, ACC_FINAL, ACC_SYNTHETIC
+    Code:
+      stack=7, locals=6, args_size=2
+         0: aload_1
+         1: astore_2
+         2: aload_2
+         3: instanceof    #95                 // class java/lang/Integer
+         6: ifeq          35
+         9: aload_2
+        10: invokestatic  #427                // Method scala/runtime/BoxesRunTime.unboxToInt:(Ljava/lang/Object;)I
+        13: istore_3
+        14: aload_0
+        15: aload_0
+        16: invokevirtual #390                // Method hashState:()J
+        19: ldc2_w        #431                // long 23l
+        22: lmul
+        23: iload_3
+        24: i2l
+        25: ladd
+        26: aload_0
+        27: invokevirtual #434                // Method hashMod:()J
+        30: lrem
+        31: invokevirtual #436                // Method hashState_$eq:(J)V
+        34: return
+        35: aload_2
+        36: instanceof    #131                // class java/lang/Double
+        39: ifeq          77
+        42: aload_2
+        43: invokestatic  #448                // Method scala/runtime/BoxesRunTime.unboxToDouble:(Ljava/lang/Object;)D
+        46: dstore        4
+        48: aload_0
+        49: aload_0
+        50: invokevirtual #390                // Method hashState:()J
+        53: ldc2_w        #431                // long 23l
+        56: lmul
+        57: dload         4
+        59: invokestatic  #443                // Method java/lang/Double.doubleToRawLongBits:(D)J
+        62: aload_0
+        63: invokevirtual #434                // Method hashMod:()J
+        66: lrem
+        67: ladd
+        68: aload_0
+        69: invokevirtual #434                // Method hashMod:()J
+        72: lrem
+        73: invokevirtual #436                // Method hashState_$eq:(J)V
+        76: return
+        77: return
+      StackMapTable: number_of_entries = 2
+        frame_type = 252 /* append */
+          offset_delta = 35
+          locals = [ class java/lang/Object ]
+        frame_type = 41 /* same */
+      LineNumberTable:
+        line 49: 0
+        line 50: 2
+        line 51: 35
+        line 52: 77
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+           14      21     3     i   I
+           48      29     4     d   D
+            0      78     0  this   LbcGen/Arrays/arrayTestCases$;
+            0      78     1     e   Ljava/lang/Object;
+    MethodParameters:
+      Name                           Flags
+      e                              final
+
+  private final void mainArr5$$anonfun$1(int);
+    descriptor: (I)V
+    flags: (0x1012) ACC_PRIVATE, ACC_FINAL, ACC_SYNTHETIC
+    Code:
+      stack=5, locals=2, args_size=2
+         0: aload_0
+         1: aload_0
+         2: invokevirtual #390                // Method hashState:()J
+         5: ldc2_w        #431                // long 23l
+         8: lmul
+         9: iload_1
+        10: i2l
+        11: ladd
+        12: aload_0
+        13: invokevirtual #434                // Method hashMod:()J
+        16: lrem
+        17: invokevirtual #436                // Method hashState_$eq:(J)V
+        20: return
+      LineNumberTable:
+        line 63: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      21     0  this   LbcGen/Arrays/arrayTestCases$;
+            0      21     1     e   I
+    MethodParameters:
+      Name                           Flags
+      e                              final
+
+  private final void mainArr6$$anonfun$1(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)V
+    flags: (0x1012) ACC_PRIVATE, ACC_FINAL, ACC_SYNTHETIC
+    Code:
+      stack=5, locals=2, args_size=2
+         0: aload_0
+         1: aload_0
+         2: invokevirtual #390                // Method hashState:()J
+         5: ldc2_w        #431                // long 23l
+         8: lmul
+         9: aload_1
+        10: checkcast     #412                // class bcGen/Foo
+        13: invokevirtual #439                // Method bcGen/Foo.id:()I
+        16: i2l
+        17: ladd
+        18: aload_0
+        19: invokevirtual #434                // Method hashMod:()J
+        22: lrem
+        23: invokevirtual #436                // Method hashState_$eq:(J)V
+        26: return
+      LineNumberTable:
+        line 69: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      27     0  this   LbcGen/Arrays/arrayTestCases$;
+            0      27     1     e   Ljava/lang/Object;
+    MethodParameters:
+      Name                           Flags
+      e                              final
+
+  private final void mainArr7$$anonfun$1(double);
+    descriptor: (D)V
+    flags: (0x1012) ACC_PRIVATE, ACC_FINAL, ACC_SYNTHETIC
+    Code:
+      stack=7, locals=3, args_size=2
+         0: aload_0
+         1: aload_0
+         2: invokevirtual #390                // Method hashState:()J
+         5: ldc2_w        #431                // long 23l
+         8: lmul
+         9: dload_1
+        10: invokestatic  #443                // Method java/lang/Double.doubleToRawLongBits:(D)J
+        13: aload_0
+        14: invokevirtual #434                // Method hashMod:()J
+        17: lrem
+        18: ladd
+        19: aload_0
+        20: invokevirtual #434                // Method hashMod:()J
+        23: lrem
+        24: invokevirtual #436                // Method hashState_$eq:(J)V
+        27: return
+      LineNumberTable:
+        line 75: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      28     0  this   LbcGen/Arrays/arrayTestCases$;
+            0      28     1     e   D
+    MethodParameters:
+      Name                           Flags
+      e                              final
+
+  private final void mainArr8$$anonfun$1(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)V
+    flags: (0x1012) ACC_PRIVATE, ACC_FINAL, ACC_SYNTHETIC
+    Code:
+      stack=7, locals=6, args_size=2
+         0: aload_1
+         1: astore_2
+         2: aload_2
+         3: instanceof    #95                 // class java/lang/Integer
+         6: ifeq          35
+         9: aload_2
+        10: invokestatic  #427                // Method scala/runtime/BoxesRunTime.unboxToInt:(Ljava/lang/Object;)I
+        13: istore_3
+        14: aload_0
+        15: aload_0
+        16: invokevirtual #390                // Method hashState:()J
+        19: ldc2_w        #431                // long 23l
+        22: lmul
+        23: iload_3
+        24: i2l
+        25: ladd
+        26: aload_0
+        27: invokevirtual #434                // Method hashMod:()J
+        30: lrem
+        31: invokevirtual #436                // Method hashState_$eq:(J)V
+        34: return
+        35: aload_2
+        36: instanceof    #131                // class java/lang/Double
+        39: ifeq          77
+        42: aload_2
+        43: invokestatic  #448                // Method scala/runtime/BoxesRunTime.unboxToDouble:(Ljava/lang/Object;)D
+        46: dstore        4
+        48: aload_0
+        49: aload_0
+        50: invokevirtual #390                // Method hashState:()J
+        53: ldc2_w        #431                // long 23l
+        56: lmul
+        57: dload         4
+        59: invokestatic  #443                // Method java/lang/Double.doubleToRawLongBits:(D)J
+        62: aload_0
+        63: invokevirtual #434                // Method hashMod:()J
+        66: lrem
+        67: ladd
+        68: aload_0
+        69: invokevirtual #434                // Method hashMod:()J
+        72: lrem
+        73: invokevirtual #436                // Method hashState_$eq:(J)V
+        76: return
+        77: return
+      StackMapTable: number_of_entries = 2
+        frame_type = 252 /* append */
+          offset_delta = 35
+          locals = [ class java/lang/Object ]
+        frame_type = 41 /* same */
+      LineNumberTable:
+        line 81: 0
+        line 82: 2
+        line 83: 35
+        line 84: 77
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+           14      21     3     i   I
+           48      29     4     d   D
+            0      78     0  this   LbcGen/Arrays/arrayTestCases$;
+            0      78     1     e   Ljava/lang/Object;
+    MethodParameters:
+      Name                           Flags
+      e                              final
+
+  private static java.lang.Object $deserializeLambda$(java.lang.invoke.SerializedLambda);
+    descriptor: (Ljava/lang/invoke/SerializedLambda;)Ljava/lang/Object;
+    flags: (0x100a) ACC_PRIVATE, ACC_STATIC, ACC_SYNTHETIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokedynamic #461,  0            // InvokeDynamic #15:lambdaDeserialize:(Ljava/lang/invoke/SerializedLambda;)Ljava/lang/Object;
+         6: areturn
+}
+InnerClasses:
+  public static final #12= #9 of #11;     // Lookup=class java/lang/invoke/MethodHandles$Lookup of class java/lang/invoke/MethodHandles
+SourceFile: "ArrayTestCases.scala"
+BootstrapMethods:
+  0: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #69 ()Ljava/lang/Object;
+      #73 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$1:()I
+      #75 ()Ljava/lang/Integer;
+      #76 5
+      #77 1
+      #75 ()Ljava/lang/Integer;
+  1: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #69 ()Ljava/lang/Object;
+      #113 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$2:()Ljava/lang/Object;
+      #69 ()Ljava/lang/Object;
+      #77 1
+  2: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #69 ()Ljava/lang/Object;
+      #126 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$3:()D
+      #128 ()Ljava/lang/Double;
+      #76 5
+      #77 1
+      #128 ()Ljava/lang/Double;
+  3: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #137 (Ljava/lang/Object;)Ljava/lang/Object;
+      #141 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$adapted$1:(Ljava/lang/Object;)Ljava/lang/Object;
+      #137 (Ljava/lang/Object;)Ljava/lang/Object;
+      #77 1
+  4: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #69 ()Ljava/lang/Object;
+      #154 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$5:()I
+      #75 ()Ljava/lang/Integer;
+      #76 5
+      #77 1
+      #75 ()Ljava/lang/Integer;
+  5: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #69 ()Ljava/lang/Object;
+      #161 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$6:()D
+      #128 ()Ljava/lang/Double;
+      #76 5
+      #77 1
+      #128 ()Ljava/lang/Double;
+  6: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #69 ()Ljava/lang/Object;
+      #168 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$7:()Ljava/lang/Object;
+      #69 ()Ljava/lang/Object;
+      #77 1
+  7: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #234 (I)V
+      #238 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr1$$anonfun$1:(I)V
+      #234 (I)V
+      #77 1
+  8: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #256 (Ljava/lang/Object;)V
+      #260 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr2$$anonfun$1:(Ljava/lang/Object;)V
+      #256 (Ljava/lang/Object;)V
+      #77 1
+  9: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #275 (D)V
+      #279 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr3$$anonfun$1:(D)V
+      #275 (D)V
+      #77 1
+  10: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #256 (Ljava/lang/Object;)V
+      #292 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr4$$anonfun$1:(Ljava/lang/Object;)V
+      #256 (Ljava/lang/Object;)V
+      #77 1
+  11: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #234 (I)V
+      #305 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr5$$anonfun$1:(I)V
+      #234 (I)V
+      #77 1
+  12: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #256 (Ljava/lang/Object;)V
+      #311 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr6$$anonfun$1:(Ljava/lang/Object;)V
+      #256 (Ljava/lang/Object;)V
+      #77 1
+  13: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #275 (D)V
+      #317 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr7$$anonfun$1:(D)V
+      #275 (D)V
+      #77 1
+  14: #84 REF_invokeStatic java/lang/invoke/LambdaMetafactory.altMetafactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #256 (Ljava/lang/Object;)V
+      #323 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr8$$anonfun$1:(Ljava/lang/Object;)V
+      #256 (Ljava/lang/Object;)V
+      #77 1
+  15: #458 REF_invokeStatic scala/runtime/LambdaDeserialize.bootstrap:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/CallSite;
+    Method arguments:
+      #73 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$1:()I
+      #113 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$2:()Ljava/lang/Object;
+      #126 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$3:()D
+      #141 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$adapted$1:(Ljava/lang/Object;)Ljava/lang/Object;
+      #154 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$5:()I
+      #161 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$6:()D
+      #168 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.$init$$$anonfun$7:()Ljava/lang/Object;
+      #238 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr1$$anonfun$1:(I)V
+      #260 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr2$$anonfun$1:(Ljava/lang/Object;)V
+      #279 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr3$$anonfun$1:(D)V
+      #292 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr4$$anonfun$1:(Ljava/lang/Object;)V
+      #305 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr5$$anonfun$1:(I)V
+      #311 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr6$$anonfun$1:(Ljava/lang/Object;)V
+      #317 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr7$$anonfun$1:(D)V
+      #323 REF_invokeSpecial bcGen/Arrays/arrayTestCases$.mainArr8$$anonfun$1:(Ljava/lang/Object;)V
+  Scala: length = 0x0 (unknown attribute)
+
