@@ -40,6 +40,7 @@ import dotty.tools.backend.jvm.DottyBackendInterface.symExtensions
 import dotty.tools.backend.jvm.attributes.MethodTypeParameterCount
 import dotty.tools.backend.jvm.attributes.MethodReturnType
 import dotty.tools.backend.jvm.attributes.MethodParameterType
+import dotty.tools.backend.jvm.attributes.FieldType
 import dotty.tools.backend.jvm.attributes.TypeHints
 
 /*
@@ -255,7 +256,8 @@ trait BCodeHelpers extends BCodeIdiomatic {
 
     def addMethodParameterTypeAttribute(mw: asm.MethodVisitor, lst: List[dotty.tools.dotc.transform.TypeB]) : Unit =
         if (lst.isEmpty) return
-        val lstJTypeB = lst.map(toJTypeB)
+        val lstJTypeB = lst.filter(_ != dotty.tools.dotc.transform.TypeB.None).map(toJTypeB)
+        if (lstJTypeB.isEmpty) return
         val len = lstJTypeB.length
         val attr = new MethodParameterType(len, lstJTypeB.asJava)
         mw.visitAttribute(attr)
@@ -274,13 +276,18 @@ trait BCodeHelpers extends BCodeIdiomatic {
     /*
      * must-single-thread
      */
-    def emitAnnotations(fw: asm.FieldVisitor, annotations: List[Annotation]): Unit =
+    def emitAnnotations(fw: asm.FieldVisitor, annotations: List[Annotation], attr: Option[(Int, List[dotty.tools.dotc.transform.TypeB], dotty.tools.dotc.transform.TypeB)]): Unit =
       for(annot <- annotations; if shouldEmitAnnotation(annot)) {
         val typ = annot.tree.tpe
         val assocs = assocsFromApply(annot.tree)
         val av = fw.visitAnnotation(typeDescriptor(typ), isRuntimeVisible(annot))
         emitAssocs(av, assocs, BCodeHelpers.this)(this)
       }
+      attr match
+        case None => ()
+        case Some((count, paramTypeB, returnTypeB)) =>
+          assert (count == 0 && paramTypeB.isEmpty)
+          fw.visitAttribute(new FieldType(toJTypeB(returnTypeB)))
 
     /*
      * must-single-thread

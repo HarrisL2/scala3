@@ -410,20 +410,28 @@ trait BCodeIdiomatic {
     final def rem(tk: BType): Unit = { emitPrimitive(JCodeMethodN.remOpcodes, tk) } // can-multi-thread
 
     // can-multi-thread
-    final def invokespecial(owner: String, name: String, desc: String, itf: Boolean): Unit = {
-      emitInvoke(Opcodes.INVOKESPECIAL, owner, name, desc, itf)
+    final def invokespecial(owner: String, name: String, desc: String, itf: Boolean, 
+                            invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None
+                            ): Unit = {
+      emitInvoke(Opcodes.INVOKESPECIAL, owner, name, desc, itf, invokeReturnType = invokeReturnType, instrTypeArgs = instrTypeArgs)
     }
     // can-multi-thread
-    final def invokestatic(owner: String, name: String, desc: String, itf: Boolean): Unit = {
-      emitInvoke(Opcodes.INVOKESTATIC, owner, name, desc, itf)
+    final def invokestatic(owner: String, name: String, desc: String, itf: Boolean, 
+                            invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None
+                            ): Unit = {
+      emitInvoke(Opcodes.INVOKESTATIC, owner, name, desc, itf, invokeReturnType = invokeReturnType, instrTypeArgs = instrTypeArgs)
     }
     // can-multi-thread
-    final def invokeinterface(owner: String, name: String, desc: String): Unit = {
-      emitInvoke(Opcodes.INVOKEINTERFACE, owner, name, desc, itf = true)
+    final def invokeinterface(owner: String, name: String, desc: String,
+                              invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None
+                              ): Unit = {
+      emitInvoke(Opcodes.INVOKEINTERFACE, owner, name, desc, itf = true, invokeReturnType = invokeReturnType, instrTypeArgs = instrTypeArgs)
     }
     // can-multi-thread
-    final def invokevirtual(owner: String, name: String, desc: String): Unit = {
-      emitInvoke(Opcodes.INVOKEVIRTUAL, owner, name, desc, itf = false)
+    final def invokevirtual(owner: String, name: String, desc: String, 
+                            invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None
+                            ): Unit = {
+      emitInvoke(Opcodes.INVOKEVIRTUAL, owner, name, desc, itf = false, invokeReturnType = invokeReturnType, instrTypeArgs = instrTypeArgs)
     }
 
     def toJTypeB(tpe: dotty.tools.dotc.transform.TypeB): TypeHints.TypeB =

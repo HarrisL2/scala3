@@ -33,7 +33,7 @@ public class ClassTypeParameterCount extends Attribute{
     @Override
     protected Attribute read(ClassReader cr, int off, int len, char[] buf, int codeOff, Label[] labels) {
         int localCount = cr.readUnsignedShort(off);
-        return new MethodTypeParameterCount(localCount);
+        return new ClassTypeParameterCount(localCount);
     }
 
     @Override
