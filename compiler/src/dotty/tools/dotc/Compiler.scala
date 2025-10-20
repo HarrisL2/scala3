@@ -9,6 +9,7 @@ import Phases.Phase
 import transform.*
 import backend.jvm.{CollectSuperCalls, GenBCode}
 import localopt.{StringInterpolatorOpt, DropForMap}
+import dotty.tools.dotc.transform.EmptyPhase
 
 /** The central class of the dotc compiler. The job of a compiler is to create
  *  runs, which process given `phases` in a given `rootContext`.
@@ -108,8 +109,8 @@ class Compiler {
          new ParamForwarding,        // Add forwarders for aliases of superclass parameters
          new TupleOptimizations,     // Optimize generic operations on tuples
          new LetOverApply,           // Lift blocks from receivers of applications
-         new ArrayConstructors) ::   // Intercept creation of (non-generic) arrays and intrinsify.
-    List(new ErasurePreservation) :: //
+         new ArrayConstructors,      // Intercept creation of (non-generic) arrays and intrinsify.
+         new ErasurePreservation) :: //
     List(new Erasure) ::             // Rewrite types to JVM model, erasing all type parameters, abstract types and refinements.
     List(new ElimErasedValueType,    // Expand erased value types to their underlying implementation types
          new PureStats,              // Remove pure stats from blocks
