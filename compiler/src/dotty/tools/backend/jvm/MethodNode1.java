@@ -66,7 +66,7 @@ public class MethodNode1 extends MethodNode {
     }
 
     public void genOffsetMap(){
-        if (!offsetMap.isEmpty()) {
+        if (!offsetMap.isEmpty() && DEBUG) {
             System.out.println("already non empty");
             return;
         }
@@ -349,7 +349,7 @@ public class MethodNode1 extends MethodNode {
     }
 
     public void printOffsetMap() {
-        if (invokeReturnTypeBs.isEmpty() || instructionTypeArgTypeAs.isEmpty()) {
+        if (invokeReturnTypeBs.isEmpty() || instructionTypeArgTypeAs.isEmpty() || !DEBUG) {
             return;
         }
         System.out.println("for method " + name + " offsetMap:");
@@ -362,7 +362,7 @@ public class MethodNode1 extends MethodNode {
     }
 
     public void printInvokeReturnTypeBs(){
-        if (invokeReturnTypeBs.isEmpty()) {
+        if (invokeReturnTypeBs.isEmpty() &&!DEBUG) {
             return;
         }
         System.out.println("for method " + name + " invokeReturnTypeBs:");
@@ -374,7 +374,7 @@ public class MethodNode1 extends MethodNode {
     }
 
     public void printInstructionTypeArgTypeAs(){
-        if (instructionTypeArgTypeAs.isEmpty()) {
+        if (instructionTypeArgTypeAs.isEmpty() || !DEBUG) {
             return;
         }
         System.out.println("for method " + name + " instructionTypeArgTypeAs:");
@@ -408,7 +408,7 @@ public class MethodNode1 extends MethodNode {
         }
         if (typeBHintList.size() != 0){
             this.invokeReturnTypeAttribute = new InvokeReturnType(typeBHintList.size(), typeBHintList);
-            System.out.println("invokeReturnTypeAttribute: " + invokeReturnTypeAttribute);
+            if (DEBUG) System.out.println("invokeReturnTypeAttribute: " + invokeReturnTypeAttribute);
             visitAttribute(invokeReturnTypeAttribute);
         }
         List<TypeHints.TypeAHint> typeAHintList = new ArrayList<>();
@@ -425,7 +425,7 @@ public class MethodNode1 extends MethodNode {
         }
         if (typeAHintList.size() != 0){
             this.instructionTypeArgumentsAttribute = new InstructionTypeArguments(typeAHintList);
-            System.out.println("instructionTypeArgumentsAttribute: " + instructionTypeArgumentsAttribute);
+            if (DEBUG) System.out.println("instructionTypeArgumentsAttribute: " + instructionTypeArgumentsAttribute);
             visitAttribute(instructionTypeArgumentsAttribute);
         }
 
