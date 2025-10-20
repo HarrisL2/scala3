@@ -14,12 +14,10 @@ import core.Types.*
 import core.Names.*
 import core.Constants.*
 import core.Decorators.*
-import typer.NoChecking
 import ast.{tpd, untpd}
 import reporting.*
 import dotty.tools.dotc.transform.MegaPhase.MiniPhase
 import dotty.tools.dotc.util.Property
-import dotty.tools.dotc.cc.pathOwner
 import scala.annotation.tailrec
 
 class ErasurePreservation extends MiniPhase {
