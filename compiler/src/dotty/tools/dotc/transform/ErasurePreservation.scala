@@ -42,14 +42,17 @@ class ErasurePreservation extends MiniPhase {
       if tr.isRef(defn.BooleanClass) then TypeA.Boolean else
       if tr.symbol.isTypeParam then
         def search(tr: TypeRef, depth: Int, outers: List[List[Symbol]]): TypeA =
-          outers.head.indexOf(tr.symbol) match
-            case -1 =>
-              search(tr, depth+1, outers.tail)
-            case ind =>
-              if depth != 0 then
-                TypeA.K(depth-1, ind)
-              else
-                TypeA.M(ind)
+          outers.headOption match
+            case Some(value) => value.indexOf(tr.symbol) match
+              case -1 =>
+                search(tr, depth+1, outers.tail)
+              case ind =>
+                if depth != 0 then
+                  TypeA.K(depth-1, ind)
+                else
+                  TypeA.M(ind)
+            case None =>
+              TypeA.Ref
         search(tr, 0, outers)
       else TypeA.Ref
     case _ =>
@@ -70,17 +73,19 @@ class ErasurePreservation extends MiniPhase {
       TypeB.M(outers.head.indexWhere(sym => sym.name == tpr.paramName))
     case tr: TypeRef if tr.symbol.isTypeParam =>
       def search(tr: TypeRef, depth: Int, outers: List[List[Symbol]]): TypeB =
-        outers.head.indexOf(tr.symbol) match
-          case -1 =>
-            search(tr, depth+1, outers.tail)
-          case ind =>
-            if depth != 0 then
-              if isConstructor then
-                TypeB.K(depth, ind)
+        outers.headOption match
+          case Some(value) => value.indexOf(tr.symbol) match
+            case -1 =>
+              search(tr, depth+1, outers.tail)
+            case ind =>
+              if depth != 0 then
+                if isConstructor then
+                  TypeB.K(depth, ind)
+                else
+                  TypeB.K(depth-1, ind)
               else
-                TypeB.K(depth-1, ind)
-            else
-              TypeB.M(ind)
+                TypeB.M(ind)
+          case None => TypeB.None
       search(tr, 0, outers)
     case at: AppliedType if at.tycon.isRef(defn.ArrayClass) =>
       TypeB.Array(toTypeB(at.args.head, outers))
@@ -90,14 +95,16 @@ class ErasurePreservation extends MiniPhase {
   def toReturnTypeB(tp: Type, outers: List[List[Symbol]])(using Context): TypeB = tp match
     case tr: TypeRef if tr.symbol.isTypeParam =>
       def search(tr: TypeRef, depth: Int, outers: List[List[Symbol]]): TypeB =
-        outers.head.indexOf(tr.symbol) match
-          case -1 =>
-            search(tr, depth+1, outers.tail)
-          case ind =>
-            if depth != 0 then
-              TypeB.K(depth-1, ind)
-            else
-              TypeB.M(ind)
+        outers.headOption match
+          case Some(value) => value.indexOf(tr.symbol) match
+            case -1 =>
+              search(tr, depth+1, outers.tail)
+            case ind =>
+              if depth != 0 then
+                TypeB.K(depth-1, ind)
+              else
+                TypeB.M(ind)
+          case None => TypeB.None
       search(tr, 0, outers)
     case at: AppliedType if at.tycon.isRef(defn.ArrayClass) =>
       TypeB.Array(toTypeB(at.args.head, outers))
