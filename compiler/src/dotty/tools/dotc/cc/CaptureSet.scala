@@ -1311,7 +1311,7 @@ object CaptureSet:
       res.myTrace = cs1 :: this.myTrace
       res
 
-    override def prefix(using Context) = cs match
+    override def showAsPrefix(using Context) = cs match
       case cs: Var =>
         !cs.levelOK(elem)
         || cs.isBadRoot(elem) && elem.isInstanceOf[FreshCap]
