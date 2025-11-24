@@ -416,10 +416,12 @@ trait BCodeIdiomatic {
       emitInvoke(Opcodes.INVOKESPECIAL, owner, name, desc, itf, invokeReturnType = invokeReturnType, instrTypeArgs = instrTypeArgs)
     }
     // can-multi-thread
+    // boxing calls are only invokestatic
     final def invokestatic(owner: String, name: String, desc: String, itf: Boolean, 
-                            invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None
+                            invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None,
+                            extraBoxingUnboxing : Boolean = false
                             ): Unit = {
-      emitInvoke(Opcodes.INVOKESTATIC, owner, name, desc, itf, invokeReturnType = invokeReturnType, instrTypeArgs = instrTypeArgs)
+      emitInvoke(Opcodes.INVOKESTATIC, owner, name, desc, itf, invokeReturnType = invokeReturnType, instrTypeArgs = instrTypeArgs, extraBoxingUnboxing = extraBoxingUnboxing)
     }
     // can-multi-thread
     final def invokeinterface(owner: String, name: String, desc: String,
@@ -459,7 +461,9 @@ trait BCodeIdiomatic {
 
 
     def emitInvoke(opcode: Int, owner: String, name: String, desc: String, itf: Boolean,
-                   invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None): Unit = {
+                   invokeReturnType : Option[dotty.tools.dotc.transform.TypeB] = None, instrTypeArgs : Option[List[dotty.tools.dotc.transform.TypeA]] = None,
+                   extraBoxingUnboxing : Boolean = false
+                   ): Unit = {
       // println(s"emitInvoke $opcode $owner $name $desc itf=$itf invokeReturnType=$invokeReturnType instrTypeArgs=$instrTypeArgs")
       val node = new MethodInsnNode(opcode, owner, name, desc, itf)
       jmethod.instructions.add(node)
@@ -474,6 +478,9 @@ trait BCodeIdiomatic {
         case Some(lstTypeAs) =>
           val bcTypeAs = lstTypeAs.map(toJTypeA)
           jmethod.asInstanceOf[MethodNode1].instructionTypeArgTypeAs.put(node, bcTypeAs.asJava);
+      }
+      if (extraBoxingUnboxing){
+        jmethod.asInstanceOf[MethodNode1].extraBoxUnboxMap.put(node, java.lang.Boolean.TRUE);
       }
     }
 

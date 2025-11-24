@@ -28,6 +28,8 @@ import dotty.tools.dotc.report
 import dotty.tools.dotc.ast.Trees.SyntheticUnit
 import dotty.tools.dotc.transform.InvokeReturnType
 import dotty.tools.dotc.transform.InstructionTypeArguments
+import dotty.tools.dotc.transform.NoBoxingNeeded
+import dotty.tools.dotc.transform.NoUnboxingNeeded
 
 /*
  *
@@ -823,7 +825,10 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
           val nativeKind = tpeTK(expr)
           genLoad(expr, nativeKind)
           val MethodNameAndType(mname, methodType) = asmBoxTo(nativeKind)
-          bc.invokestatic(srBoxesRuntimeRef.internalName, mname, methodType.descriptor, itf = false)
+          val hasExtraBoxAttach = app.getAttachment(NoBoxingNeeded).isDefined
+          if hasExtraBoxAttach then
+            println(s"Debug: extra box attach found on ${app.show}")
+          bc.invokestatic(srBoxesRuntimeRef.internalName, mname, methodType.descriptor, itf = false, extraBoxingUnboxing = hasExtraBoxAttach)
           generatedType = boxResultType(fun.symbol) // was toTypeKind(fun.symbol.tpe.resultType)
 
         case Apply(fun, List(expr)) if Erasure.Boxing.isUnbox(fun.symbol) && fun.symbol.denot.owner != defn.UnitModuleClass =>
@@ -831,7 +836,10 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
           val boxType = unboxResultType(fun.symbol) // was toTypeKind(fun.symbol.owner.linkedClassOfClass.tpe)
           generatedType = boxType
           val MethodNameAndType(mname, methodType) = asmUnboxTo(boxType)
-          bc.invokestatic(srBoxesRuntimeRef.internalName, mname, methodType.descriptor, itf = false)
+          val hasExtraUnboxAttach = app.getAttachment(NoUnboxingNeeded).isDefined
+          if hasExtraUnboxAttach then
+            println(s"Debug: extra unbox attach found on ${app.show}")
+          bc.invokestatic(srBoxesRuntimeRef.internalName, mname, methodType.descriptor, itf = false, extraBoxingUnboxing = hasExtraUnboxAttach)
 
         case app @ Apply(fun, args) =>
           val sym = fun.symbol

@@ -328,6 +328,10 @@ class Definitions {
   }
   def ObjectType: TypeRef = ObjectClass.typeRef
 
+  @tu lazy val ObjectAnySymbol: TypeSymbol = 
+    newPermanentSymbol(ScalaRuntimePackageClass, "ObjectAny".toTypeName, EmptyFlags, TypeAlias(ObjectType)).entered
+  def ObjectAnyType : TypeRef = ObjectAnySymbol.typeRef
+
   /** A type alias of Object used to represent any reference to Object in a Java
    *  signature, the secret sauce is that subtype checking treats it specially:
    *

@@ -635,10 +635,19 @@ class TypeErasure(sourceLanguage: SourceLanguage, semiEraseVCs: Boolean, isConst
         tp
       case tp: TypeRef =>
         val sym = tp.symbol
-        if !sym.isClass then this(checkedSuperType(tp))
+        if !sym.isClass then 
+          val erasedUnderlying = this(checkedSuperType(tp))
+          if isSymbol && sym.isTypeParam && (erasedUnderlying eq defn.ObjectType) then 
+            defn.ObjectAnyType 
+          else 
+            erasedUnderlying
         else if semiEraseVCs && sym.isDerivedValueClass then eraseDerivedValueClass(tp)
         else if defn.isSyntheticFunctionClass(sym) then defn.functionTypeErasure(sym)
         else eraseNormalClassRef(tp)
+        //if (typeRefTp == defn.ObjectType) then defn.ObjectAnyType else typeRefTp
+      case tp: TypeParamRef =>
+        val erasedUnderlying = this(tp.underlying)
+        if isSymbol && (erasedUnderlying eq defn.ObjectType) then defn.ObjectAnyType else erasedUnderlying
       case tp: AppliedType =>
         val tycon = tp.tycon
         if (tycon.isRef(defn.ArrayClass)) eraseArray(tp)
