@@ -199,6 +199,9 @@ class Erasure extends Phase with DenotTransformer {
   }
 }
 
+object NoBoxingNeeded extends util.Property.StickyKey[String]
+object NoUnboxingNeeded extends util.Property.StickyKey[String]
+
 object Erasure {
   import tpd.*
   import TypeTestsCasts.*
@@ -237,6 +240,21 @@ object Erasure {
       case _ => mt
 
   object Boxing:
+
+    def isObjectAny(t: Type)(using Context): Boolean = 
+      t.widenDealias.typeSymbol == defn.ObjectAnySymbol
+
+    def maybeMarkBox(tree: Tree, tp: Type)(using Context): Tree =
+      if (isObjectAny(tp)) then
+        println("  MarkBoxing: marking box for "+ tp)
+        tree.withAttachment(NoBoxingNeeded, tp.typeSymbol.name.toString)
+      else tree
+
+    def maybeMarkUnbox(tree: Tree, tp: Type)(using Context): Tree =
+      if (isObjectAny(tp)) then
+        println("  MarkBoxing: marking unbox for "+ tp)
+        tree.withAttachment(NoUnboxingNeeded, tp.typeSymbol.name.toString)
+      else tree
 
     def isUnbox(sym: Symbol)(using Context): Boolean =
       sym.name == nme.unbox && sym.owner.linkedClass.isPrimitiveValueClass
@@ -365,6 +383,10 @@ object Erasure {
         case _ =>
           if (pt.isPrimitiveValueType)
             primitiveConversion(tree, pt.classSymbol)
+          // cast tree type to pt, if pt is ObjectAny, do not inject a cast
+          else if isObjectAny(pt) && !tree.tpe.widen.isPrimitiveValueType then
+            println("  MarkBoxing: skipping cast to ObjectAny for "+ pt + " from tree "+ tree.show)
+            tree.withType(pt)
           else
             tree.asInstance(pt)
       }
@@ -396,10 +418,15 @@ object Erasure {
               adaptToType(box(tree), pt)
           else if (pt.isErasedValueType)
             adaptToType(unbox(tree, pt), pt)
+          // pt: target type
           else if (tpw.isPrimitiveValueType && !pt.isPrimitiveValueType)
-            adaptToType(box(tree), pt)
+            //adaptToType(box(tree), pt)
+            val boxed = box(tree)
+            adaptToType(maybeMarkBox(boxed, pt), pt)
           else if (pt.isPrimitiveValueType && !tpw.isPrimitiveValueType)
-            adaptToType(unbox(tree, pt), pt)
+            //adaptToType(unbox(tree, pt), pt)
+            val unboxed = unbox(tree, pt)
+            adaptToType(maybeMarkUnbox(unboxed, tree.tpe), pt)
           else
             cast(tree, pt)
     end adaptToType

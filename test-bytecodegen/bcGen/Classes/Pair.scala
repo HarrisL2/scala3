@@ -28,44 +28,43 @@ object testPair {
     val v = passGenericPair[Int, String](intRefPair)
     println(v)
   }
+
+  @main def testPair2(): Unit = {
+    intRefPair.setKey(2)
+    intRefPair.setValue("two")
+    println(s"Updated Key: ${intRefPair.getKey}, Updated Value: ${intRefPair.getValue}")
+  }
+
+  @main def testPair3(): Unit = {
+    println(s"Key: ${doubleLongPair.getKey}, Value: ${doubleLongPair.getValue}")
+  }
+
+  @main def testPair4(): Unit = {
+    doubleLongPair.setKey(6.28)
+    doubleLongPair.setValue(84L)
+    println(s"Updated Key: ${doubleLongPair.getKey}, Updated Value: ${doubleLongPair.getValue}")
+  }
+
+
+
+  @main def testPair6(): Unit = {
+    val v = passGenericPair[Double, Long](doubleLongPair)
+    println(v)
+  }
+
+  @main def testPair7(): Unit = {
+    println(s"Key: ${anyAnyPair.getKey}, Value: ${anyAnyPair.getValue}")
+  }
+
+  @main def testPair8(): Unit = {
+    anyAnyPair.setKey(123)
+    anyAnyPair.setValue("newValue")
+    println(s"Updated Key: ${anyAnyPair.getKey}, Updated Value: ${anyAnyPair.getValue}")
+  }
+
+  @main def testPair9(): Unit = {
+    val v = passGenericPair[Any, Any](anyAnyPair)
+    println(v)
+  }
+
 }
-
-//   @main def testPair2(): Unit = {
-//     intRefPair.setKey(2)
-//     intRefPair.setValue("two")
-//     println(s"Updated Key: ${intRefPair.getKey}, Updated Value: ${intRefPair.getValue}")
-//   }
-
-//   @main def testPair3(): Unit = {
-//     println(s"Key: ${doubleLongPair.getKey}, Value: ${doubleLongPair.getValue}")
-//   }
-
-//   @main def testPair4(): Unit = {
-//     doubleLongPair.setKey(6.28)
-//     doubleLongPair.setValue(84L)
-//     println(s"Updated Key: ${doubleLongPair.getKey}, Updated Value: ${doubleLongPair.getValue}")
-//   }
-
-
-
-//   @main def testPair6(): Unit = {
-//     val v = passGenericPair[Double, Long](doubleLongPair)
-//     println(v)
-//   }
-
-//   @main def testPair7(): Unit = {
-//     println(s"Key: ${anyAnyPair.getKey}, Value: ${anyAnyPair.getValue}")
-//   }
-
-//   @main def testPair8(): Unit = {
-//     anyAnyPair.setKey(123)
-//     anyAnyPair.setValue("newValue")
-//     println(s"Updated Key: ${anyAnyPair.getKey}, Updated Value: ${anyAnyPair.getValue}")
-//   }
-
-//   @main def testPair9(): Unit = {
-//     val v = passGenericPair[Any, Any](anyAnyPair)
-//     println(v)
-//   }
-
-// }

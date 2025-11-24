@@ -14,6 +14,7 @@ package dotty.tools.backend.jvm;
 
 import dotty.tools.backend.jvm.attributes.InstructionTypeArguments;
 import dotty.tools.backend.jvm.attributes.InvokeReturnType;
+import dotty.tools.backend.jvm.attributes.ExtraBoxUnbox;
 import java.util.Map;
 
 import dotty.tools.backend.jvm.attributes.TypeHints;
@@ -43,11 +44,15 @@ public class MethodNode1 extends MethodNode {
 
     public Map<AbstractInsnNode, List<TypeHints.TypeA>> instructionTypeArgTypeAs = new LinkedHashMap<>();
 
+    public Map<AbstractInsnNode, Boolean> extraBoxUnboxMap = new LinkedHashMap<>();
+
     private Map<AbstractInsnNode, Integer> offsetMap = new LinkedHashMap<>();
 
     private InvokeReturnType invokeReturnTypeAttribute;
 
     private InstructionTypeArguments instructionTypeArgumentsAttribute;
+
+    private ExtraBoxUnbox extraBoxUnboxAttribute;
 
     public MethodNode1(int api, int access, String name, String descriptor, String signature, String[] exceptions) {
         super(api, access, name, descriptor, signature, exceptions);
@@ -393,6 +398,7 @@ public class MethodNode1 extends MethodNode {
         if (!hasTypeHints()) return;
         genOffsetMap();
         if (DEBUG) printOffsetMap();
+        // create InvokeReturnType attribute
         List<TypeHints.TypeBHint> typeBHintList = new ArrayList<>();
         for (Map.Entry<AbstractInsnNode, TypeHints.TypeB> entry : invokeReturnTypeBs.entrySet()){
             AbstractInsnNode insn = entry.getKey();
@@ -411,6 +417,7 @@ public class MethodNode1 extends MethodNode {
             if (DEBUG) System.out.println("invokeReturnTypeAttribute: " + invokeReturnTypeAttribute);
             visitAttribute(invokeReturnTypeAttribute);
         }
+        // create InstructionTypeArguments attribute
         List<TypeHints.TypeAHint> typeAHintList = new ArrayList<>();
         for (Map.Entry<AbstractInsnNode, List<TypeHints.TypeA>> entry : instructionTypeArgTypeAs.entrySet()){
             AbstractInsnNode insn = entry.getKey();
@@ -427,6 +434,25 @@ public class MethodNode1 extends MethodNode {
             this.instructionTypeArgumentsAttribute = new InstructionTypeArguments(typeAHintList);
             if (DEBUG) System.out.println("instructionTypeArgumentsAttribute: " + instructionTypeArgumentsAttribute);
             visitAttribute(instructionTypeArgumentsAttribute);
+        }
+        // create ExtraBoxUnbox attribute
+        List<Integer> extraBoxUnboxOffsets = new ArrayList<>();
+        for (Map.Entry<AbstractInsnNode, Boolean> entry : extraBoxUnboxMap.entrySet()){
+            AbstractInsnNode insn = entry.getKey();
+            Boolean hasExtraBoxUnbox = entry.getValue();
+            if (!hasExtraBoxUnbox) continue;
+            Integer bcOffset = offsetMap.getOrDefault(insn, -1);
+            if (bcOffset != -1){
+                extraBoxUnboxOffsets.add(bcOffset);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        if (extraBoxUnboxOffsets.size() != 0){
+            int[] offsetsArray = extraBoxUnboxOffsets.stream().mapToInt(i -> i).toArray();
+            this.extraBoxUnboxAttribute = new ExtraBoxUnbox(offsetsArray);
+            if (DEBUG) System.out.println("extraBoxUnboxAttribute: " + extraBoxUnboxAttribute);
+            visitAttribute(extraBoxUnboxAttribute);
         }
 
     }

@@ -39,6 +39,8 @@ import dotty.tools.dotc.transform.TreeExtractors.BinaryOp
 import dotty.tools.dotc.transform.InstructionTypeArguments
 import dotty.tools.dotc.transform.InvokeReturnType
 import dotty.tools.dotc.transform.MethodParameterReturnType
+import dotty.tools.dotc.transform.NoBoxingNeeded
+import dotty.tools.dotc.transform.NoUnboxingNeeded
 
 class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
 
@@ -472,6 +474,8 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
 
       toTextLocal(expr) ~ "." ~ selectorsText
 
+    (if tree.hasAttachment(NoBoxingNeeded) then Str("NoBoxingNeeded ") else Str("")) ~
+    (if tree.hasAttachment(NoUnboxingNeeded) then Str("NoUnboxingNeeded ") else Str("")) ~
     (if tree.hasAttachment(InvokeReturnType) then Str("InvokeReturnType("+tree.attachment(InvokeReturnType).toString + ") ") else Str("")) ~
     (if tree.hasAttachment(InstructionTypeArguments) then Str("InstructionTypeArguments("+tree.attachment(InstructionTypeArguments).toString + ") ") else Str("")) ~
     (if tree.hasAttachment(MethodParameterReturnType) then Str("MethodParameterReturnType("+tree.attachment(MethodParameterReturnType).toString + ") ") else Str("")) ~
