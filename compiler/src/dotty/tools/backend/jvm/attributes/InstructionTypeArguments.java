@@ -17,7 +17,6 @@ InstructionTypeArguments_attribute {
 	{ 	u2 byecode_offset
 	    u2 typeA_number
         {	u1 K_M_indicator
-            u2 outer_class_indicator
             u2 index
         } typeAs[typeA_number]
     } typeHints[typehint_length];
@@ -52,11 +51,9 @@ public class InstructionTypeArguments extends Attribute {
             for (int j = 0 ; j < typeAnum; j++) {
                 byte kind = (byte) cr.readByte(cur);
                 cur += 1;
-                int outerClassIndex = cr.readUnsignedShort(cur);
-                cur += 2;
                 int index = cr.readUnsignedShort(cur);
                 cur += 2;
-                typeList.add(new TypeHints.TypeA(kind, outerClassIndex, index));
+                typeList.add(new TypeHints.TypeA(kind, index));
             }
             typeHints.add(new TypeHints.TypeAHint(bytecodeOffset, typeList));
         }
@@ -72,7 +69,6 @@ public class InstructionTypeArguments extends Attribute {
             bv.putShort(typeHint.getTypeList().size());
             for (TypeHints.TypeA typeA : typeHint.getTypeList()) {
                 bv.putByte(typeA.getKind());
-                bv.putShort(typeA.getOuterClassIndex());
                 bv.putShort(typeA.getIndex());
             }
         }

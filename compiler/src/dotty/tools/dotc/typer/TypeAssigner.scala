@@ -304,7 +304,7 @@ trait TypeAssigner {
     var skolems: SkolemBuffer | Null = null
     val ownType = fn.tpe.widen match {
       case fntpe: MethodType =>
-        if fntpe.paramInfos.hasSameLengthAs(args) || ctx.phase.prev.relaxedTyping then
+        if fntpe.paramInfos.hasSameLengthAs(args) || ctx.phase.prev.relaxedTyping || ctx.phase.prev.phaseName == "addReifiedTypes" then
           if fntpe.isResultDependent then
             skolems = new mutable.ListBuffer()
             safeSubstParams(fntpe.resultType, fntpe.paramRefs, args, skolems.nn)

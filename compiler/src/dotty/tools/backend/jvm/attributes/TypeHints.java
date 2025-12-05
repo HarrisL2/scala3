@@ -38,29 +38,19 @@ public class TypeHints{
             new TypeA(REFERENCE, 0);
 
         private final byte kind;
-        private final int outerClassIndex;
         private final int index;
 
         public TypeA(byte kind, int index) {
             this.kind = kind;
             this.index = index;
-            this.outerClassIndex = 0;
-        }
-
-        public TypeA(byte kind, int outerClassIndex, int index) {
-            this.kind = kind;
-            this.outerClassIndex = outerClassIndex;
-            this.index = index;
         }
 
         public byte getKind() { return kind; }
-        public int getOuterClassIndex() { return outerClassIndex; }
         public int getIndex() { return index; }
 
         @Override
         public String toString() {
             return "TypeA{kind=" + (char) kind +
-                        ", outerClassIndex=" + outerClassIndex +
                         ", index=" + index +
                         '}';            
         }
@@ -109,23 +99,14 @@ public class TypeHints{
         public static final byte ARR_M_KIND = 'm';
 
         private final byte kind;
-        private final int outerClassIndex;
         private final int index;
 
         public TypeB(byte kind, int index) {
             this.kind = kind;
             this.index = index;
-            this.outerClassIndex = 0;
-        }
-
-        public TypeB(byte kind, int outerClassIndex, int index) {
-            this.kind = kind;
-            this.outerClassIndex = outerClassIndex;
-            this.index = index;
         }
 
         public byte getKind() { return kind; }
-        public int getOuterClassIndex() { return outerClassIndex; }
         public int getIndex() { return index; }
 
         public boolean isNoHint() {
@@ -138,7 +119,6 @@ public class TypeHints{
                 return "TypeB{NO_HINT}";
             }
             return "TypeB{kind=" + (char) kind +
-                        ", outerClassIndex=" + outerClassIndex +
                         ", index=" + index +
                         '}';
         }
