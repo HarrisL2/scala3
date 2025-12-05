@@ -298,7 +298,7 @@ trait TypeAssigner {
   def assignType(tree: untpd.Apply, fn: Tree, args: List[Tree])(using Context): Apply = {
     val ownType = fn.tpe.widen match {
       case fntpe: MethodType =>
-        if fntpe.paramInfos.hasSameLengthAs(args) || ctx.phase.prev.relaxedTyping then
+        if fntpe.paramInfos.hasSameLengthAs(args) || ctx.phase.prev.relaxedTyping  || ctx.phase.prev.phaseName == "addReifiedTypes" then
           if fntpe.isResultDependent then safeSubstMethodParams(fntpe, args.tpes)
           else fntpe.resultType // fast path optimization
         else

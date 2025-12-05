@@ -16,7 +16,6 @@ InvokeReturnType_attribute {
 	u2 typehint_length;
 	{ 	u2 byecode_offset
 		u1 K_M_indicator
-        u2 outer_class_indicator
         u2 index
     } typeHints[typehint_length];
 }
@@ -60,11 +59,9 @@ public class InvokeReturnType extends Attribute{
             cur += 2;
             byte kind = (byte) cr.readByte(cur);
             cur += 1;
-            int outerClassIndex = cr.readUnsignedShort(cur);
-            cur += 2;
             int index = cr.readUnsignedShort(cur);
             cur += 2;
-            TypeHints.TypeB typeB = new TypeHints.TypeB(kind, outerClassIndex, index);
+            TypeHints.TypeB typeB = new TypeHints.TypeB(kind, index);
             typeHints.add(new TypeHints.TypeBHint(bytecodeOffset, typeB));
         }
         return new InvokeReturnType(typeHintLength, typeHints);
@@ -78,7 +75,6 @@ public class InvokeReturnType extends Attribute{
             bv.putShort(typeHint.getBytecodeOffset());
             TypeHints.TypeB typeB = typeHint.getTypeB();
             bv.putByte(typeB.getKind());
-            bv.putShort(typeB.getOuterClassIndex());
             bv.putShort(typeB.getIndex());
         }
         return bv;
