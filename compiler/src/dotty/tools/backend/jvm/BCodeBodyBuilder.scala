@@ -826,8 +826,7 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
           genLoad(expr, nativeKind)
           val MethodNameAndType(mname, methodType) = asmBoxTo(nativeKind)
           val hasExtraBoxAttach = app.getAttachment(NoBoxingNeeded).isDefined
-          if hasExtraBoxAttach then
-            println(s"Debug: extra box attach found on ${app.show}")
+          // if hasExtraBoxAttach then println(s"Debug: extra box attach found on ${app.show}")
           bc.invokestatic(srBoxesRuntimeRef.internalName, mname, methodType.descriptor, itf = false, extraBoxingUnboxing = hasExtraBoxAttach)
           generatedType = boxResultType(fun.symbol) // was toTypeKind(fun.symbol.tpe.resultType)
 
@@ -837,8 +836,7 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
           generatedType = boxType
           val MethodNameAndType(mname, methodType) = asmUnboxTo(boxType)
           val hasExtraUnboxAttach = app.getAttachment(NoUnboxingNeeded).isDefined
-          if hasExtraUnboxAttach then
-            println(s"Debug: extra unbox attach found on ${app.show}")
+          // if hasExtraUnboxAttach then println(s"Debug: extra unbox attach found on ${app.show}")
           bc.invokestatic(srBoxesRuntimeRef.internalName, mname, methodType.descriptor, itf = false, extraBoxingUnboxing = hasExtraUnboxAttach)
 
         case app @ Apply(fun, args) =>

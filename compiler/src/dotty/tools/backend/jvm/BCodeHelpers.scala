@@ -781,10 +781,8 @@ trait BCodeHelpers extends BCodeIdiomatic {
       * signatures, e.g. `def apply(i: Int): T`. A TyperRef to T is replaced by ObjectReference.
       */
     def nonClassTypeRefToBType(sym: Symbol): ClassBType = {
-      if (sym == defn.ObjectAnySymbol) ObjectRef
-      else
-        assert(sym.isType && compilingArray, sym)
-        ObjectRef.asInstanceOf[ct.bTypes.ClassBType]
+      assert(sym.isType && compilingArray, sym)
+      ObjectRef.asInstanceOf[ct.bTypes.ClassBType]
     }
 
     tp.widenDealias match {
