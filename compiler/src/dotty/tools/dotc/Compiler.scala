@@ -112,7 +112,8 @@ class Compiler {
          new ArrayConstructors,      // Intercept creation of (non-generic) arrays and intrinsify.
          new ErasurePreservation) :: //
     List(new Erasure) ::             // Rewrite types to JVM model, erasing all type parameters, abstract types and refinements.
-    List(new ElimErasedValueType,    // Expand erased value types to their underlying implementation types
+    List(new ElimObjectAny,          // Eliminate ObjcetAny to Object
+         new ElimErasedValueType,    // Expand erased value types to their underlying implementation types
          new PureStats,              // Remove pure stats from blocks
          new VCElideAllocations,     // Peep-hole optimization to eliminate unnecessary value class allocations
          new EtaReduce,              // Reduce eta expansions of pure paths to the underlying function reference
