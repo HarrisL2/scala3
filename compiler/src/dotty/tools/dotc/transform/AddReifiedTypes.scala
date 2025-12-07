@@ -13,99 +13,133 @@ import dotty.tools.dotc.core.Constants.*
 
 class AddReifiedTypes extends MiniPhase with InfoTransformer {
     import ast.tpd.*
+
+    final val DEBUG = false
     
     override def phaseName: String = "addReifiedTypes"
     override def description: String = "add reified type values to methods"
 
-    override def transformInfo(tp: Type, sym: Symbol)(using Context): Type = tp match {
-        case pt: PolyType =>
-            pt.derivedLambdaType(
-                pt.paramNames,
-                pt.paramInfos,
-                addReifiedParams(pt.resType, pt.paramNames)
-            )
-        case _ => tp
-    }
+    override def transformInfo(tp: Type, sym: Symbol)(using Context): Type =
+        if (sym.is(Flags.Method)) then {
+            val res = addReifiedParams(tp)
+            //println(s"Transforming method info for ${sym.name}, from: ${tp.show} to: ${res.show}")
+            res
+        }
+        else tp
 
-    def addReifiedParams(tp: Type, typeParamNames: List[Name])(using Context): Type = tp match {
-        case mt: MethodType =>
-            val newParamNames = typeParamNames.map(name => termName(s"reified_$name"))
-            val newParamTypes = newParamNames.map(_ => defn.ReifiedValueType)
-            mt.derivedLambdaType(
-                mt.paramNames ++ newParamNames,
-                mt.paramInfos ++ newParamTypes,
-                mt.resultType
-            )
+    def addReifiedParams(tp: Type)(using Context): Type = tp match {
         case pt: PolyType =>
-            pt.derivedLambdaType(
-                pt.paramNames,
-                pt.paramInfos,
-                addReifiedParams(pt.resType, typeParamNames)
+            val reifiedParamNames = pt.paramNames.map(name => termName(s"reified_$name"))
+            val reifiedParamTypes = reifiedParamNames.map(_ => defn.ReifiedValueType)
+            pt.resType match {
+                case mt: MethodType =>
+                    // println(s"Adding reified params to method pt. method type $mt: ${pt.show}")
+                    val rest = addReifiedParams(mt.resType)
+                    val reifiedList = MethodType(reifiedParamNames, reifiedParamTypes, rest)
+                    pt.derivedLambdaType(
+                        pt.paramNames,
+                        pt.paramInfos,
+                        mt.derivedLambdaType(
+                            mt.paramNames,
+                            mt.paramInfos,
+                            reifiedList
+                        )
+                    )
+                case other =>
+                    // println(s"Adding reified params to method pt. other $other: ${pt.show}")
+                    val rest = addReifiedParams(other)
+                    val reifiedList = MethodType(reifiedParamNames, reifiedParamTypes, rest)
+                    pt.derivedLambdaType(
+                        pt.paramNames,
+                        pt.paramInfos,
+                        reifiedList
+                    )
+            }
+        case mt: MethodType =>
+            // println(s"Adding reified params to method mt. method type $mt: ${tp.show}")
+            mt.derivedLambdaType(
+                mt.paramNames,
+                mt.paramInfos,
+                addReifiedParams(mt.resType)
             )
         case _ => tp
     }
     
     override def transformDefDef(tree: DefDef)(using Context): Tree = {
         val sym = tree.symbol
-        val typeParams = tree.paramss.collectFirst {
-            case tparams: List[?] if tparams.nonEmpty && tparams.head.isInstanceOf[TypeDef] =>
-                tparams.asInstanceOf[List[TypeDef]]
-        }.getOrElse(Nil)
+        // if there are no type parameters, no need to add reified params
+        if (!tree.paramss.exists(_.exists(_.isInstanceOf[TypeDef]))) return tree
 
+        var newParamss = List.empty[ParamClause]
+        var typeParams = List.empty[TypeDef]
+        for (clause <- tree.paramss){
+            clause match {
+                // def A[U, V](u: U, v: V)
+                // case [U, V]
+                case tparams: List[?] if tparams.nonEmpty && tparams.head.isInstanceOf[TypeDef] =>
+                    newParamss = newParamss :+ clause.asInstanceOf[ParamClause]
+                    typeParams = tparams.asInstanceOf[List[TypeDef]]
+                case vparams: List[?] =>
+                    newParamss = newParamss :+ clause.asInstanceOf[ParamClause]
+                    if (typeParams.nonEmpty) {
+                        println(s"TransformDefDef for tree: ${tree.show} Adding reified value at end for method ${sym.name} with type params: ${typeParams.map(_.name)}")
+                        newParamss = newParamss :+ createReifiedClause(typeParams, sym)
+                        typeParams = Nil
+                    }
+            }
+        }
         if (typeParams.nonEmpty) {
-            val newParamDefs = typeParams.map { tparam =>
-                val paramName = termName(s"reified_${tparam.name}")
-                val paramSym = newSymbol(
-                    sym,
-                    paramName,
-                    Flags.Param,
-                    defn.ReifiedValueType,
-                ).asTerm
-                ValDef(paramSym)
-            }
-            
-            var added = false
-            val newParamss = tree.paramss.map { clause =>
-                val isTypeClause = clause.nonEmpty && clause.head.isInstanceOf[TypeDef]
-                if (!isTypeClause && !added) {
-                    added = true
-                    val newClause: ParamClause = clause.asInstanceOf[List[ValDef]] ++ newParamDefs
-                    newClause
-                } else {
-                    clause
-                }
-            }
-            
-            if (added) cpy.DefDef(tree)(paramss = newParamss)
-            else tree
-        } else tree
+            println(s"TransformDefDef for tree: ${tree.show} Adding reified value at end for method ${sym.name} with type params: ${typeParams.map(_.name)}")
+            newParamss = newParamss :+ createReifiedClause(typeParams, sym)
+        }
+        cpy.DefDef(tree)(paramss = newParamss)
+    }
+
+    def createReifiedClause(typeParams: List[TypeDef], sym: Symbol)(using Context): ParamClause = {
+        typeParams.map {
+            tparam =>
+                val reifiedName = termName(s"reified_${tparam.name}")
+                val reifiedSym = newSymbol(sym, reifiedName, Flags.Param, defn.ReifiedValueType)
+                ValDef(reifiedSym.asTerm)
+        }
     }
 
     override def transformApply(tree: Apply)(using Context): Tree = {
-        val sym = tree.fun.symbol
-        if (sym.exists && sym.info.isInstanceOf[PolyType]) {
-            val poly = sym.info.asInstanceOf[PolyType]
-            val methodType = poly.resultType match {
-                case mt: MethodType => mt
-                case _ => null
-            }
-            
-            if (methodType != null) {
-                val expectedParams = methodType.paramInfos.length
-                val currentArgs = tree.args.length
-                
-                if (currentArgs < expectedParams) {
-                    val reifiedArgs = tree.fun match {
-                        case TypeApply(_, targs) =>
-                            targs.map(targ => createReifiedValue(targ.tpe))
-                        case _ =>
-                            poly.paramNames.map(_ => createReifiedValue(defn.ReifiedValueType))
-                    }
-                    return cpy.Apply(tree)(tree.fun, tree.args ++ reifiedArgs)
-                }
-            }
+        val fun = tree.fun
+        val args = tree.args
+        val funType = fun.tpe.widen
+        val resType = funType match {
+            case mt: MethodType => 
+                println(s"TransformApply tree type: ${tree.tpe.show}, method type: ${mt.resType.show}")
+                mt.resType
+            case _ => tree.tpe
         }
-        tree
+        if (isReifiedParamMethod(resType)){
+            val reifiedArgs = collectReifiedArgs(fun)
+            val innerApply = cpy.Apply(tree)(fun, args).withType(resType)
+            val outerResType = resType match {
+                case mt: MethodType => mt.resType
+                case _ => resType
+            }
+            println(s"Transforming Apply: ${tree.show}, fun type: ${funType.show}, res type: ${resType.show}, with reified args: ${reifiedArgs.map(_.show)}")
+            Apply(innerApply, reifiedArgs).withType(outerResType)
+        } else tree
+    }
+
+    def isReifiedParamMethod(tpe: Type)(using Context): Boolean = tpe match {
+        case mt: MethodType =>
+            mt.paramNames.nonEmpty && mt.paramNames.head.toString.startsWith("reified_")
+        case _ => false
+    }
+
+    def collectReifiedArgs(tree: Tree)(using Context): List[Tree] = {
+        tree match {
+            case ta: TypeApply =>
+                ta.args.map(arg => createReifiedValue(arg.tpe))
+            case a: Apply =>
+                collectReifiedArgs(a.fun)
+            case _ => Nil
+        }
     }
     
     def createReifiedValue(tpe: Type)(using Context): Tree = {
