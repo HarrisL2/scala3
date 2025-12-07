@@ -251,13 +251,13 @@ object Erasure {
 
     def maybeMarkBox(tree: Tree, tp: Type)(using Context): Tree =
       if (isObjectAny(tp)) then
-        println("  MarkBoxing: marking box for "+ tp)
+        // println("  MarkBoxing: marking box for "+ tp)
         tree.withAttachment(NoBoxingNeeded, tp.typeSymbol.name.toString)
       else tree
 
     def maybeMarkUnbox(tree: Tree, tp: Type)(using Context): Tree =
       if (isObjectAny(tp)) then
-        println("  MarkBoxing: marking unbox for "+ tp)
+        // println("  MarkBoxing: marking unbox for "+ tp)
         tree.withAttachment(NoUnboxingNeeded, tp.typeSymbol.name.toString)
       else tree
 
@@ -390,9 +390,9 @@ object Erasure {
         case _ =>
           if (pt.isPrimitiveValueType)
             primitiveConversion(tree, pt.classSymbol)
-          // cast tree type to pt, if pt is ObjectAny, do not inject a cast
+          // cast tree type to pt, if pt is ObjectAny and tpe of tree is not primitive, do not inject a cast
           else if isObjectAny(pt) && !tree.tpe.widen.isPrimitiveValueType then
-            println("  MarkBoxing: skipping cast to ObjectAny for "+ pt + " from tree "+ tree.show)
+            // println("  MarkBoxing: skipping cast to ObjectAny for "+ pt + " from tree "+ tree.show)
             tree.withType(pt)
           else
             tree.asInstance(pt)
