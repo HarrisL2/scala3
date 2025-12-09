@@ -17,23 +17,79 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
     final val DEBUG = false
 
     val reifiedSyms = scala.collection.mutable.Map[Symbol, Map[Name, Symbol]]()
+    // ClassSymbol -> (TypeParameter name -> ReifiedField Symbol)
+    val classFieldSyms = scala.collection.mutable.Map[Symbol, Map[Name, Symbol]]()
 
-    def printMap(): Unit = {
+    def printMethodMap(): Unit = {
         println("Reified Syms Map:")
         for ((k, v) <- reifiedSyms) {
             println(s"  Method: ${k}, Reified Syms: ${v}")
+        }
+    }
+
+    def printClassFieldMap(): Unit = {
+        println("Class Field Syms Map:")
+        for ((k, v) <- classFieldSyms) {
+            println(s"  Class: ${k}, Field Syms: ${v}")
         }
     }
     
     override def phaseName: String = "addReifiedTypes"
     override def description: String = "add reified type values to methods"
 
+    override def prepareForTemplate(tree: Template)(using Context): Context = 
+        val cls = ctx.owner.asClass
+        if (cls.typeParams.nonEmpty){
+            println(s"PrepareForTemplate for class ${cls.name} with type params: ${cls.typeParams.map(_.name)}")
+            val fields = cls.typeParams.map { tparam => 
+                val reifiedName = termName(s"reifiedField_${tparam.name}")
+                val reifiedSym = newSymbol(cls, reifiedName, Flags.Private | Flags.Local, defn.ReifiedValueType)
+                (tparam.name: Name) -> reifiedSym
+            }.toMap
+            classFieldSyms(cls) = fields
+            printClassFieldMap()
+        }
+        ctx
+
+    override def transformTemplate(tree: Template)(using Context): Tree = 
+        val cls = ctx.owner.asClass
+        if (classFieldSyms.contains(cls)){
+            val fieldsMap = classFieldSyms(cls)
+            val newFields = fieldsMap.map { case (name, sym) => 
+                ValDef(sym.asTerm)
+            }.toList
+            println(s"TransformTemplate for class ${cls.name}, adding reified fields: ${newFields.map(_.name)}")
+            cpy.Template(tree)(body = tree.body ::: newFields)
+        } else tree
+    
     override def transformInfo(tp: Type, sym: Symbol)(using Context): Type =
         if (sym.is(Flags.Method)) then
-            val res = addReifiedParams(tp)
+            val res = 
+                if (sym.isConstructor && sym.owner.isClass && sym.owner.typeParams.nonEmpty) {
+                    val cls = sym.owner.asClass
+                    val reifiedNames = cls.typeParams.map(tparam => termName(s"reifiedField_${tparam.name}"))
+                    val reifiedTypes = reifiedNames.map(_ => defn.ReifiedValueType)
+                } else addReifiedParams(tp)
             //println(s"Transforming method info for ${sym.name}, from: ${tp.show} to: ${res.show}")
             res
         else tp
+
+    def addParamsToMethod(tp: Type, names: List[TermName], types: List[Type])(using Context): Type = {
+        tp match {
+            case pt: PolyType =>
+                pt.derivedLambdaType(
+                    pt.paramNames,
+                    pt.paramInfos,
+                    addParamsToMethod(pt.resType, names, types)
+                )
+            case mt: MethodType =>
+                mt.derivedLambdaType(
+                    mt.paramNames,
+                    mt.paramInfos,
+                    addParamsToMethod(mt.resType, names, types)
+            )
+        }
+    }
 
     def addReifiedParams(tp: Type)(using Context): Type = tp match {
         case pt: PolyType =>
@@ -72,6 +128,8 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             )
         case _ => tp
     }
+
+    def 
     
     override def prepareForDefDef(tree: DefDef)(using Context): Context = 
         val sym = tree.symbol
@@ -125,7 +183,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
 
     def createReifiedClause(sym: Symbol, typeParams: List[TypeDef])(using Context): ParamClause = {
         if (reifiedSyms.contains(sym)){
-            if DEBUG then printMap()
+            if DEBUG then printMethodMap()
             val map = reifiedSyms(sym)
             typeParams.map {
                 tparam =>

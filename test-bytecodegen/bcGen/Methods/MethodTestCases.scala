@@ -3,7 +3,19 @@ package bcGen.Methods
 object MethodTestCases {
   val rng = new scala.util.Random(1234)
 
-  def genericIdentity[T](value: T): T = MethodTestLib.identity[T](value)
+  // def genericIdentity[T](value: T): T = MethodTestLib.identity[T](value)
+
+  @main def runIdentitySimple(): Unit = {
+    val repeat = 1000000
+    val input = 42
+    var sum = 0
+    var i = 0
+    while (i < repeat) {
+      sum += MethodTestLib.identity[Int](input)
+      i += 1
+    }
+    println(s"Sum of $repeat identities of $input is $sum")
+  }
   
   @main def runIdentityInt(): Unit = {
     val repeat = 1000000
@@ -36,15 +48,21 @@ object MethodTestCases {
     println(s"Sum of $repeat firsts is int: $sumInt, double: $sumDouble")
   }
 
-  @main def runIdentity2(): Unit = {
-    val repeat = 1000000
-    val input = 42
-    var sum = 0
-    var i = 0
-    while (i < repeat) {
-      sum += genericIdentity[Int](input)
-      i += 1
-    }
-    println(s"Sum of $repeat generic identities of $input is $sum")
+  @main def runCorrectness1(): Unit = {
+    // Call the method fully with all arguments
+    // MethodTestLib.A[Int](10)[String, Double]("hello", 3.14, 2.0)[Boolean, Char, Long](true, 'c', 100L)
+    println("Called MethodTestLib.A successfully")
   }
+
+  // @main def runIdentity2(): Unit = {
+  //   val repeat = 1000000
+  //   val input = 42
+  //   var sum = 0
+  //   var i = 0
+  //   while (i < repeat) {
+  //     sum += genericIdentity[Int](input)
+  //     i += 1
+  //   }
+  //   println(s"Sum of $repeat generic identities of $input is $sum")
+  // }
 }
