@@ -26,7 +26,18 @@ class ErasurePreservation extends MiniPhase {
 
   override def description: String = ErasurePreservation.description
 
-  def toTypeA(tp: Type, outers: List[List[Symbol]])(using Context): TypeA = trace(i"toTypeA ${tp}"){ tp.widen match
+  def decomposeType(tp: Type)(using Context): (List[Name], List[Type], Type) = tp match {
+    case pt: PolyType =>
+      val (restNames, restParams, ret) = decomposeType(pt.resType)
+      (pt.paramNames ++ restNames, restParams, ret)
+    case mt: MethodType =>
+      val (restNames, restParams, ret) = decomposeType(mt.resType)
+      (restNames, mt.paramInfos ++ restParams, ret)
+    case other =>
+      (Nil, Nil, other)
+  }
+
+  def toTypeA(tp: Type, outers: List[List[Name]])(using Context): TypeA = trace(i"toTypeA ${tp}"){ tp.widen match
     case tpr: TypeParamRef => TypeA.M(tpr.paramNum)
     case tr: TypeRef =>
       // println(tr.symbol.owner.paramSymss)
@@ -39,9 +50,9 @@ class ErasurePreservation extends MiniPhase {
       if tr.isRef(defn.ShortClass) then TypeA.Short else
       if tr.isRef(defn.BooleanClass) then TypeA.Boolean else
       if tr.symbol.isTypeParam then
-        def search(tr: TypeRef, depth: Int, outers: List[List[Symbol]]): TypeA =
+        def search(tr: TypeRef, depth: Int, outers: List[List[Name]]): TypeA =
           outers.headOption match
-            case Some(value) => value.indexOf(tr.symbol) match
+            case Some(value) => value.indexOf(tr.name) match
               case -1 =>
                 search(tr, depth+1, outers.tail)
               case ind =>
@@ -66,13 +77,13 @@ class ErasurePreservation extends MiniPhase {
     case _ => ???
 
 
-  def toTypeB(tp: Type, outers: List[List[Symbol]], isConstructor: Boolean = false)(using Context): TypeB = trace(i"toTypeB ${tp}, ${outers}"){ tp match
+  def toTypeB(tp: Type, outers: List[List[Name]], isConstructor: Boolean = false)(using Context): TypeB = trace(i"toTypeB ${tp}, ${outers}"){ tp match
     case tpr: TypeParamRef =>
-      TypeB.M(outers.head.indexWhere(sym => sym.name == tpr.paramName))
+      TypeB.M(outers.head.indexWhere(name => name == tpr.paramName))
     case tr: TypeRef if tr.symbol.isTypeParam =>
-      def search(tr: TypeRef, depth: Int, outers: List[List[Symbol]]): TypeB =
+      def search(tr: TypeRef, depth: Int, outers: List[List[Name]]): TypeB =
         outers.headOption match
-          case Some(value) => value.indexOf(tr.symbol) match
+          case Some(value) => value.indexOf(tr.name) match
             case -1 =>
               search(tr, depth+1, outers.tail)
             case ind =>
@@ -90,11 +101,11 @@ class ErasurePreservation extends MiniPhase {
     case _ => TypeB.None
   }
 
-  def toReturnTypeB(tp: Type, outers: List[List[Symbol]])(using Context): TypeB = tp match
+  def toReturnTypeB(tp: Type, outers: List[List[Name]])(using Context): TypeB = tp match
     case tr: TypeRef if tr.symbol.isTypeParam =>
-      def search(tr: TypeRef, depth: Int, outers: List[List[Symbol]]): TypeB =
+      def search(tr: TypeRef, depth: Int, outers: List[List[Name]]): TypeB =
         outers.headOption match
-          case Some(value) => value.indexOf(tr.symbol) match
+          case Some(value) => value.indexOf(tr.name) match
             case -1 =>
               search(tr, depth+1, outers.tail)
             case ind =>
@@ -113,28 +124,26 @@ class ErasurePreservation extends MiniPhase {
    * Return all outer type parameters that originate from a method
    * until we reach a class
    */
-  def getOuterParamss(sym: Symbol, isConstructor: Boolean)(using Context): List[List[Symbol]] = trace(i"getOuterParamss ${sym}") {
+  def getOuterParamss(sym: Symbol, isConstructor: Boolean)(using Context): List[List[Name]] = trace(i"getOuterParamss ${sym}") {
     if !sym.exists then List(List())
     else if sym.isClass && isConstructor then
       // println(sym.typeParams)
       val outers = getOuterParamss(sym.owner, false)
-      (outers.head ++ sym.typeParams) :: outers.tail
+      (outers.head ++ sym.typeParams.map(_.name)) :: outers.tail
     else if sym.isClass then
       val outers = getOuterParamss(sym.owner, false)
-      List() :: (outers.head ++ sym.typeParams) :: outers.tail
+      List() :: (outers.head ++ sym.typeParams.map(_.name)) :: outers.tail
     else
-      val tyParams = sym.paramSymss.headOption
+      // val tyParams = sym.paramSymss.headOption
       val outers = getOuterParamss(sym.owner, false)
-      tyParams match
-        case Some(tps) =>
-          (outers.head ++ sym.paramSymss.headOption.getOrElse(List())) :: outers.tail
-        case None => outers
+      val (allTypeNames, _, _) = decomposeType(sym.info)
+      (outers.head ++ allTypeNames) :: outers.tail
   }
 
   def methodToInfos(
     params: List[Type],
     resType: Type,
-    tyParams: List[Symbol],
+    tyParams: List[Name],
     isConstructor: Boolean)(using Context): Tuple3[Int, List[TypeB], TypeB] = trace(i"methodToInfos ${params}, ${resType}")
     {
     var outers = getOuterParamss(ctx.owner, isConstructor)
@@ -147,24 +156,32 @@ class ErasurePreservation extends MiniPhase {
 
 
   override def transformDefDef(tree: tpd.DefDef)(using Context): tpd.Tree = trace(i"transformDefDef $tree, ${tree.tpe}, ${tree.tpe.widen}"){
-    val tup: Tuple3[Int, List[TypeB], TypeB] = tree.tpe.widen match
-      case pt: PolyType => pt.resType match
-        case mt: MethodType =>
-          methodToInfos(mt.paramInfos, mt.resType, tree.symbol.paramSymss.head, tree.symbol.isConstructor)
-        case other =>
-          methodToInfos(Nil, other.widenExpr, tree.symbol.paramSymss.head, tree.symbol.isConstructor)
-      case mt: MethodType =>
-        methodToInfos(mt.paramInfos, mt.resType, Nil, false)
-      case tr: TypeRef =>
-        methodToInfos(Nil, tr, Nil, false)
-      // case et: ExprType =>
-      //   ???
-      case other =>
-        (0, Nil, TypeB.None)
-    val (paramCount, paramRefs, retType) = tup
+    val (allTypeNames, allValueParams, resType) = decomposeType(tree.tpe.widen)
+    val outers = getOuterParamss(tree.symbol, tree.symbol.isConstructor)
+    val paramRefs = allValueParams.map(tp => toTypeB(tp, outers, tree.symbol.isConstructor))
+    val retType = toTypeB(resType, outers, tree.symbol.isConstructor)
+    val paramCount = outers.head.length
     if (paramCount != 0 || paramRefs.length > 0 || retType != TypeB.None) then
       tree.putAttachment(MethodParameterReturnType, (paramCount, paramRefs, retType))
     tree
+    // val tup: Tuple3[Int, List[TypeB], TypeB] = tree.tpe.widen match
+    //   case pt: PolyType => pt.resType match
+    //     case mt: MethodType =>
+    //       methodToInfos(mt.paramInfos, mt.resType, pt.paramNames, tree.symbol.isConstructor)
+    //     case other =>
+    //       methodToInfos(Nil, other.widenExpr, pt.paramNames, tree.symbol.isConstructor)
+    //   case mt: MethodType =>
+    //     methodToInfos(mt.paramInfos, mt.resType, Nil, false)
+    //   case tr: TypeRef =>
+    //     methodToInfos(Nil, tr, Nil, false)
+    //   // case et: ExprType =>
+    //   //   ???
+    //   case other =>
+    //     (0, Nil, TypeB.None)
+    // val (paramCount, paramRefs, retType) = tup
+    // if (paramCount != 0 || paramRefs.length > 0 || retType != TypeB.None) then
+    //   tree.putAttachment(MethodParameterReturnType, (paramCount, paramRefs, retType))
+    // tree
   }
 
   override def transformApply(tree: tpd.Apply)(using Context): tpd.Tree = trace(i"transfromApply ${tree}") {
