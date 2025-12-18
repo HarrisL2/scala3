@@ -113,6 +113,7 @@ class Compiler {
     List(new AddReifiedTypes) ::     // Add reified type parameters
     List(new ErasurePreservation) :: //
     List(new Erasure) ::             // Rewrite types to JVM model, erasing all type parameters, abstract types and refinements.
+    List(new MoveReifiedParams) ::   // Move the reified value parameters to the end of parameter list
     List(new ElimObjectAny,          // Eliminate ObjcetAny to Object
          new ElimErasedValueType,    // Expand erased value types to their underlying implementation types
          new PureStats,              // Remove pure stats from blocks

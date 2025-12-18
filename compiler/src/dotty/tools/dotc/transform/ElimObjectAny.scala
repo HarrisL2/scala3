@@ -37,12 +37,58 @@ class ElimObjectAny extends MiniPhase with InfoTransformer{
     val newType = elimObjectAny(tree.tpe)
     if (newType ne tree.tpe) then tree.withType(newType)
     else tree
-  // def changeObjectAnyToObject(tp: Type)(using Context): Type = {
-  //   tp match 
-  //       case tr: TypeRef if tr.symbol == defn.ObjectAnySymbol =>
-  //         defn.ObjectType
-  //       case _ => tp
-  // }
+  
+  override def transformApply(tree: Apply)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformSelect(tree: Select)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformIdent(tree: Ident)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformTyped(tree: Typed)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformBlock(tree: Block)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformIf(tree: If)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformTypeApply(tree: TypeApply)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformLiteral(tree: Literal)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformThis(tree: This)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformNew(tree: New)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformSuper(tree: Super)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformMatch(tree: Match)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformTry(tree: Try)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformReturn(tree: Return)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformSeqLiteral(tree: SeqLiteral)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
+  override def transformInlined(tree: Inlined)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+    
+  override def transformAssign(tree: Assign)(using Context): Tree =
+    tree.withType(elimObjectAny(tree.tpe))
+
 }
 
 object ElimObjectAny {
