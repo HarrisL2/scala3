@@ -11,10 +11,19 @@ import core.Symbols.*
 import dotty.tools.dotc.core.Flags
 import dotty.tools.dotc.core.Constants.*
 
-class AddReifiedTypes extends MiniPhase with InfoTransformer {
-    import ast.tpd.*
+object AddReifiedTypes {
+    val reifiedFieldNamePrefix = "reifiedField$"
 
     final val DEBUG = false
+
+    val name: String = "addReifiedTypes"
+    val description: String = "add reified type values to methods"
+}
+
+class AddReifiedTypes extends MiniPhase with InfoTransformer {
+    import ast.tpd.*
+    import AddReifiedTypes.DEBUG
+    import AddReifiedTypes.reifiedFieldNamePrefix
 
     val reifiedSyms = scala.collection.mutable.Map[Symbol, Map[Name, Symbol]]()
     // ClassSymbol -> (TypeParameter name -> ReifiedField Symbol)
@@ -34,8 +43,8 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
         }
     }
     
-    override def phaseName: String = "addReifiedTypes"
-    override def description: String = "add reified type values to methods"
+    override def phaseName: String = AddReifiedTypes.name
+    override def description: String = AddReifiedTypes.description
 
     def getCallSymbol(tree: Tree)(using Context): Symbol = tree match {
         case a: Apply => getCallSymbol(a.fun)
@@ -49,8 +58,8 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
         if (cls.typeParams.nonEmpty){
             if DEBUG then println(s"AddReifiedTypes: PrepareForTemplate for class ${cls.name} with type params: ${cls.typeParams.map(_.name)}")
             val fields = cls.typeParams.map { tparam => 
-                val reifiedName = termName(s"reifiedField$$${tparam.name}")
-                val reifiedSym = newSymbol(cls, reifiedName, Flags.Private | Flags.Local | Flags.Mutable, defn.ReifiedValueType)
+                val reifiedName = termName(s"${reifiedFieldNamePrefix}${tparam.name}")
+                val reifiedSym = newSymbol(cls, reifiedName, Flags.Private | Flags.ParamAccessor, defn.ReifiedValueType).entered
                 (tparam.name: Name) -> reifiedSym
             }.toMap
             classFieldSyms(cls) = fields
@@ -62,26 +71,21 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
         val cls = ctx.owner.asClass
         if (classFieldSyms.contains(cls)){
             val fieldsMap = classFieldSyms(cls)
-            val newFields = fieldsMap.map { case (name, sym) => 
-                ValDef(sym.asTerm)
-            }.toList
-            if DEBUG then println(s"TransformTemplate for class ${cls.name}, adding reified fields: ${newFields.map(_.name)}")
             
             val constr = tree.constr
             val allParams = constr.paramss.flatten
             val reifiedParamsCount = cls.typeParams.length
             val reifiedParamDefs = allParams.takeRight(reifiedParamsCount)
             
-            val assigns = cls.typeParams.zip(reifiedParamDefs).map { case (tparam, paramDef) =>
-                val fieldSym = fieldsMap(tparam.name)
-                val paramSym = paramDef.symbol
-                Assign(
-                    This(cls).select(fieldSym),
-                    ref(paramSym)
-                )
+            val newFields = cls.typeParams.zip(reifiedParamDefs).map {
+                case (tparam, paramDef) =>
+                    val fieldSym = fieldsMap(tparam.name)
+                    ValDef(fieldSym.asTerm)
             }
+            
+            if DEBUG then println(s"TransformTemplate for class ${cls.name}, adding reified fields: ${newFields.map(_.name)}")
 
-            cpy.Template(tree)(body = tree.body ::: newFields ::: assigns)
+            cpy.Template(tree)(body = tree.body ::: newFields)
         } else tree
     
     override def transformInfo(tp: Type, sym: Symbol)(using Context): Type =
@@ -89,7 +93,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             val res = 
                 if (sym.isConstructor && sym.owner.isClass && sym.owner.typeParams.nonEmpty) {
                     val cls = sym.owner.asClass
-                    val reifiedNames = cls.typeParams.map(tparam => termName(s"reifiedField$$${tparam.name}"))
+                    val reifiedNames = cls.typeParams.map(tparam => termName(s"${reifiedFieldNamePrefix}${tparam.name}"))
                     val reifiedTypes = reifiedNames.map(_ => defn.ReifiedValueType)
                     if DEBUG then println(s"AddReifiedTypes: TransformInfo for constructor ${sym.name} of class ${cls.name}, adding reified params: ${reifiedNames}")
                     addParamsToMethod(tp, reifiedNames, reifiedTypes)
@@ -183,7 +187,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
         if (sym.isConstructor && sym.owner.isClass && classFieldSyms.contains(sym.owner)){
             val cls = sym.owner.asClass
             val newParamSyms = cls.typeParams.map(tparam => 
-                newSymbol(sym, termName(s"reifiedField$$${tparam.name}"), Flags.Param, defn.ReifiedValueType))
+                newSymbol(sym, termName(s"${reifiedFieldNamePrefix}${tparam.name}"), Flags.Param, defn.ReifiedValueType))
             val newParamDefs = newParamSyms.map(sym => ValDef(sym.asTerm))
             
             val newParamss = tree.paramss :+ newParamDefs
@@ -253,7 +257,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             val isReified = tree.tpe.widen match {
                 case mt: MethodType => 
                     // println(s"TransformApply Constructor call: method type: ${mt.paramNames}")
-                    mt.paramNames.nonEmpty && mt.paramNames.head.toString.startsWith("reifiedField$")
+                    mt.paramNames.nonEmpty && mt.paramNames.head.toString.startsWith(reifiedFieldNamePrefix)
                 case _ => false
             }
             if (isReified) {

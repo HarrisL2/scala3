@@ -125,6 +125,7 @@ class Constructors extends MiniPhase with IdentityDenotTransformer { thisPhase =
    */
   private def mightBeDropped(sym: Symbol)(using Context) =
     sym.is(Private, butNot = MethodOrLazy) && !sym.isAllOf(MutableParamAccessor)
+    && !sym.name.toString.startsWith(AddReifiedTypes.reifiedFieldNamePrefix)
 
   private final val MutableParamAccessor = Mutable | ParamAccessor
 
