@@ -23,6 +23,7 @@ import dotty.tools.dotc.report
 import dotty.tools.dotc.transform.ErasedInfo
 import dotty.tools.dotc.transform.MethodParameterReturnType
 import dotty.tools.backend.jvm.attributes.*
+import dotty.tools.dotc.transform.AddReifiedTypes
 
 
 /*
@@ -299,6 +300,16 @@ trait BCodeSkelBuilder extends BCodeHelpers {
           case Some(cnt, _, _) => cnt
       //  println(s"Class ${claszSymbol} has ${classTypeParamCnt} type parameters")
       if (classTypeParamCnt > 0) cnode.visitAttribute(new ClassTypeParameterCount(classTypeParamCnt))
+      
+      val reifiedFields = claszSymbol.info.decls.toList.collect{
+        case sym if sym.isField && sym.name.toString.startsWith(AddReifiedTypes.reifiedFieldNamePrefix) => sym.name.toString
+      }
+
+      if (reifiedFields.nonEmpty) {
+        println(s"Class ${claszSymbol} has reified type fields: ${reifiedFields}")
+        cnode.visitAttribute(new ClassTypeParamList(cnode.name, reifiedFields.toArray))
+      }
+      
       var fieldAttrs: Map[Symbol, (Int, List[dotty.tools.dotc.transform.TypeB], dotty.tools.dotc.transform.TypeB)] = Map.empty
       fieldAttrs =
         templ.body.collect {

@@ -10,6 +10,7 @@ import core.Names.*
 import core.Symbols.*
 import dotty.tools.dotc.core.Flags
 import dotty.tools.dotc.core.Constants.*
+import dotty.tools.dotc.core.StdNames.*
 
 object AddReifiedTypes {
     val reifiedFieldNamePrefix = "reifiedField$"
@@ -89,7 +90,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
         } else tree
     
     override def transformInfo(tp: Type, sym: Symbol)(using Context): Type =
-        if (sym.is(Flags.Method)) then
+        if (sym.is(Flags.Method) && sym.name != nme.asInstanceOf_ && sym.name != nme.synchronized_) then
             val res = 
                 if (sym.isConstructor && sym.owner.isClass && sym.owner.typeParams.nonEmpty) {
                     val cls = sym.owner.asClass
@@ -253,7 +254,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
         val sym = getCallSymbol(fun)
 
         if (sym.isConstructor) {
-            println(s"AddReifiedTypes: TransformApply Constructor call: tree: $tree, ${tree.show}")
+            // println(s"AddReifiedTypes: TransformApply Constructor call: tree: $tree, ${tree.show}")
             val isReified = tree.tpe.widen match {
                 case mt: MethodType => 
                     // println(s"TransformApply Constructor call: method type: ${mt.paramNames}")
