@@ -14,6 +14,7 @@ import dotty.tools.dotc.core.StdNames.*
 
 object AddReifiedTypes {
     val reifiedFieldNamePrefix = "reifiedField$"
+    val reifiedLocalNamePrefix = "reifiedLocal$"
 
     final val DEBUG = false
 
@@ -25,6 +26,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
     import ast.tpd.*
     import AddReifiedTypes.DEBUG
     import AddReifiedTypes.reifiedFieldNamePrefix
+    import AddReifiedTypes.reifiedLocalNamePrefix
 
     val reifiedSyms = scala.collection.mutable.Map[Symbol, Map[Name, Symbol]]()
     // ClassSymbol -> (TypeParameter name -> ReifiedField Symbol)
@@ -90,7 +92,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
         } else tree
     
     override def transformInfo(tp: Type, sym: Symbol)(using Context): Type =
-        if (sym.is(Flags.Method) && sym.name != nme.asInstanceOf_ && sym.name != nme.synchronized_) then
+        if (sym.is(Flags.Method) && sym.name != nme.asInstanceOf_) then
             val res = 
                 if (sym.isConstructor && sym.owner.isClass && sym.owner.typeParams.nonEmpty) {
                     val cls = sym.owner.asClass
@@ -269,12 +271,25 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
                 val reifiedArgs = collectReifiedArgs(current)
                 if (reifiedArgs.nonEmpty) {
                     if DEBUG then println(s"AddReifiedTypes: TransformApply Constructor: appending args ${reifiedArgs.map(_.show)}")
+                    val cls = sym.owner.asClass
+                    val tparams = cls.typeParams
+
+                    // locals to hold reified values
+                    val (valDefs, refs) = tparams.zip(reifiedArgs).map {
+                        case (tparam, arg) =>
+                            val localName = termName(s"${reifiedLocalNamePrefix}${cls.name}${tparam.name}")
+                            val valSym = newSymbol(ctx.owner, localName, Flags.Synthetic, defn.ReifiedValueType)
+                            val valDef = ValDef(valSym.asTerm, arg)
+                            (valDef, ref(valSym))
+                    }.unzip
+                    
                     val reifiedParamNames = reifiedArgs.map(_ => termName("reified"))
                     val reifiedParamTypes = reifiedArgs.map(_ => defn.ReifiedValueType)
 
                     val reifiedMethodType = MethodType(reifiedParamNames, reifiedParamTypes, tree.tpe)
                     val inner = tree.withType(reifiedMethodType)
-                    Apply(inner, reifiedArgs).withType(tree.tpe)
+                    val apply = Apply(inner, refs).withType(tree.tpe)
+                    Block(valDefs, apply)
                 } else tree
             } else tree
         } else {

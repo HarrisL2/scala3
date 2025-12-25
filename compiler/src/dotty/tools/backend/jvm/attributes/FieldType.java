@@ -10,7 +10,7 @@ import scala.tools.asm.Label;
 FieldType_attribute{
     u2 attribute_name_index;
 	u4 attribute_length;
-    u1 K_M_indicator; (should be always K?)
+    u1 K_M_indicator; (should be always K)
 	u2 index;
 }
 */

@@ -15,6 +15,7 @@ package dotty.tools.backend.jvm;
 import dotty.tools.backend.jvm.attributes.InstructionTypeArguments;
 import dotty.tools.backend.jvm.attributes.InvokeReturnType;
 import dotty.tools.backend.jvm.attributes.ExtraBoxUnbox;
+import dotty.tools.backend.jvm.attributes.BCNewTypeArgs;
 import java.util.Map;
 
 import dotty.tools.backend.jvm.attributes.TypeHints;
@@ -44,6 +45,8 @@ public class MethodNode1 extends MethodNode {
 
     public Map<AbstractInsnNode, List<TypeHints.TypeA>> instructionTypeArgTypeAs = new LinkedHashMap<>();
 
+    public Map<AbstractInsnNode, int[]> bcNewTypeArgsMap = new LinkedHashMap<>();
+
     public Map<AbstractInsnNode, Boolean> extraBoxUnboxMap = new LinkedHashMap<>();
 
     private Map<AbstractInsnNode, Integer> offsetMap = new LinkedHashMap<>();
@@ -51,6 +54,8 @@ public class MethodNode1 extends MethodNode {
     private InvokeReturnType invokeReturnTypeAttribute;
 
     private InstructionTypeArguments instructionTypeArgumentsAttribute;
+
+    private BCNewTypeArgs bcNewTypeArgsAttribute;
 
     private ExtraBoxUnbox extraBoxUnboxAttribute;
 
@@ -391,7 +396,8 @@ public class MethodNode1 extends MethodNode {
     }
 
     public boolean hasTypeHints(){
-        return (!invokeReturnTypeBs.isEmpty() || !instructionTypeArgTypeAs.isEmpty());
+        return (!invokeReturnTypeBs.isEmpty() || !instructionTypeArgTypeAs.isEmpty() 
+             || !bcNewTypeArgsMap.isEmpty() || !extraBoxUnboxMap.isEmpty());
     }
 
     public void setAttribtues(){
@@ -418,6 +424,7 @@ public class MethodNode1 extends MethodNode {
             visitAttribute(invokeReturnTypeAttribute);
         }
         // create InstructionTypeArguments attribute
+        /* InstructionTypeArguments are no longer used
         List<TypeHints.TypeAHint> typeAHintList = new ArrayList<>();
         for (Map.Entry<AbstractInsnNode, List<TypeHints.TypeA>> entry : instructionTypeArgTypeAs.entrySet()){
             AbstractInsnNode insn = entry.getKey();
@@ -434,6 +441,24 @@ public class MethodNode1 extends MethodNode {
             this.instructionTypeArgumentsAttribute = new InstructionTypeArguments(typeAHintList);
             if (DEBUG) System.out.println("instructionTypeArgumentsAttribute: " + instructionTypeArgumentsAttribute);
             visitAttribute(instructionTypeArgumentsAttribute);
+        }
+        */
+        // create BCNewTypeArgs attribute
+        List<BCNewTypeArgs.Entry> bcNewTypeArgsEntries = new ArrayList<>();
+        for (Map.Entry<AbstractInsnNode, int[]> entry : bcNewTypeArgsMap.entrySet()){
+            AbstractInsnNode insn = entry.getKey();
+            int[] locals = entry.getValue();
+            Integer bcOffset = offsetMap.getOrDefault(insn, -1);
+            if (bcOffset != -1){
+                bcNewTypeArgsEntries.add(new BCNewTypeArgs.Entry(bcOffset, locals));
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        if (bcNewTypeArgsEntries.size() != 0){
+            this.bcNewTypeArgsAttribute = new BCNewTypeArgs(bcNewTypeArgsEntries);
+            if (DEBUG) System.out.println("bcNewTypeArgsAttribute: " + bcNewTypeArgsAttribute);
+            visitAttribute(bcNewTypeArgsAttribute);
         }
         // create ExtraBoxUnbox attribute
         List<Integer> extraBoxUnboxOffsets = new ArrayList<>();
@@ -465,13 +490,20 @@ public class MethodNode1 extends MethodNode {
         return (LabelNode) label.info;
     }
 
-    public void visitTypeInsn(int opcode, String type, List<TypeHints.TypeA> instrTypeA){
-        if (opcode == Opcodes.NEW && instrTypeA.size() > 0){
+    public void visitTypeInsn(int opcode, String type, 
+        List<TypeHints.TypeA> instrTypeA, int[] bcNewTypeArgs){
+        if (opcode == Opcodes.NEW && 
+            ((instrTypeA != null && !instrTypeA.isEmpty())) ||
+            (bcNewTypeArgs != null && bcNewTypeArgs.length > 0)
+        ){
             if (DEBUG) System.out.println("visitTypeInsn NEW with instrTypeA = " + instrTypeA);
             AbstractInsnNode node = new TypeInsnNode(opcode, type);
             instructions.add(node);
-            if (instrTypeA != null){
+            if (instrTypeA != null && !instrTypeA.isEmpty()){
                 instructionTypeArgTypeAs.put(node, instrTypeA);
+            }
+            if (bcNewTypeArgs != null && bcNewTypeArgs.length > 0){
+                bcNewTypeArgsMap.put(node, bcNewTypeArgs);
             }
         } else {
             visitTypeInsn(opcode, type);

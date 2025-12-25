@@ -30,6 +30,7 @@ import dotty.tools.dotc.transform.InvokeReturnType
 import dotty.tools.dotc.transform.InstructionTypeArguments
 import dotty.tools.dotc.transform.NoBoxingNeeded
 import dotty.tools.dotc.transform.NoUnboxingNeeded
+import dotty.tools.dotc.transform.AddReifiedTypes
 
 /*
  *
@@ -807,7 +808,13 @@ trait BCodeBodyBuilder extends BCodeSkelBuilder {
               val instrType = fun.getAttachment(InstructionTypeArguments)
               val instrJType = instrType.getOrElse(Nil).map(bc.toJTypeA).asJava
               // println(s"NEW with retType = $retType and instrType = $instrType")
-              mnode.visitTypeInsn(asm.Opcodes.NEW, rt.internalName, instrJType)
+              
+              val reifiedIndices = args.collect {
+                case id: Ident if id.name.toString.startsWith(AddReifiedTypes.reifiedLocalNamePrefix) =>
+                  locals.getOrMakeLocal(id.symbol).idx
+              }
+              
+              mnode.visitTypeInsn(asm.Opcodes.NEW, rt.internalName, instrJType, reifiedIndices.toArray)
               bc dup generatedType
               stack.push(rt)
               stack.push(rt)
