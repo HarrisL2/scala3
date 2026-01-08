@@ -29,11 +29,7 @@ public class BCNewTypeArgs extends Attribute {
     public boolean isUnknown() {
         return false;
     }
-
-    @Override
-    protected Attribute read(ClassReader cr, int off, int len, char[] buf, int codeOff, Label[] labels) {
         
-
     @Override
     protected ByteVector write(ClassWriter cw, byte[] code, int len, int maxStack, int maxLocals) {
         ByteVector bv = new ByteVector();

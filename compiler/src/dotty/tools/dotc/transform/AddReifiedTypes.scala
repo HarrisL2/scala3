@@ -32,6 +32,8 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
     // ClassSymbol -> (TypeParameter name -> ReifiedField Symbol)
     val classFieldSyms = scala.collection.mutable.Map[Symbol, Map[Name, Symbol]]()
 
+    val classCapturedTypeParams = scala.collection.mutable.Map[Symbol, List[Symbol]]()
+
     def printMethodMap(): Unit = {
         println("Reified Syms Map:")
         for ((k, v) <- reifiedSyms) {
@@ -56,11 +58,23 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
         case i: Ident => i.symbol
         case _ => NoSymbol
     }
+
+    def getAllTypeParams(cls: Symbol)(using Context): List[Symbol] = {
+        val own = cls.typeParams
+        val outers = cls.ownersIterator.drop(1).takeWhile(
+            cl => cl.isClass && !cl.is(Flags.Module) && !cl.is(Flags.Package)
+        ).flatMap(_.typeParams).toList
+        own ++ outers
+    }
+
     override def prepareForTemplate(tree: Template)(using Context): Context = 
         val cls = ctx.owner.asClass
-        if (cls.typeParams.nonEmpty){
+        val allTypeParams = getAllTypeParams(cls) // TODO: can type params have the same name in outer classes?
+        println(s"AddReifiedTypes: Class ${cls.name} all type params: ${allTypeParams.map(_.name)}")
+        if (allTypeParams.nonEmpty){
             if DEBUG then println(s"AddReifiedTypes: PrepareForTemplate for class ${cls.name} with type params: ${cls.typeParams.map(_.name)}")
-            val fields = cls.typeParams.map { tparam => 
+            classCapturedTypeParams(cls) = allTypeParams
+            val fields = allTypeParams.map { tparam => 
                 val reifiedName = termName(s"${reifiedFieldNamePrefix}${tparam.name}")
                 val reifiedSym = newSymbol(cls, reifiedName, Flags.Private | Flags.ParamAccessor, defn.ReifiedValueType).entered
                 (tparam.name: Name) -> reifiedSym
@@ -77,10 +91,12 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             
             val constr = tree.constr
             val allParams = constr.paramss.flatten
-            val reifiedParamsCount = cls.typeParams.length
+
+            val allTypeParams = classCapturedTypeParams(cls)
+            val reifiedParamsCount = allTypeParams.length
             val reifiedParamDefs = allParams.takeRight(reifiedParamsCount)
             
-            val newFields = cls.typeParams.zip(reifiedParamDefs).map {
+            val newFields = allTypeParams.zip(reifiedParamDefs).map {
                 case (tparam, paramDef) =>
                     val fieldSym = fieldsMap(tparam.name)
                     ValDef(fieldSym.asTerm)
@@ -94,9 +110,10 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
     override def transformInfo(tp: Type, sym: Symbol)(using Context): Type =
         if (sym.is(Flags.Method) && sym.name != nme.asInstanceOf_) then
             val res = 
-                if (sym.isConstructor && sym.owner.isClass && sym.owner.typeParams.nonEmpty) {
+                if (sym.isConstructor && sym.owner.isClass && getAllTypeParams(sym.owner).nonEmpty){
                     val cls = sym.owner.asClass
-                    val reifiedNames = cls.typeParams.map(tparam => termName(s"${reifiedFieldNamePrefix}${tparam.name}"))
+                    val allTypeParams = getAllTypeParams(cls)
+                    val reifiedNames = allTypeParams.map(tparam => termName(s"${reifiedFieldNamePrefix}${tparam.name}"))
                     val reifiedTypes = reifiedNames.map(_ => defn.ReifiedValueType)
                     if DEBUG then println(s"AddReifiedTypes: TransformInfo for constructor ${sym.name} of class ${cls.name}, adding reified params: ${reifiedNames}")
                     addParamsToMethod(tp, reifiedNames, reifiedTypes)
@@ -185,11 +202,11 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
     override def transformDefDef(tree: DefDef)(using Context): Tree = {
         val sym = tree.symbol
 
-
         //fpr constructors
         if (sym.isConstructor && sym.owner.isClass && classFieldSyms.contains(sym.owner)){
             val cls = sym.owner.asClass
-            val newParamSyms = cls.typeParams.map(tparam => 
+            val allTypeParams = getAllTypeParams(cls)
+            val newParamSyms = allTypeParams.map(tparam => 
                 newSymbol(sym, termName(s"${reifiedFieldNamePrefix}${tparam.name}"), Flags.Param, defn.ReifiedValueType))
             val newParamDefs = newParamSyms.map(sym => ValDef(sym.asTerm))
             
@@ -199,7 +216,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             return cpy.DefDef(tree)(paramss = newParamss.asInstanceOf[List[ParamClause]])
         }
 
-        //for notmal generic methods
+        // for normal generic methods
         // if there are no type parameters, no need to add reified params
         if (!tree.paramss.exists(_.exists(_.isInstanceOf[TypeDef]))) return tree
 
@@ -268,7 +285,37 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
                 var current = fun
                 while (current.isInstanceOf[Apply]) current = current.asInstanceOf[Apply].fun
                 
-                val reifiedArgs = collectReifiedArgs(current)
+                val cls = sym.owner.asClass
+                val allTypeParams = getAllTypeParams(cls)
+                
+                // args for type params of this class
+                val ownReifiedArgs = collectReifiedArgs(current)
+                // type params of outer (not own) 
+                val capturedTypeParams = allTypeParams.drop(cls.typeParams.length)
+                // args for captured
+                val capturedReifiedArgs = 
+                    if (capturedTypeParams.nonEmpty)
+                        if (args.nonEmpty)
+                            val outer = args.head // outer should be at the head of the arg list
+                            println(s"AddReifiedTypes: TransformApply Constructor: class ${cls.name} from outer arg: ${outer.show}")
+                            capturedTypeParams.map{ tparam =>
+                                val outerClass = cls.owner.asClass
+                                if (classFieldSyms.contains(outerClass) && classFieldSyms(outerClass).contains(tparam.name))
+                                    val fieldSym = classFieldSyms(outerClass)(tparam.name)
+                                    outer.select(fieldSym)
+                                else
+                                    // outer has no field for this type param
+                                    report.error(s"AddReifiedTypes: ERROR: TransformApply Constructor: no reified field found for captured type param ${tparam.name} in outer class ${outerClass.name} from outer arg: ${outer.show}");
+                                    Literal(Constant(0.toByte)).withType(defn.ReifiedValueType)
+                            }
+                        else
+                            // should not be here since the constructor has no args called to it
+                            report.error(s"AddReifiedTypes: ERROR: TransformApply Constructor: no args found for captured type params in constructor call: ${tree.show}");
+                            Nil
+                    else Nil
+
+                val reifiedArgs = ownReifiedArgs ++ capturedReifiedArgs
+
                 if (reifiedArgs.nonEmpty) {
                     if DEBUG then println(s"AddReifiedTypes: TransformApply Constructor: appending args ${reifiedArgs.map(_.show)}")
                     val cls = sym.owner.asClass
@@ -335,6 +382,31 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             case _ => Nil
         }
     }
+
+    def createReifiedValueFromClass(tpe: Type, currentOwner: Symbol)(using Context): Tree = {
+        val typeParamSym = tpe.typeSymbol
+        val paramName = typeParamSym.name
+        val paramOwner = typeParamSym.owner
+        var current = currentOwner
+        var found: Option[Tree] = None
+
+        // go up the owner chain to find the reified symbol
+        while (current != NoSymbol && found.isEmpty){
+            if (current.isClass && classFieldSyms.contains(current)){
+                val fieldMap = classFieldSyms(current)
+                if (fieldMap.contains(paramName))
+                    val fieldSym = fieldMap(paramName)
+                    found = Some(This(current.asClass).select(fieldSym))
+            }
+            current = current.owner
+        }
+        found match {
+            case None => 
+                report.error(s"AddReifiedTypes: ERROR: createReifiedValueFromClass: no reified field found for class type param ${paramName} in owner ${currentOwner.name}")
+                Literal(Constant(0.toByte)).withType(defn.ReifiedValueType)
+            case Some(value) => value
+        }
+    }
     
     def createReifiedValue(tpe: Type)(using Context): Tree = {
        tpe.widen match
@@ -365,14 +437,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
                     val paramOwner = tr.symbol.owner
                     // class type param:
                     if (paramOwner.isClass){
-                        if (classFieldSyms.contains(paramOwner)) {
-                            val fieldSym = classFieldSyms(paramOwner)(paramName)
-                            This(paramOwner.asClass).select(fieldSym)
-                        } else {
-                            println(s"AddReifiedTypes: should not be here! ERROR: createReifiedValue: no reified field found for class type param ${paramName} in class ${paramOwner.name}");
-                            report.error(s"AddReifiedTypes: ERROR: createReifiedValue: no reified field found for class type param ${paramName} in class ${paramOwner.name}")
-                            Literal(Constant(0.toByte)).withType(defn.ReifiedValueType)
-                        }
+                       createReifiedValueFromClass(tr, ctx.owner)
                     }
                     // method type param:
                     else

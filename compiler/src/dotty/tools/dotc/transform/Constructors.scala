@@ -139,7 +139,9 @@ class Constructors extends MiniPhase with IdentityDenotTransformer { thisPhase =
     // parameter accessors but come first in the constructor parameter list.
     val accessors = cls.paramGetters
     val vparamsWithOuterLast = vparams match {
-      case vparam :: rest if vparam.name == nme.OUTER => rest ::: vparam :: Nil
+      case vparam :: rest if vparam.name == nme.OUTER => 
+        val (reified, other) = rest.partition(_.name.toString.startsWith(AddReifiedTypes.reifiedFieldNamePrefix))
+        other ::: vparam :: reified
       case _ => vparams
     }
     val paramSyms = vparamsWithOuterLast map (_.symbol)
