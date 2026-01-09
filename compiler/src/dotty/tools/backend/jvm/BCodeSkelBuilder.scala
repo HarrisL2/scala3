@@ -302,7 +302,9 @@ trait BCodeSkelBuilder extends BCodeHelpers {
       if (classTypeParamCnt > 0) cnode.visitAttribute(new ClassTypeParameterCount(classTypeParamCnt))
       
       val reifiedFields = claszSymbol.info.decls.toList.collect{
-        case sym if sym.isField && sym.name.toString.startsWith(AddReifiedTypes.reifiedFieldNamePrefix) => sym.name.toString
+        case sym if sym.isField && 
+         (sym.name.toString.startsWith(AddReifiedTypes.reifiedFieldNamePrefix) || sym.name.toString.contains("$$" + AddReifiedTypes.reifiedFieldNamePrefix))
+        => sym.name.toString
       }
 
       if (reifiedFields.nonEmpty) {
