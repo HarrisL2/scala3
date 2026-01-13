@@ -322,6 +322,9 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
                 val ownReifiedArgs = collectReifiedArgs(current)
                 // type params of outer (not own) 
                 val capturedTypeParams = allTypeParams.drop(cls.typeParams.length)
+                // optimization: only computer outer once, use it to extract all captured reified args & pass to constructor
+                var outerValDef: Tree = EmptyTree
+                var outerSym: Symbol = NoSymbol
                 // args for captured
                 val capturedReifiedArgs = 
                     if (capturedTypeParams.nonEmpty)
@@ -329,12 +332,15 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
                         println(s"AddReifiedTypes: TransformApply Constructor: class ${cls.name}, outerclass: ${cls.owner.name}, " +
                           s"captured type params: ${capturedTypeParams.map(_.name)} got outer: ${outer.show}")
                         if (outer != EmptyTree) then
+                            val outerName = termName(s"${reifiedFieldNamePrefix}outer")
+                            outerSym = newSymbol(ctx.owner, outerName, Flags.Synthetic, outer.tpe.widen)
+                            outerValDef = ValDef(outerSym.asTerm, outer)
                             val outerReifiedArgs = 
                                 capturedTypeParams.map{ tparam =>
                                     val outerClass = cls.owner.asClass
                                     if (classFieldSyms.contains(outerClass) && classFieldSyms(outerClass).contains(tparam.name))
                                         val fieldSym = classFieldSyms(outerClass)(tparam.name)
-                                        outer.select(fieldSym)
+                                        ref(outerSym).select(fieldSym)
                                     else
                                         // outer has no field for this type param
                                         report.error(s"AddReifiedTypes: ERROR: TransformApply Constructor: no reified field found for captured type param ${tparam.name} in outer class ${outerClass.name} from outer arg: ${outer.show}");
@@ -368,8 +374,12 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
 
                     val reifiedMethodType = MethodType(reifiedParamNames, reifiedParamTypes, tree.tpe)
                     val inner = tree.withType(reifiedMethodType)
-                    val apply = Apply(inner, refs).withType(tree.tpe)
-                    Block(valDefs, apply)
+                    val apply = Apply(inner, refs).withType(tree.tpe) //TODO: can avoid evluating outers again
+
+                    val allValDefs = 
+                        if (outerValDef != EmptyTree) outerValDef :: valDefs
+                        else valDefs
+                    Block(allValDefs, apply)
                 } else tree
             } else tree
         } else {
