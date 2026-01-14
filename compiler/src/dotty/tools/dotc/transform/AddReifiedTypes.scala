@@ -93,8 +93,9 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             println(s"AddReifiedTypes: PrepareForTemplate for class ${cls.name}, " +
               s"captured type params: ${allTypeParams.map(_.name)} to classCapturedTypeParams map")
             val fields = allTypeParams.map { tparam => 
-                val reifiedName = termName(s"${reifiedFieldNamePrefix}${cls.fullName.toString.replace('.','$')}$$${tparam.name}")
-                val reifiedSym = newSymbol(cls, reifiedName, Flags.Private | Flags.ParamAccessor, defn.ReifiedValueType).entered
+                val reifiedFieldName = termName(s"${reifiedFieldNamePrefix}${cls.fullName.toString.replace('.','$')}$$${tparam.name}")
+                // ParamAccessor flag to generate assign in Constructors phase
+                val reifiedSym = newSymbol(cls, reifiedFieldName, Flags.ParamAccessor, defn.ReifiedValueType).entered
                 (tparam.name: Name) -> reifiedSym
             }.toMap
             // store the field symbol map for transformTemplate
@@ -117,11 +118,11 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             println(s"AddReifiedTypes: TransformTemplate for class ${cls.name}, " +
               s"all type params: ${allTypeParams.map(_.name)}, " +
               s"all params: ${allParams.map(_.name)}")
-            
+            // create the new field storages
             val newFields = allTypeParams.zip(reifiedParamDefs).map {
                 case (tparam, paramDef) =>
                     val fieldSym = fieldsMap(tparam.name)
-                    ValDef(fieldSym.asTerm, ref(paramDef.symbol))
+                    ValDef(fieldSym.asTerm, EmptyTree)
             }
             
             if DEBUG then println(s"TransformTemplate for class ${cls.name}, adding reified fields: ${newFields.map(_.name)}")
@@ -357,7 +358,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             sym.setParamssFromDefs(newParamss.asInstanceOf[List[ParamClause]])
 
             if DEBUG then println(s"AddReifiedTypes: TransformDefDef for constructor ${sym.name} of class ${cls.name}, adding reified params: ${newParamDefs.map(_.name)}")
-            
+            // no need to add assign here, Constructors phase generate them
             cpy.DefDef(tree)(paramss = newParamss.asInstanceOf[List[ParamClause]])
         else 
             tree
@@ -511,13 +512,13 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
                             val valDef = ValDef(valSym.asTerm, arg)
                             (valDef, ref(valSym))
                     }.unzip
-                    
-                    val reifiedParamNames = reifiedArgs.map(_ => termName("reified"))
-                    val reifiedParamTypes = reifiedArgs.map(_ => defn.ReifiedValueType)
 
-                    val reifiedMethodType = MethodType(reifiedParamNames, reifiedParamTypes, tree.tpe)
-                    val inner = tree.withType(reifiedMethodType)
-                    val apply = Apply(inner, refs).withType(tree.tpe) //TODO: can avoid evluating outers again
+                    val resType = tree.tpe match {
+                        case mt: MethodType => mt.resType
+                        case _ => tree.tpe
+                    }
+                    
+                    val apply = Apply(tree, refs).withType(resType) //TODO: can avoid evluating outers again
 
                     val allValDefs = 
                         if (outerValDef != EmptyTree) outerValDef :: valDefs

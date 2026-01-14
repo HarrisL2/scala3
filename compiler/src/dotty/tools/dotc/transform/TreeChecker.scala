@@ -87,10 +87,12 @@ class TreeChecker extends Phase with SymTransformer {
 
     checkCompanion(symd)
 
+    val addReifiedTypesPhase = ctx.base.allPhases.find(_.phaseName == "addReifiedTypes")
+    val reifiedPhaseId = addReifiedTypesPhase.map(_.id).getOrElse(Int.MaxValue)
+
     // Signatures are used to disambiguate overloads and need to stay stable
     // until erasure, see the comment above `Compiler#phases`.
-    if (ctx.phaseId <= erasurePhase.id) {
-    // if (ctx.phaseId < addReifiedTypesPhase.id) { possible fix
+    if (ctx.phaseId <= erasurePhase.id && ctx.phaseId <= reifiedPhaseId) {
       val initial = symd.initial
       assert(symd == initial || symd.signature == initial.signature,
         i"""Signature of ${sym} in ${sym.ownersIterator.toList}%, % changed at phase ${ctx.phase.prev.megaPhase}
@@ -816,7 +818,9 @@ object TreeChecker {
 
     private def checkType(tp1: Type, tp2: Type, tree: untpd.Tree, step: String)(using Context) =
       // Accept NoType <:< NoType as true
-      assert((tp1 eq tp2) || (tp1 <:< tp2), {
+      assert((tp1 eq tp2) || (tp1 <:< tp2) || 
+      // should I add the constraint that tp1 is a subtype of AnyRef here?
+      (tp2.widenDealias.typeSymbol == defn.ObjectAnySymbol && tp1 <:< defn.ObjectType), {
         val mismatch = TypeMismatch(tp1, tp2, None)
         i"""|Type Mismatch (while checking $step):
             |${mismatch.message}${mismatch.explanation}
