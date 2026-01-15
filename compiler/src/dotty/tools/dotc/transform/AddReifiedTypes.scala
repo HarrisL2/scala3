@@ -287,14 +287,10 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             var typeParamMap = Map[Symbol, Type]()
             // take care of multiple parameter list
             var pendingReified: List[ValDef] = Nil
-
+            val oldReifiedSyms = reifiedSyms.get(sym)
             for (clause <- tree.paramss){
                 clause match {
                     case tparams: List[?] if tparams.nonEmpty && tparams.head.isInstanceOf[TypeDef] =>
-                        if (pendingReified.nonEmpty) {
-                            newParamssBuffer += pendingReified
-                            pendingReified = Nil
-                        }
                         val newDefs = tparams.asInstanceOf[List[TypeDef]].map { tdef =>
                             val oldSym = tdef.symbol
                             val newSym = newSymbol(newMethodSym, tdef.name, oldSym.flags, oldSym.info, oldSym.privateWithin, oldSym.coord)
@@ -312,6 +308,10 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
 
                         tdefs.zip(extraParamDefs).foreach { case (tdef, vdef) =>
                             reifiedParamMap += (tdef.name -> vdef.symbol)
+                            if (oldReifiedSyms.isDefined && oldReifiedSyms.get.contains(tdef.name)) {
+                                val oldReifiedSym = oldReifiedSyms.get(tdef.name)
+                                paramMap += (oldReifiedSym -> vdef.symbol)
+                            }
                         }
                         pendingReified = extraParamDefs
 
@@ -350,7 +350,8 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             val cls = sym.owner.asClass
             val allTypeParams = getAllTypeParams(cls)
             val newParamSyms = allTypeParams.map(tparam => 
-                newSymbol(sym, termName(s"${reifiedFieldNamePrefix}${cls.fullName.toString.replace('.','$')}$$${tparam.name}"), Flags.Param, defn.ReifiedValueType))
+                newSymbol(sym, termName(s"${reifiedFieldNamePrefix}${cls.fullName.toString.replace('.','$')}$$${tparam.name}"), 
+                Flags.Param, defn.ReifiedValueType))
             val newParamDefs = newParamSyms.map(sym => ValDef(sym.asTerm))
             
             val newParamss = tree.paramss :+ newParamDefs
@@ -503,12 +504,13 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
                     if DEBUG then println(s"AddReifiedTypes: TransformApply Constructor: appending args ${reifiedArgs.map(_.show)}")
                     val cls = sym.owner.asClass
                     val tparams = allTypeParams
+                    val newOwner = symbolMap.getOrElse(ctx.owner, ctx.owner)
 
                     // locals to hold reified values
                     val (valDefs, refs) = tparams.zip(reifiedArgs).map {
                         case (tparam, arg) =>
                             val localName = termName(s"${reifiedLocalNamePrefix}${cls.fullName.toString.replace('.','$')}$$${tparam.name}")
-                            val valSym = newSymbol(ctx.owner, localName, Flags.Synthetic, defn.ReifiedValueType)
+                            val valSym = newSymbol(newOwner, localName, Flags.EmptyFlags, defn.ReifiedValueType)
                             val valDef = ValDef(valSym.asTerm, arg)
                             (valDef, ref(valSym))
                     }.unzip
