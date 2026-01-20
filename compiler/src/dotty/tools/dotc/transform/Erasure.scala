@@ -344,7 +344,7 @@ object Erasure {
           if (cls eq defn.UnitClass) constant(tree, unitLiteral)
           else {
             assert(cls ne defn.ArrayClass)
-            ref(unboxMethod(cls.asClass)).appliedTo(tree)
+            maybeMarkUnbox(ref(unboxMethod(cls.asClass)).appliedTo(tree), tree.tpe)
           }
       }
     }
@@ -394,7 +394,7 @@ object Erasure {
           // cast tree type to pt, if pt is ObjectAny and tpe of tree is not primitive, do not inject a cast
           else if isObjectAny(pt) && !tree.tpe.widen.isPrimitiveValueType then
             // println("  MarkBoxing: skipping cast to ObjectAny for "+ pt + " from tree "+ tree.show)
-            tree.withType(pt)
+            tree
           else
             tree.asInstance(pt)
       }

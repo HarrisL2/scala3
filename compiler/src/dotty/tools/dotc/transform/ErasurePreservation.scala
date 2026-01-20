@@ -96,6 +96,17 @@ class ErasurePreservation extends MiniPhase {
                 TypeB.M(ind)
           case None => TypeB.None
       search(tr, 0, outers)
+    // check if the return type is a primitive
+    case tr: TypeRef =>
+      if tr.isRef(defn.ByteClass) then TypeB.Byte else
+      if tr.isRef(defn.CharClass) then TypeB.Char else
+      if tr.isRef(defn.DoubleClass) then TypeB.Double else
+      if tr.isRef(defn.FloatClass) then TypeB.Float else
+      if tr.isRef(defn.IntClass) then TypeB.Int else
+      if tr.isRef(defn.LongClass) then TypeB.Long else
+      if tr.isRef(defn.ShortClass) then TypeB.Short else
+      if tr.isRef(defn.BooleanClass) then TypeB.Boolean else
+      TypeB.None
     case at: AppliedType if at.tycon.isRef(defn.ArrayClass) =>
       TypeB.Array(toTypeB(at.args.head, outers))
     case _ => TypeB.None
@@ -115,6 +126,17 @@ class ErasurePreservation extends MiniPhase {
                 TypeB.M(ind)
           case None => TypeB.None
       search(tr, 0, outers)
+    // check if the return type is a primitive
+    case tr: TypeRef =>
+      if tr.isRef(defn.ByteClass) then TypeB.Byte else
+      if tr.isRef(defn.CharClass) then TypeB.Char else
+      if tr.isRef(defn.DoubleClass) then TypeB.Double else
+      if tr.isRef(defn.FloatClass) then TypeB.Float else
+      if tr.isRef(defn.IntClass) then TypeB.Int else
+      if tr.isRef(defn.LongClass) then TypeB.Long else
+      if tr.isRef(defn.ShortClass) then TypeB.Short else
+      if tr.isRef(defn.BooleanClass) then TypeB.Boolean else
+      TypeB.None
     case at: AppliedType if at.tycon.isRef(defn.ArrayClass) =>
       TypeB.Array(toTypeB(at.args.head, outers))
     case _ => TypeB.None
@@ -238,6 +260,14 @@ enum TypeA:
   case Ref
 
 enum TypeB:
+  case Byte
+  case Char
+  case Double
+  case Float
+  case Int
+  case Long
+  case Short
+  case Boolean
   case None
   case M(paramNum: Int)
   case K(

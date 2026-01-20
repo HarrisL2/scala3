@@ -93,10 +93,39 @@ public class TypeHints{
         public static final TypeB NO_HINT = 
             new TypeB((byte)0, -1);
 
+        public static final byte BYTE = 'B';
+        public static final byte CHAR = 'C';
+        public static final byte DOUBLE = 'D';
+        public static final byte FLOAT = 'F';
+        public static final byte INT = 'I';
+        public static final byte LONG = 'J';
+        public static final byte SHORT = 'S';
+        public static final byte BOOLEAN = 'Z';
+        public static final byte REFERENCE = 'L';
+
         public static final byte K_KIND = 'K';
         public static final byte M_KIND = 'M';
         public static final byte ARR_K_KIND = 'k';
         public static final byte ARR_M_KIND = 'm';
+
+        public static final TypeB TYPEB_BYTE = 
+            new TypeB(BYTE, 0);
+        public static final TypeB TYPEB_CHAR =
+            new TypeB(CHAR, 0);
+        public static final TypeB TYPEB_DOUBLE =
+            new TypeB(DOUBLE, 0);
+        public static final TypeB TYPEB_FLOAT =
+            new TypeB(FLOAT, 0);
+        public static final TypeB TYPEB_INT =
+            new TypeB(INT, 0);
+        public static final TypeB TYPEB_LONG =
+            new TypeB(LONG, 0);
+        public static final TypeB TYPEB_SHORT =
+            new TypeB(SHORT, 0);
+        public static final TypeB TYPEB_BOOLEAN =
+            new TypeB(BOOLEAN, 0);
+        public static final TypeB TYPEB_REFERENCE =
+            new TypeB(REFERENCE, 0);
 
         private final byte kind;
         private final int index;

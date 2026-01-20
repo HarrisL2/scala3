@@ -442,7 +442,15 @@ trait BCodeIdiomatic {
         case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
         case dotty.tools.dotc.transform.TypeB.K(outer, index) => new TypeHints.TypeB(TypeHints.TypeB.K_KIND, index)
         case dotty.tools.dotc.transform.TypeB.Array(dotty.tools.dotc.transform.TypeB.K(outer, index)) => new TypeHints.TypeB(TypeHints.TypeB.ARR_K_KIND, index)
-        case  dotty.tools.dotc.transform.TypeB.Array(dotty.tools.dotc.transform.TypeB.M(index)) => new TypeHints.TypeB(TypeHints.TypeB.ARR_M_KIND, index)
+        case dotty.tools.dotc.transform.TypeB.Array(dotty.tools.dotc.transform.TypeB.M(index)) => new TypeHints.TypeB(TypeHints.TypeB.ARR_M_KIND, index)
+        case dotty.tools.dotc.transform.TypeB.Byte => TypeHints.TypeB.TYPEB_BYTE
+        case dotty.tools.dotc.transform.TypeB.Char => TypeHints.TypeB.TYPEB_CHAR
+        case dotty.tools.dotc.transform.TypeB.Double => TypeHints.TypeB.TYPEB_DOUBLE
+        case dotty.tools.dotc.transform.TypeB.Float => TypeHints.TypeB.TYPEB_FLOAT
+        case dotty.tools.dotc.transform.TypeB.Int => TypeHints.TypeB.TYPEB_INT
+        case dotty.tools.dotc.transform.TypeB.Long => TypeHints.TypeB.TYPEB_LONG
+        case dotty.tools.dotc.transform.TypeB.Short => TypeHints.TypeB.TYPEB_SHORT
+        case dotty.tools.dotc.transform.TypeB.Boolean => TypeHints.TypeB.TYPEB_BOOLEAN
         case _ => TypeHints.TypeB.NO_HINT
 
     def toJTypeA(tpe: dotty.tools.dotc.transform.TypeA): TypeHints.TypeA =

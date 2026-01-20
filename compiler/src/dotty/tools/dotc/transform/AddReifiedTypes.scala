@@ -143,8 +143,17 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
 
     // does this method need reified type parameters?
     // for transformInfo preparation
+    val ignoreMethodNames = Set[Name](
+        nme.asInstanceOf_,
+        nme.isInstanceOf_
+    )
+
     def needReifiedParams(sym: Symbol)(using Context): Boolean = 
-        sym.is(Flags.Method) && sym.name != nme.asInstanceOf_ && !sym.isConstructor && 
+        sym.is(Flags.Method) && 
+        !(ignoreMethodNames.contains(sym.name)) && 
+        !sym.isConstructor && 
+        sym.isDefinedInCurrentRun &&
+        !ignoreClassForReification(sym.owner.asClass) &&
         (sym.info match {
             case pt: PolyType => true
             case _ => false
@@ -214,10 +223,8 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
     
     override def prepareForDefDef(tree: DefDef)(using Context): Context = 
         val sym = tree.symbol
-        // skip constructors here so that they are only handled in transformDefDef
-        if (sym.isConstructor) return ctx
         // type params from all clauses
-        val typeParams = tree.paramss.collect{
+        val typeParams = if (sym.isConstructor) Nil else tree.paramss.collect{
             case tparams: List[?] if tparams.nonEmpty && tparams.head.isInstanceOf[TypeDef] =>
                 tparams.asInstanceOf[List[TypeDef]]
         }.flatten
@@ -234,7 +241,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             // add the (type param -> reified param symbol) map to reifiedSyms for transformDefDef
             reifiedSyms(sym) = typeParamMap
         }
-        ctx
+        ctx.withOwner(sym)
 
     override def transformDefDef(tree: DefDef)(using Context): Tree = {
         val sym = tree.symbol
@@ -341,7 +348,9 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
                     tpe match {
                         case TypeRef(prefix, _) =>
                             prefix match {
-                                case tr: TermRef => ref(tr)
+                                case tr: TermRef => 
+                                    if tr.symbol.isClass then EmptyTree
+                                    else ref(tr)
                                 case th: ThisType => This(th.cls)
                                 case _ => EmptyTree
                             }
@@ -356,7 +365,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
 
     override def transformApply(tree: Apply)(using Context): Tree = {
         val sym = getCallSymbol(tree)
-
+        // println(s"AddReifiedTypes: TransformApply for tree: ${tree.show}, call symbol: ${sym}")
         // normal method call
         if (reifiedSyms.contains(sym) && !sym.isConstructor) {
             println(s"AddReifiedTypes: TransformApply for call to method ${sym.name} in tree: ${tree.show}")
