@@ -19,6 +19,8 @@ import reporting.*
 import dotty.tools.dotc.transform.MegaPhase.MiniPhase
 import dotty.tools.dotc.util.Property
 import scala.annotation.tailrec
+import dotty.tools.dotc.core.Flags
+import dotty.tools.dotc.semanticdb.SymbolInformation.Property.VAL.isVal
 
 class ErasurePreservation extends MiniPhase {
 
@@ -26,19 +28,32 @@ class ErasurePreservation extends MiniPhase {
 
   override def description: String = ErasurePreservation.description
 
-  def decomposeType(tp: Type)(using Context): (List[Name], List[Type], Type) = tp match {
+  def decomposeType(tp: Type, offset: Int = 0, map: Map[Type, Int] = Map.empty)(using Context): (List[Name], List[Type], Type, Map[Type, Int]) = tp match {
     case pt: PolyType =>
-      val (restNames, restParams, ret) = decomposeType(pt.resType)
-      (pt.paramNames ++ restNames, restParams, ret)
+      val newMap = map + (pt -> offset)
+      val (restNames, restParams, ret, finalMap) = decomposeType(pt.resType, offset + pt.paramNames.size, newMap)
+      (pt.paramNames ++ restNames, restParams, ret, finalMap)
     case mt: MethodType =>
-      val (restNames, restParams, ret) = decomposeType(mt.resType)
-      (restNames, mt.paramInfos ++ restParams, ret)
+      val (restNames, restParams, ret, finalMap) = decomposeType(mt.resType, offset, map)
+      (restNames, mt.paramInfos ++ restParams, ret, finalMap)
     case other =>
-      (Nil, Nil, other)
+      (Nil, Nil, other, map)
   }
 
-  def toTypeA(tp: Type, outers: List[List[Name]])(using Context): TypeA = trace(i"toTypeA ${tp}"){ tp.widen match
-    case tpr: TypeParamRef => TypeA.M(tpr.paramNum)
+  // get all the type parameters from the class and its outer classes
+  // copied from AddReifiedTypes, should be the same as it
+  def getAllTypeParams(cls: Symbol)(using Context): List[Symbol] = {
+      val own = cls.typeParams
+      val outers = cls.ownersIterator.drop(1).takeWhile(
+          cl => cl.isClass && !cl.is(Flags.Module) && !cl.is(Flags.Package)
+      ).flatMap(_.typeParams).toList
+      own ++ outers
+  }
+
+  def toTypeA(tp: Type, classTypeParams: List[Name], methodTypeParams: List[Name], offsets: Map[Type, Int])(using Context): TypeA = trace(i"toTypeA ${tp}"){ tp.widen match
+    case tpr: TypeParamRef => 
+      val offset = offsets.getOrElse(tpr.binder, 0)
+      TypeA.M(offset + tpr.paramNum)
     case tr: TypeRef =>
       // println(tr.symbol.owner.paramSymss)
       if tr.isRef(defn.ByteClass) then TypeA.Byte else
@@ -50,52 +65,34 @@ class ErasurePreservation extends MiniPhase {
       if tr.isRef(defn.ShortClass) then TypeA.Short else
       if tr.isRef(defn.BooleanClass) then TypeA.Boolean else
       if tr.symbol.isTypeParam then
-        def search(tr: TypeRef, depth: Int, outers: List[List[Name]]): TypeA =
-          outers.headOption match
-            case Some(value) => value.indexOf(tr.name) match
-              case -1 =>
-                search(tr, depth+1, outers.tail)
-              case ind =>
-                if depth != 0 then
-                  TypeA.K(depth-1, ind)
-                else
-                  TypeA.M(ind)
-            case None =>
+        val mIndex = methodTypeParams.indexOf(tr.name)
+        if mIndex != -1 then TypeA.M(mIndex)
+        else
+          classTypeParams.indexOf(tr.name) match
+            case -1 => 
+              report.error(s"Could not find type parameter ${tr.name} in ${classTypeParams} and " +
+                s"${methodTypeParams} for type ref ${tr}", ctx.source.atSpan(ctx.owner.span))
               TypeA.Ref
-        search(tr, 0, outers)
+            case ind => TypeA.K(0, ind)
       else TypeA.Ref
     case _ =>
       TypeA.Ref
   }
 
-  def indexTypeParam(method: Type, tpr: TypeParamRef): Int = method match
-    case pt: PolyType =>
-      if tpr.binder == pt then
-        tpr.paramNum
-      else indexTypeParam(pt.resType, tpr) + pt.paramNames.size
-    case mt: MethodType => indexTypeParam(mt.resType, tpr)
-    case _ => ???
-
-
-  def toTypeB(tp: Type, outers: List[List[Name]], isConstructor: Boolean = false)(using Context): TypeB = trace(i"toTypeB ${tp}, ${outers}"){ tp match
-    case tpr: TypeParamRef =>
-      TypeB.M(outers.head.indexWhere(name => name == tpr.paramName))
+  def toTypeB(tp: Type, classTypeParams: List[Name], methodTypeParams: List[Name], offsets: Map[Type, Int], isConstructor: Boolean = false)(using Context): TypeB = trace(i"toTypeB ${tp}, ${classTypeParams}"){ tp match
+    case tpr: TypeParamRef => 
+      val offset = offsets.getOrElse(tpr.binder, 0)
+      TypeB.M(offset + tpr.paramNum)
     case tr: TypeRef if tr.symbol.isTypeParam =>
-      def search(tr: TypeRef, depth: Int, outers: List[List[Name]]): TypeB =
-        outers.headOption match
-          case Some(value) => value.indexOf(tr.name) match
-            case -1 =>
-              search(tr, depth+1, outers.tail)
-            case ind =>
-              if depth != 0 then
-                if isConstructor then
-                  TypeB.K(depth, ind)
-                else
-                  TypeB.K(depth-1, ind)
-              else
-                TypeB.M(ind)
-          case None => TypeB.None
-      search(tr, 0, outers)
+      val mIndex = methodTypeParams.indexOf(tr.name)
+      if mIndex != -1 then TypeB.M(mIndex)
+      else
+        classTypeParams.indexOf(tr.name) match
+          case -1 => 
+            report.error(s"Could not find type parameter ${tr.name} in ${classTypeParams} and " +
+              s"${methodTypeParams} for type ref ${tr}", ctx.source.atSpan(ctx.owner.span))
+            TypeB.None
+          case ind => TypeB.K(0, ind)
     // check if the return type is a primitive
     case tr: TypeRef =>
       if tr.isRef(defn.ByteClass) then TypeB.Byte else
@@ -108,24 +105,24 @@ class ErasurePreservation extends MiniPhase {
       if tr.isRef(defn.BooleanClass) then TypeB.Boolean else
       TypeB.None
     case at: AppliedType if at.tycon.isRef(defn.ArrayClass) =>
-      TypeB.Array(toTypeB(at.args.head, outers))
+      TypeB.Array(toTypeB(at.args.head, classTypeParams, methodTypeParams, offsets, isConstructor))
     case _ => TypeB.None
   }
 
-  def toReturnTypeB(tp: Type, outers: List[List[Name]])(using Context): TypeB = tp match
+  def toReturnTypeB(tp: Type, classTypeParams: List[Name], methodTypeParams: List[Name], offsets: Map[Type, Int])(using Context): TypeB = tp match
+    case tpr: TypeParamRef => 
+      val offset = offsets.getOrElse(tpr.binder, 0)
+      TypeB.M(offset + tpr.paramNum)
     case tr: TypeRef if tr.symbol.isTypeParam =>
-      def search(tr: TypeRef, depth: Int, outers: List[List[Name]]): TypeB =
-        outers.headOption match
-          case Some(value) => value.indexOf(tr.name) match
-            case -1 =>
-              search(tr, depth+1, outers.tail)
-            case ind =>
-              if depth != 0 then
-                TypeB.K(depth-1, ind)
-              else
-                TypeB.M(ind)
-          case None => TypeB.None
-      search(tr, 0, outers)
+      val mIndex = methodTypeParams.indexOf(tr.name)
+      if mIndex != -1 then TypeB.M(mIndex)
+      else
+        classTypeParams.indexOf(tr.name) match
+          case -1 => 
+            report.error(s"Could not find type parameter ${tr.name} in ${classTypeParams} and " +
+              s"${methodTypeParams} for type ref ${tr}", ctx.source.atSpan(ctx.owner.span))
+            TypeB.None
+          case ind => TypeB.K(0, ind)
     // check if the return type is a primitive
     case tr: TypeRef =>
       if tr.isRef(defn.ByteClass) then TypeB.Byte else
@@ -138,109 +135,81 @@ class ErasurePreservation extends MiniPhase {
       if tr.isRef(defn.BooleanClass) then TypeB.Boolean else
       TypeB.None
     case at: AppliedType if at.tycon.isRef(defn.ArrayClass) =>
-      TypeB.Array(toTypeB(at.args.head, outers))
+      TypeB.Array(toTypeB(at.args.head, classTypeParams, methodTypeParams, offsets))
     case _ => TypeB.None
 
-
-  /**
-   * Return all outer type parameters that originate from a method
-   * until we reach a class
-   */
-  def getOuterParamss(sym: Symbol, isConstructor: Boolean)(using Context): List[List[Name]] = trace(i"getOuterParamss ${sym}") {
-    if !sym.exists then List(List())
-    else if sym.isClass && isConstructor then
-      // println(sym.typeParams)
-      val outers = getOuterParamss(sym.owner, false)
-      (outers.head ++ sym.typeParams.map(_.name)) :: outers.tail
-    else if sym.isClass then
-      val outers = getOuterParamss(sym.owner, false)
-      List() :: (outers.head ++ sym.typeParams.map(_.name)) :: outers.tail
-    else
-      // val tyParams = sym.paramSymss.headOption
-      val outers = getOuterParamss(sym.owner, false)
-      val (allTypeNames, _, _) = decomposeType(sym.info)
-      (outers.head ++ allTypeNames) :: outers.tail
+  def getAllClassParams(sym: Symbol)(using Context): List[Name] = {
+    val cls = if sym.isClass then sym else sym.owner.enclosingClass
+    if cls.isClass then 
+      val allSyms = getAllTypeParams(cls)
+      allSyms.map(_.name)
+    else Nil
   }
 
-  def methodToInfos(
-    params: List[Type],
-    resType: Type,
-    tyParams: List[Name],
-    isConstructor: Boolean)(using Context): Tuple3[Int, List[TypeB], TypeB] = trace(i"methodToInfos ${params}, ${resType}")
-    {
-    var outers = getOuterParamss(ctx.owner, isConstructor)
-    if (!isConstructor)
-      outers = outers.head ++ tyParams :: outers.tail
-    val paramsTypeB: List[TypeB] = params.map(tp => toTypeB(tp, outers, isConstructor))
-    val ret: TypeB = toTypeB(resType, outers, isConstructor)
-    (outers.head.length, paramsTypeB, ret)
+  def getAllMethodParams(using Context): (List[Name], Map[Type, Int]) = {
+    val sym = ctx.owner.enclosingMethod
+    if sym.exists && !sym.isClass then 
+      val (allTypeNames, _, _, map) = decomposeType(sym.info)
+      (allTypeNames, map)
+    else (Nil, Map.empty)
   }
 
+  // whether the typeB is valid (not None or Array(None))
+  def isValid(t: TypeB): Boolean = t match {
+    case TypeB.None => false
+    case TypeB.Array(tp) => isValid(tp)
+    case _ => true
+  } 
 
   override def transformDefDef(tree: tpd.DefDef)(using Context): tpd.Tree = trace(i"transformDefDef $tree, ${tree.tpe}, ${tree.tpe.widen}"){
-    val (allTypeNames, allValueParams, resType) = decomposeType(tree.tpe.widen)
-    val outers = getOuterParamss(tree.symbol, tree.symbol.isConstructor)
-    val paramRefs = allValueParams.map(tp => toTypeB(tp, outers, tree.symbol.isConstructor))
-    val retType = toTypeB(resType, outers, tree.symbol.isConstructor)
-    val paramCount = outers.head.length
-    if (paramCount != 0 || paramRefs.length > 0 || retType != TypeB.None) then
+    val (allTypeNames, allValueParams, resType, offsets) = decomposeType(tree.tpe.widen)
+    // gets all type params of nested classes
+    val capturedClassParams = getAllClassParams(tree.symbol.owner.enclosingClass)
+    val paramRefs = allValueParams.map(tp => toTypeB(tp, capturedClassParams, allTypeNames, offsets, tree.symbol.isConstructor))
+    val retType = toTypeB(resType, capturedClassParams, allTypeNames, offsets, tree.symbol.isConstructor)
+    val paramCount = allTypeNames.length
+    
+    if (paramCount != 0 || paramRefs.exists(isValid) || isValid(retType)) then
       tree.putAttachment(MethodParameterReturnType, (paramCount, paramRefs, retType))
     tree
-    // val tup: Tuple3[Int, List[TypeB], TypeB] = tree.tpe.widen match
-    //   case pt: PolyType => pt.resType match
-    //     case mt: MethodType =>
-    //       methodToInfos(mt.paramInfos, mt.resType, pt.paramNames, tree.symbol.isConstructor)
-    //     case other =>
-    //       methodToInfos(Nil, other.widenExpr, pt.paramNames, tree.symbol.isConstructor)
-    //   case mt: MethodType =>
-    //     methodToInfos(mt.paramInfos, mt.resType, Nil, false)
-    //   case tr: TypeRef =>
-    //     methodToInfos(Nil, tr, Nil, false)
-    //   // case et: ExprType =>
-    //   //   ???
-    //   case other =>
-    //     (0, Nil, TypeB.None)
-    // val (paramCount, paramRefs, retType) = tup
-    // if (paramCount != 0 || paramRefs.length > 0 || retType != TypeB.None) then
-    //   tree.putAttachment(MethodParameterReturnType, (paramCount, paramRefs, retType))
-    // tree
   }
 
   override def transformApply(tree: tpd.Apply)(using Context): tpd.Tree = trace(i"transfromApply ${tree}") {
-    val outers = getOuterParamss(ctx.owner, false)
-    toReturnTypeB(tree.tpe, outers) match
-      case TypeB.None => 
-      case other => tree.putAttachment(InvokeReturnType, other)
+    val capturedClassParams = getAllClassParams(ctx.owner.enclosingClass)
+    val (methodTypeParams, offsets) = getAllMethodParams
+    val retTypeB = toReturnTypeB(tree.tpe, capturedClassParams, methodTypeParams, offsets)
+    if isValid(retTypeB) then tree.putAttachment(InvokeReturnType, retTypeB)
     tree
   }
 
   override def transformIdent(tree: tpd.Ident)(using Context): tpd.Tree = trace(i"transfromIdent ${tree}, ${tree.tpe.widen}") {
-    val outers = getOuterParamss(ctx.owner, false)
-    toReturnTypeB(tree.tpe.widen, outers) match
-      case TypeB.None => 
-      case other => tree.putAttachment(InvokeReturnType, other)
+    val capturedClassParams = getAllClassParams(ctx.owner.enclosingClass)
+    val (methodTypeParams, offsets) = getAllMethodParams
+    val retTypeB = toReturnTypeB(tree.tpe.widen, capturedClassParams, methodTypeParams, offsets)
+    if isValid(retTypeB) then tree.putAttachment(InvokeReturnType, retTypeB)
     tree
   }
   
   override def transformSelect(tree: tpd.Select)(using Context): tpd.Tree = trace(i"transfromSelect ${tree}, ${tree.tpe.widen}") {
-    val outers = getOuterParamss(ctx.owner, false)
-    toReturnTypeB(tree.tpe.widen, outers) match
-      case TypeB.None => 
-      case other => tree.putAttachment(InvokeReturnType, other)
+    val capturedClassParams = getAllClassParams(ctx.owner.enclosingClass)
+    val (methodTypeParams, offsets) = getAllMethodParams
+    val retTypeB = toReturnTypeB(tree.tpe.widen, capturedClassParams, methodTypeParams, offsets)
+    if isValid(retTypeB) then tree.putAttachment(InvokeReturnType, retTypeB)
     tree
   }
 
   override def transformTypeApply(tree: tpd.TypeApply)(using Context): tpd.Tree = trace(i"transfromTypeApply ${tree}") {
-    val outers = getOuterParamss(ctx.owner, false)
-    val args = tree.args.map(_.tpe).map(p => toTypeA(p, outers))
-    tree.fun.putAttachment(InstructionTypeArguments, args)
+    // val capturedClassParams = getAllClassParams(ctx.owner.enclosingClass)
+    // val (methodTypeParams, offsets) = getAllMethodParams
+    // val args = tree.args.map(_.tpe).map(p => toTypeA(p, capturedClassParams, methodTypeParams, offsets))
+    // tree.fun.putAttachment(InstructionTypeArguments, args)
     tree
   }
 
 }
 
 object ErasurePreservation {
-  val name: String = "erasure preservation"
+  val name: String = "erasurePreservation"
   val description: String = "preserve information in annotations before erasure"
 }
 
@@ -274,7 +243,6 @@ enum TypeB:
     outer: Int,
     paramNum: Int)
   case Array(tp: TypeB)
-// case class TypeB(tp: Type)
 
 object InstructionTypeArguments extends Property.StickyKey[List[TypeA]]
 object InvokeReturnType extends Property.StickyKey[TypeB]

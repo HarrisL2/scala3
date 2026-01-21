@@ -265,7 +265,7 @@ trait BCodeHelpers extends BCodeIdiomatic {
 
     def addMethodParameterTypeAttribute(mw: asm.MethodVisitor, lst: List[dotty.tools.dotc.transform.TypeB]) : Unit =
         if (lst.isEmpty) return
-        val lstJTypeB = lst.map(toJTypeB).filter(_ != TypeHints.TypeB.NO_HINT)
+        val lstJTypeB = lst.map(toJTypeB)
         if (lstJTypeB.isEmpty) return
         val len = lstJTypeB.length
         val attr = new MethodParameterType(len, lstJTypeB.asJava)
