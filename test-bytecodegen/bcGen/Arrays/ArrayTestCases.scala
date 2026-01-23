@@ -2,19 +2,20 @@ package bcGen.Arrays
 
 import bcGen.Arrays.ArrayTestLib
 
+class Foo(val id: Int) {}
 object arrayTestCases{
   val size = 1000
   val maxInt = 10000
   val rng = new scala.util.Random(1234)
   val intArr : Array[Int] = Array.fill[Int](size)(rng.nextInt(maxInt))
-  val objArr : Array[Any] = Array.fill[Any](size)(new bcGen.Foo(rng.nextInt(maxInt)))
+  val objArr : Array[Any] = Array.fill[Any](size)(new Foo(rng.nextInt(maxInt)))
   val doubleArr : Array[Double] = Array.fill[Double](size)(rng.nextDouble())
   val intDoubleArr : Array[Any] = Array.tabulate(size * 2) { i =>
     if (rng.nextInt % 2 == 0) rng.nextInt(maxInt) else rng.nextDouble()
   }
   val shortArrInt = Array.fill[Int](10)(rng.nextInt(maxInt))
   val shortArrDouble = Array.fill[Double](10)(rng.nextDouble())
-  val shortArrObj = Array.fill[Any](10)(new bcGen.Foo(rng.nextInt(maxInt)))
+  val shortArrObj = Array.fill[Any](10)(new Foo(rng.nextInt(maxInt)))
   val shorArrIntCp = new Array[Int](10)
   val shorArrDoubleCp = new Array[Double](10)
   val shorArrObjCp = new Array[Any](10)
@@ -34,7 +35,7 @@ object arrayTestCases{
   @main def mainArr2(): Unit =
     ArrayTestLib.copy[Any](objArr, anyArrCp)
     for (e <- anyArrCp) {
-      hashState = (hashState * 23 + e.asInstanceOf[bcGen.Foo].id) % hashMod
+      hashState = (hashState * 23 + e.asInstanceOf[Foo].id) % hashMod
     }
 
   @main def mainArr3(): Unit =
@@ -66,7 +67,7 @@ object arrayTestCases{
   @main def mainArr6(): Unit =
     genericCopy[Any](objArr, anyArrCp)
     for (e <- anyArrCp) {
-      hashState = (hashState * 23 + e.asInstanceOf[bcGen.Foo].id) % hashMod
+      hashState = (hashState * 23 + e.asInstanceOf[Foo].id) % hashMod
     }
 
   @main def mainArr7(): Unit =

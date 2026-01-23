@@ -2,10 +2,11 @@ package bcGen.Classes
 
 class Nested1[T](val initOuterT: T) {
     val outer1T: T = initOuterT
-    class Foo[T2]{
-        class Pair[K, V](k: K, v: V){}
+    class Foo[T2](t2: T2) {
+        class Pair[K, V](k: K, v: V) extends BasePair[K, V](k, v)
+        {}
     }
-    val f = new Foo[Int]
+    val f = new Foo[Int](42)
     // class B[U](p: P) extends A[p.U]
     class Inner1[U](val initInner1U: U, val initInner1T: T) {
         val inner1U: U = initInner1U
@@ -38,7 +39,10 @@ class Nested1[T](val initOuterT: T) {
     
 }
 
+class BasePair[K1, V](val k1: K1, val v: V) {}
+
 object testNested {
+    
     val intOuter1 = new Nested1[Int](42) // generate only one expression for prefix read
     val doubleOuter1 = new Nested1[Double](3.14)
     val refInner1 = new intOuter1.Inner1[String]("Hello", intOuter1.outer1T)

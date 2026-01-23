@@ -153,7 +153,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
         !(ignoreMethodNames.contains(sym.name)) && 
         !sym.isConstructor && 
         sym.isDefinedInCurrentRun &&
-        !ignoreClassForReification(sym.owner.asClass) &&
+        !ignoreClassForReification(sym.enclosingClass) &&
         (sym.info match {
             case pt: PolyType => true
             case _ => false

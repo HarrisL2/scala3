@@ -225,6 +225,10 @@ trait BCodeHelpers extends BCodeIdiomatic {
       }
 
     def toJTypeB(tpe: dotty.tools.dotc.transform.TypeB): TypeHints.TypeB =
+      def isArrayHint(tpe: dotty.tools.dotc.transform.TypeB): Boolean =
+        tpe match
+          case dotty.tools.dotc.transform.TypeB.Array(_) => true
+          case _ => false
       tpe match
         case dotty.tools.dotc.transform.TypeB.None => TypeHints.TypeB.NO_HINT
         case dotty.tools.dotc.transform.TypeB.M(index) => new TypeHints.TypeB(TypeHints.TypeB.M_KIND, index)
@@ -241,6 +245,8 @@ trait BCodeHelpers extends BCodeIdiomatic {
         case dotty.tools.dotc.transform.TypeB.Short => TypeHints.TypeB.TYPEB_SHORT
         case dotty.tools.dotc.transform.TypeB.Boolean => TypeHints.TypeB.TYPEB_BOOLEAN
         case _ => 
+          if isArrayHint(tpe) then TypeHints.TypeB.NO_HINT
+          else
             report.error("unexpected type in to Java TypeB: " + tpe)
             TypeHints.TypeB.NO_HINT // fallback, should not happen
 
