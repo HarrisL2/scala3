@@ -315,7 +315,11 @@ class Mixin extends MiniPhase with SymTransformer { thisPhase =>
       for (meth <- mixin.info.decls.toList if needsMixinForwarder(meth))
       yield {
         util.Stats.record("mixin forwarders")
-        transformFollowing(DefDef(mkMixinForwarderSym(meth.asTerm), forwarderRhsFn(meth)))
+        val forwarder = DefDef(mkMixinForwarderSym(meth.asTerm), forwarderRhsFn(meth))
+        // TODO: calculate the correct hints
+        if ErasurePreservation.methodParameterReturnTypeMap.contains(meth) then
+          forwarder.putAttachment(MethodParameterReturnType,ErasurePreservation.methodParameterReturnTypeMap(meth))
+        transformFollowing(forwarder)
       }
 
     def mkMixinForwarderSym(target: TermSymbol): TermSymbol =

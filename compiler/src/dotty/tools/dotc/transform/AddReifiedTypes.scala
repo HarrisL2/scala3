@@ -85,7 +85,9 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
             val fields = allTypeParams.map { tparam => 
                 val reifiedFieldName = termName(s"${reifiedFieldNamePrefix}${cls.fullName.toString.replace('.','$')}$$${tparam.name}")
                 // ParamAccessor flag to generate assign in Constructors phase
-                val reifiedSym = newSymbol(cls, reifiedFieldName, Flags.ParamAccessor, defn.ReifiedValueType).entered
+                // traits need Deferred flag
+                val flags = if (cls.is(Flags.Trait)) Flags.Deferred else Flags.ParamAccessor
+                val reifiedSym = newSymbol(cls, reifiedFieldName, flags, defn.ReifiedValueType).entered
                 (tparam.name: Name) -> reifiedSym
             }.toMap
             // store the field symbol map for transformTemplate
@@ -99,20 +101,28 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
         val cls = ctx.owner.asClass
         if (classFieldSyms.contains(cls)){
             val fieldsMap = classFieldSyms(cls)
-            // all parameters of the constructor, including non-type parameter params
-            val allParams =  tree.constr.paramss.flatten
             // all type parameters, including captured type params from outer classes
             val allTypeParams = classCapturedTypeParams(cls)
-            val reifiedParamsCount = allTypeParams.length
-            val reifiedParamDefs = allParams.takeRight(reifiedParamsCount)
-            println(s"AddReifiedTypes: TransformTemplate for class ${cls.name}, " +
-              s"all type params: ${allTypeParams.map(_.name)}, " +
-              s"all params: ${allParams.map(_.name)}")
             // create the new field storages
-            val newFields = allTypeParams.zip(reifiedParamDefs).map {
-                case (tparam, paramDef) =>
+            val newFields = if (cls.is(Flags.Trait)) {
+                // For traits, generate abstract definitions
+                allTypeParams.map { tparam =>
                     val fieldSym = fieldsMap(tparam.name)
                     ValDef(fieldSym.asTerm, EmptyTree)
+                }
+            } else {
+                // all parameters of the constructor, including non-type parameter params
+                val allParams =  tree.constr.paramss.flatten
+                val reifiedParamsCount = allTypeParams.length
+                val reifiedParamDefs = allParams.takeRight(reifiedParamsCount)
+                println(s"AddReifiedTypes: TransformTemplate for class ${cls.name}, " +
+                    s"all type params: ${allTypeParams.map(_.name)}, " +
+                    s"all params: ${allParams.map(_.name)}")
+                allTypeParams.zip(reifiedParamDefs).map {
+                    case (tparam, paramDef) =>
+                        val fieldSym = fieldsMap(tparam.name)
+                        ValDef(fieldSym.asTerm, EmptyTree)
+                }
             }
             
             if DEBUG then println(s"TransformTemplate for class ${cls.name}, adding reified fields: ${newFields.map(_.name)}")
@@ -291,7 +301,7 @@ class AddReifiedTypes extends MiniPhase with InfoTransformer {
 
             cpy.DefDef(tree)(paramss = newParamss)
         //for constructors
-        } else if (sym.isConstructor && sym.owner.isClass && classFieldSyms.contains(sym.owner)) then
+        } else if (sym.isConstructor && sym.owner.isClass && !sym.owner.is(Flags.Trait) && classFieldSyms.contains(sym.owner)) then
             val cls = sym.owner.asClass
             val allTypeParams = getAllTypeParams(cls)
             val newParamSyms = allTypeParams.map(tparam => 

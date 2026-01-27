@@ -171,6 +171,7 @@ class ErasurePreservation extends MiniPhase {
     
     if (paramCount != 0 || paramRefs.exists(isValid) || isValid(retType)) then
       tree.putAttachment(MethodParameterReturnType, (paramCount, paramRefs, retType))
+      ErasurePreservation.methodParameterReturnTypeMap.put(tree.symbol, (paramCount, paramRefs, retType))
     tree
   }
 
@@ -211,6 +212,7 @@ class ErasurePreservation extends MiniPhase {
 object ErasurePreservation {
   val name: String = "erasurePreservation"
   val description: String = "preserve information in annotations before erasure"
+  val methodParameterReturnTypeMap = scala.collection.mutable.Map[Symbol, (Int, List[TypeB], TypeB)]()
 }
 
 enum TypeA:
