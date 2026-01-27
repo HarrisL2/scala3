@@ -296,6 +296,7 @@ class TypeComparer(@constructorOnly initctx: Context) extends ConstraintHandling
 
     def firstTry: Boolean = tp2 match {
       case tp2: NamedType =>
+        if tp2.isRef(defn.ObjectAnySymbol) then return recur(tp1, defn.ObjectType)
         def compareNamed(tp1: Type, tp2: NamedType): Boolean =
           val ctx = comparerContext
           given Context = ctx // optimization for performance
