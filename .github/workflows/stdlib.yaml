@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'uwaterloo'
   pull_request:
   workflow_call:
 
@@ -15,7 +16,7 @@ env:
 
 jobs:
   scala-library-nonbootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Git Checkout
         uses: actions/checkout@v5
@@ -32,7 +33,7 @@ jobs:
         run: ./project/scripts/sbt scala-library-nonbootstrapped/compile
 
   scala3-library-nonbootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala-library-nonbootstrapped]
     steps:
       - name: Git Checkout
@@ -50,7 +51,7 @@ jobs:
         run: ./project/scripts/sbt scala3-library-nonbootstrapped/compile
 
   scala3-interfaces:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Git Checkout
         uses: actions/checkout@v5
@@ -67,7 +68,7 @@ jobs:
         run: ./project/scripts/sbt scala3-interfaces/compile
 
   tasty-core-nonbootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-library-nonbootstrapped]
     steps:
       - name: Git Checkout
@@ -84,7 +85,7 @@ jobs:
         run: ./project/scripts/sbt tasty-core-nonbootstrapped/compile
 
   scala3-compiler-nonbootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [tasty-core-nonbootstrapped, scala3-library-nonbootstrapped, scala3-interfaces]
     steps:
       - name: Git Checkout
@@ -101,7 +102,7 @@ jobs:
         run: ./project/scripts/sbt scala3-compiler-nonbootstrapped/compile
 
   scala3-sbt-bridge-nonbootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-compiler-nonbootstrapped]
     steps:
       - name: Git Checkout
@@ -118,7 +119,7 @@ jobs:
         run: ./project/scripts/sbt scala3-sbt-bridge-nonbootstrapped/compile
 
   scala-library-bootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs  : [scala-library-nonbootstrapped, scala3-library-nonbootstrapped, tasty-core-nonbootstrapped,
               scala3-compiler-nonbootstrapped, scala3-sbt-bridge-nonbootstrapped]
     steps:
@@ -137,7 +138,7 @@ jobs:
         run: ./project/scripts/sbt scala-library-bootstrapped/compile
 
   scala3-library-bootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala-library-bootstrapped]
     steps:
       - name: Git Checkout
@@ -155,7 +156,7 @@ jobs:
         run: ./project/scripts/sbt scala3-library-bootstrapped-new/compile
 
   tasty-core-bootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-library-bootstrapped]
     steps:
       - name: Git Checkout
@@ -172,7 +173,7 @@ jobs:
         run: ./project/scripts/sbt tasty-core-bootstrapped-new/compile
 
   scala3-compiler-bootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [tasty-core-bootstrapped, scala3-library-bootstrapped, scala3-interfaces]
     steps:
       - name: Git Checkout
@@ -189,7 +190,7 @@ jobs:
         run: ./project/scripts/sbt scala3-compiler-bootstrapped-new/compile
 
   scala3-sbt-bridge-bootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-compiler-bootstrapped]
     steps:
       - name: Git Checkout
@@ -206,7 +207,7 @@ jobs:
         run: ./project/scripts/sbt scala3-sbt-bridge-bootstrapped/compile
 
   scala3-staging:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-compiler-bootstrapped]
     steps:
       - name: Git Checkout
@@ -223,7 +224,7 @@ jobs:
         run: ./project/scripts/sbt scala3-staging-new/compile
 
   scala3-tasty-inspector:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-compiler-bootstrapped]
     steps:
       - name: Git Checkout
@@ -242,7 +243,7 @@ jobs:
         run: ./project/scripts/sbt scala3-tasty-inspector-new/compile
 
   scala-library-sjs:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala-library-nonbootstrapped, scala3-library-nonbootstrapped, tasty-core-nonbootstrapped,
             scala3-compiler-nonbootstrapped, scala3-sbt-bridge-nonbootstrapped]
     steps:
@@ -262,7 +263,7 @@ jobs:
         run: ./project/scripts/sbt scala-library-sjs/compile
 
   scala3-library-sjs:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala-library-sjs]
     steps:
       - name: Git Checkout
@@ -281,7 +282,7 @@ jobs:
         run: ./project/scripts/sbt scala3-library-sjs/compile
 
   repl:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-compiler-bootstrapped]
     steps:
       - name: Git Checkout
@@ -299,7 +300,7 @@ jobs:
         run: ./project/scripts/sbt scala3-repl/compile
 
   scaladoc:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-compiler-bootstrapped, scala3-tasty-inspector]
     steps:
       - name: Git Checkout
@@ -317,7 +318,7 @@ jobs:
         run: ./project/scripts/sbt scaladoc/compile
 
   presentation-compiler:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Git Checkout
         uses: actions/checkout@v5
@@ -334,7 +335,7 @@ jobs:
         run: ./project/scripts/sbt scala3-presentation-compiler/compile
 
   language-server:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Git Checkout
         uses: actions/checkout@v5
@@ -355,7 +356,7 @@ jobs:
   #################################################################################################
 
   mima-scala-library-nonbootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: scala-library-nonbootstrapped
     if: false
     steps:
@@ -374,7 +375,7 @@ jobs:
         run: ./project/scripts/sbt scala-library-nonbootstrapped/mimaReportBinaryIssues
 
   mima-scala3-interfaces:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: scala3-interfaces
     steps:
       - name: Git Checkout
@@ -392,7 +393,7 @@ jobs:
         run: ./project/scripts/sbt scala3-interfaces/mimaReportBinaryIssues
 
   mima-tasty-core-nonbootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: tasty-core-nonbootstrapped
     steps:
       - name: Git Checkout
@@ -410,7 +411,7 @@ jobs:
         run: ./project/scripts/sbt tasty-core-nonbootstrapped/mimaReportBinaryIssues
 
   static-analysis-scala-library-bootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: scala-library-bootstrapped
     steps:
       - name: Git Checkout
@@ -431,7 +432,7 @@ jobs:
         run: ./project/scripts/sbt scala-library-bootstrapped/missinglinkCheck
 
   mima-tasty-core-bootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: tasty-core-bootstrapped
     steps:
       - name: Git Checkout
@@ -449,7 +450,7 @@ jobs:
         run: ./project/scripts/sbt tasty-core-bootstrapped-new/mimaReportBinaryIssues
 
   mima-scala-library-sjs:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: scala-library-sjs
     steps:
       - name: Git Checkout
@@ -471,7 +472,7 @@ jobs:
   #################################################################################################
 
   test-scala3-compiler-nonbootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-compiler-nonbootstrapped, tasty-core-nonbootstrapped, scala-library-nonbootstrapped]
     # Non-bootstrapped can definetely not be enabled until we have at least 3.8.0-RC1 as a reference compiler
     if: false
@@ -490,7 +491,7 @@ jobs:
         run: ./project/scripts/sbt scala3-compiler-nonbootstrapped/test
 
   test-scala3-compiler-bootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-compiler-bootstrapped, tasty-core-bootstrapped, scala-library-bootstrapped, scala3-staging, scala3-tasty-inspector]
     steps:
       - name: Git Checkout
@@ -507,7 +508,7 @@ jobs:
         run: ./project/scripts/sbt scala3-compiler-bootstrapped-new/test
 
   test-scala3-sbt-bridge-nonbootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-sbt-bridge-nonbootstrapped]
     if: false # Fails in 3.8.0 nonbootstrapped but works in bootstrapped
     steps:
@@ -525,7 +526,7 @@ jobs:
         run: ./project/scripts/sbt scala3-sbt-bridge-nonbootstrapped/test
 
   test-scala3-sbt-bridge-bootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-sbt-bridge-bootstrapped]
     steps:
       - name: Git Checkout
@@ -542,7 +543,7 @@ jobs:
         run: ./project/scripts/sbt scala3-sbt-bridge-bootstrapped/test
 
   test-tasty-core-nonbootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [tasty-core-nonbootstrapped]
     steps:
       - name: Git Checkout
@@ -559,7 +560,7 @@ jobs:
         run: ./project/scripts/sbt tasty-core-nonbootstrapped/test
 
   test-tasty-core-bootstrapped:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [tasty-core-bootstrapped]
     steps:
       - name: Git Checkout
@@ -576,7 +577,7 @@ jobs:
         run: ./project/scripts/sbt tasty-core-bootstrapped-new/test
 
   test-scala-js:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-compiler-bootstrapped, tasty-core-bootstrapped, scala3-staging, scala3-tasty-inspector, scala-library-sjs]
     steps:
       - name: Git Checkout
@@ -605,7 +606,7 @@ jobs:
   # TODO Scala.js on Windows
 
   test-repl:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [repl]
     steps:
       - name: Git Checkout
@@ -622,7 +623,7 @@ jobs:
         run: ./project/scripts/sbt scala3-repl/test
 
   test-presentation-compiler:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [presentation-compiler]
     steps:
       - name: Git Checkout
@@ -639,7 +640,7 @@ jobs:
         run: ./project/scripts/sbt scala3-presentation-compiler/test
 
   test-language-server:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [language-server]
     steps:
       - name: Git Checkout
@@ -656,7 +657,7 @@ jobs:
         run: ./project/scripts/sbt scala3-language-server/test
 
   scripted-tests:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs: [scala3-compiler-bootstrapped, tasty-core-bootstrapped, scala3-staging, scala3-tasty-inspector, scala-library-sjs, scaladoc]
     steps:
       - name: Git Checkout
@@ -673,7 +674,7 @@ jobs:
         run: ./project/scripts/sbt scala3-bootstrapped-new/scripted
 
   community_build_a:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Checkout cleanup script
         uses: actions/checkout@v5
@@ -691,7 +692,7 @@ jobs:
           ./project/scripts/sbt "community-build/testOnly dotty.communitybuild.CommunityBuildTestA"
 
   community_build_b:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Checkout cleanup script
         uses: actions/checkout@v5
@@ -710,7 +711,7 @@ jobs:
 
 
   community_build_c:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Checkout cleanup script
         uses: actions/checkout@v5
@@ -732,7 +733,7 @@ jobs:
   #################################################################################################
 
   scala-library-docs:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     needs  : [scala-library-bootstrapped, scaladoc]
     steps:
       - name: Git Checkout
