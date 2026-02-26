@@ -5,6 +5,7 @@ on:
     branches:
       - 'main'
   pull_request:
+  workflow_call:
 
 permissions:
   contents: read
@@ -18,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -31,12 +32,26 @@ jobs:
       - name: Compile `scala-library-nonbootstrapped`
         run: ./project/scripts/sbt scala-library-nonbootstrapped/compile
 
+  test-scala-library-nonbootstrapped:
+    name: Non-Bootstrapped Library Unit Tests
+    needs: scala-library-nonbootstrapped
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'sbt'
+      - uses: sbt/setup-sbt@v1
+      - run: ./project/scripts/sbt scala-library-nonbootstrapped/test
+
   scala3-library-nonbootstrapped:
     runs-on: ubuntu-latest
     needs: [scala-library-nonbootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -53,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -71,7 +86,7 @@ jobs:
     needs: [scala3-library-nonbootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -88,7 +103,7 @@ jobs:
     needs: [tasty-core-nonbootstrapped, scala3-library-nonbootstrapped, scala3-interfaces]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -105,7 +120,7 @@ jobs:
     needs: [scala3-compiler-nonbootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -123,7 +138,7 @@ jobs:
               scala3-compiler-nonbootstrapped, scala3-sbt-bridge-nonbootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -136,12 +151,26 @@ jobs:
       - name: Compile `scala-library-bootstrapped`
         run: ./project/scripts/sbt scala-library-bootstrapped/compile
 
+  test-scala-library-bootstrapped:
+    name: Bootstrapped Library Unit Tests
+    needs: scala-library-bootstrapped
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'sbt'
+      - uses: sbt/setup-sbt@v1
+      - run: ./project/scripts/sbt scala-library-bootstrapped/test
+
   scala3-library-bootstrapped:
     runs-on: ubuntu-latest
     needs: [scala-library-bootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -152,14 +181,14 @@ jobs:
 
       - uses: sbt/setup-sbt@v1
       - name: Compile `scala3-library-bootstrapped`
-        run: ./project/scripts/sbt scala3-library-bootstrapped-new/compile
+        run: ./project/scripts/sbt scala3-library-bootstrapped/compile
 
   tasty-core-bootstrapped:
     runs-on: ubuntu-latest
     needs: [scala3-library-bootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -169,14 +198,14 @@ jobs:
           cache: 'sbt'
       - uses: sbt/setup-sbt@v1
       - name: Compile `tasty-core-bootstrapped`
-        run: ./project/scripts/sbt tasty-core-bootstrapped-new/compile
+        run: ./project/scripts/sbt tasty-core-bootstrapped/compile
 
   scala3-compiler-bootstrapped:
     runs-on: ubuntu-latest
     needs: [tasty-core-bootstrapped, scala3-library-bootstrapped, scala3-interfaces]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -186,14 +215,14 @@ jobs:
           cache: 'sbt'
       - uses: sbt/setup-sbt@v1
       - name: Compile `scala3-compiler-bootstrapped`
-        run: ./project/scripts/sbt scala3-compiler-bootstrapped-new/compile
+        run: ./project/scripts/sbt scala3-compiler-bootstrapped/compile
 
   scala3-sbt-bridge-bootstrapped:
     runs-on: ubuntu-latest
     needs: [scala3-compiler-bootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -210,7 +239,7 @@ jobs:
     needs: [scala3-compiler-bootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -220,14 +249,14 @@ jobs:
           cache: 'sbt'
       - uses: sbt/setup-sbt@v1
       - name: Compile `scala3-staging`
-        run: ./project/scripts/sbt scala3-staging-new/compile
+        run: ./project/scripts/sbt scala3-staging/compile
 
   scala3-tasty-inspector:
     runs-on: ubuntu-latest
     needs: [scala3-compiler-bootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -237,9 +266,9 @@ jobs:
           cache: 'sbt'
       - uses: sbt/setup-sbt@v1
       - name: Compile `scala3-staging`
-        run: ./project/scripts/sbt scala3-staging-new/compile
+        run: ./project/scripts/sbt scala3-staging/compile
       - name: Compile `scala3-tasty-inspector`
-        run: ./project/scripts/sbt scala3-tasty-inspector-new/compile
+        run: ./project/scripts/sbt scala3-tasty-inspector/compile
 
   scala-library-sjs:
     runs-on: ubuntu-latest
@@ -247,7 +276,7 @@ jobs:
             scala3-compiler-nonbootstrapped, scala3-sbt-bridge-nonbootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -257,7 +286,7 @@ jobs:
           cache: 'sbt'
       - uses: sbt/setup-sbt@v1
       - name: Compile `scala3-staging`
-        run: ./project/scripts/sbt scala3-staging-new/compile
+        run: ./project/scripts/sbt scala3-staging/compile
       - name: Compile `scala-library` for Scala.js
         run: ./project/scripts/sbt scala-library-sjs/compile
 
@@ -266,7 +295,7 @@ jobs:
     needs: [scala-library-sjs]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -276,7 +305,7 @@ jobs:
           cache: 'sbt'
       - uses: sbt/setup-sbt@v1
       - name: Compile `scala3-staging`
-        run: ./project/scripts/sbt scala3-staging-new/compile
+        run: ./project/scripts/sbt scala3-staging/compile
       - name: Compile `scala3-library` for Scala.js
         run: ./project/scripts/sbt scala3-library-sjs/compile
 
@@ -285,7 +314,7 @@ jobs:
     needs: [scala3-compiler-bootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -303,7 +332,7 @@ jobs:
     needs: [scala3-compiler-bootstrapped, scala3-tasty-inspector]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -314,13 +343,13 @@ jobs:
       - uses: sbt/setup-sbt@v1
 
       - name: Compile `scaladoc`
-        run: ./project/scripts/sbt scaladoc-new/compile
+        run: ./project/scripts/sbt scaladoc/compile
 
   presentation-compiler:
     runs-on: ubuntu-latest
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -337,7 +366,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -360,7 +389,7 @@ jobs:
     if: false
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -378,7 +407,7 @@ jobs:
     needs: scala3-interfaces
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -396,7 +425,7 @@ jobs:
     needs: tasty-core-nonbootstrapped
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -409,12 +438,12 @@ jobs:
       - name: Report MiMa issues in `tasty-core-nonbootstrapped`
         run: ./project/scripts/sbt tasty-core-nonbootstrapped/mimaReportBinaryIssues
 
-  mima-scala-library-bootstrapped:
+  static-analysis-scala-library-bootstrapped:
     runs-on: ubuntu-latest
     needs: scala-library-bootstrapped
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -427,12 +456,15 @@ jobs:
       - name: Report MiMa issues in `scala-library-bootstrapped`
         run: ./project/scripts/sbt scala-library-bootstrapped/mimaReportBinaryIssues
 
+      - name: Report missingLink checks
+        run: ./project/scripts/sbt scala-library-bootstrapped/missinglinkCheck
+
   mima-tasty-core-bootstrapped:
     runs-on: ubuntu-latest
     needs: tasty-core-bootstrapped
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -443,14 +475,14 @@ jobs:
 
       - uses: sbt/setup-sbt@v1
       - name: Report MiMa issues in `tasty-core-bootstrapped`
-        run: ./project/scripts/sbt tasty-core-bootstrapped-new/mimaReportBinaryIssues
+        run: ./project/scripts/sbt tasty-core-bootstrapped/mimaReportBinaryIssues
 
   mima-scala-library-sjs:
     runs-on: ubuntu-latest
     needs: scala-library-sjs
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -470,11 +502,9 @@ jobs:
   test-scala3-compiler-nonbootstrapped:
     runs-on: ubuntu-latest
     needs: [scala3-compiler-nonbootstrapped, tasty-core-nonbootstrapped, scala-library-nonbootstrapped]
-    # Non-bootstrapped can definetely not be enabled until we have at least 3.8.0-RC1 as a reference compiler
-    if: false
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -491,7 +521,7 @@ jobs:
     needs: [scala3-compiler-bootstrapped, tasty-core-bootstrapped, scala-library-bootstrapped, scala3-staging, scala3-tasty-inspector]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -501,14 +531,31 @@ jobs:
           cache: 'sbt'
       - uses: sbt/setup-sbt@v1
       - name: Test `scala3-compiler-bootstrapped`
-        run: ./project/scripts/sbt scala3-compiler-bootstrapped-new/test
+        run: ./project/scripts/sbt scala3-compiler-bootstrapped/test
+
+  test-scala3-bootstrapped-pos-coverage:
+    runs-on: ubuntu-latest
+    needs: [scala3-compiler-bootstrapped, tasty-core-bootstrapped, scala-library-bootstrapped, scala3-staging, scala3-tasty-inspector]
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'sbt'
+      - uses: sbt/setup-sbt@v1
+      - name: Run `scala3-bootstrapped/testCompilation --enable-coverage-phase`
+        run: ./project/scripts/sbt "scala3-bootstrapped/testCompilation --enable-coverage-phase"
 
   test-scala3-sbt-bridge-nonbootstrapped:
     runs-on: ubuntu-latest
     needs: [scala3-sbt-bridge-nonbootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -525,7 +572,7 @@ jobs:
     needs: [scala3-sbt-bridge-bootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -542,7 +589,7 @@ jobs:
     needs: [tasty-core-nonbootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -559,7 +606,7 @@ jobs:
     needs: [tasty-core-bootstrapped]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -569,14 +616,14 @@ jobs:
           cache: 'sbt'
       - uses: sbt/setup-sbt@v1
       - name: Test `tasty-core-bootstrapped`
-        run: ./project/scripts/sbt tasty-core-bootstrapped-new/test
+        run: ./project/scripts/sbt tasty-core-bootstrapped/test
 
   test-scala-js:
     runs-on: ubuntu-latest
     needs: [scala3-compiler-bootstrapped, tasty-core-bootstrapped, scala3-staging, scala3-tasty-inspector, scala-library-sjs]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -605,7 +652,7 @@ jobs:
     needs: [repl]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -622,7 +669,7 @@ jobs:
     needs: [presentation-compiler]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -639,7 +686,7 @@ jobs:
     needs: [language-server]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -656,7 +703,7 @@ jobs:
     needs: [scala3-compiler-bootstrapped, tasty-core-bootstrapped, scala3-staging, scala3-tasty-inspector, scala-library-sjs, scaladoc]
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -666,13 +713,13 @@ jobs:
           cache: 'sbt'
       - uses: sbt/setup-sbt@v1
       - name: Run SBT scripted tests
-        run: ./project/scripts/sbt scala3-bootstrapped-new/scripted
+        run: ./project/scripts/sbt scala3-bootstrapped/scripted
 
   community_build_a:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout cleanup script
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: Set up JDK 17
@@ -690,7 +737,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout cleanup script
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: Set up JDK 17
@@ -709,7 +756,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout cleanup script
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: Set up JDK 17
@@ -722,3 +769,25 @@ jobs:
       - name: Run Community Build C
         run: |
           ./project/scripts/sbt "community-build/testOnly dotty.communitybuild.CommunityBuildTestC"
+
+  #################################################################################################
+  ######################################## GENERATE DOCS ##########################################
+  #################################################################################################
+
+  scala-library-docs:
+    runs-on: ubuntu-latest
+    needs  : [scala-library-bootstrapped, scaladoc]
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'sbt'
+
+      - uses: sbt/setup-sbt@v1
+      - name: Generate Documentation of the Standard Library
+        run: ./project/scripts/sbt scala-library-bootstrapped/doc

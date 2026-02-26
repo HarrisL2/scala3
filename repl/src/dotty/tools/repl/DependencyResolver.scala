@@ -7,6 +7,8 @@ import java.net.{URL, URLClassLoader}
 import scala.jdk.CollectionConverters.*
 import scala.util.control.NonFatal
 
+import dotty.tools.repl.AbstractFileClassLoader
+
 import coursierapi.{Repository, Dependency, MavenRepository}
 import com.virtuslab.using_directives.UsingDirectivesProcessor
 import com.virtuslab.using_directives.custom.model.{Path, StringValue, Value}
@@ -90,8 +92,8 @@ object DependencyResolver:
     import dotty.tools.dotc.classpath.ClassPathFactory
     import dotty.tools.dotc.core.SymbolLoaders
     import dotty.tools.dotc.core.Symbols.defn
-    import dotty.tools.io.*
-    import dotty.tools.runner.ScalaClassLoader.fromURLsParallelCapable
+    import dotty.tools.io.{AbstractFile, ClassPath}
+    import dotty.tools.repl.ScalaClassLoader.fromURLsParallelCapable
 
     // Create a classloader with all the resolved JAR files
     val urls = files.map(_.toURI.toURL).toArray
@@ -106,10 +108,10 @@ object DependencyResolver:
         SymbolLoaders.mergeNewEntries(defn.RootClass, ClassPath.RootPackage, jarClassPath, ctx.platform.classPath)
 
     // Create new classloader with previous output dir and resolved dependencies
-    new dotty.tools.repl.AbstractFileClassLoader(
+    new AbstractFileClassLoader(
       prevOutputDir,
       depsClassLoader,
-      ctx.settings.XreplInterruptInstrumentation.value
+      AbstractFileClassLoader.InterruptInstrumentation.fromString(ctx.settings.XreplInterruptInstrumentation.value)
     )
 
 end DependencyResolver

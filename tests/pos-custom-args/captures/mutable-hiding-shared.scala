@@ -3,7 +3,7 @@ import caps.*
 class Logger extends SharedCapability:
   def log(msg: String): Unit = println(msg)
 
-class Ref(init: Int)(using l: Logger) extends Mutable:
+class Ref(init: Int)(using l: Logger) extends Stateful:
   self: Ref^ =>
   private var current = init
   def get(): Int =
@@ -15,5 +15,5 @@ class Ref(init: Int)(using l: Logger) extends Mutable:
 
 def test =
   given l: Logger = Logger()
-  val r: Ref^{cap.rd} = Ref(3)
+  val r: Ref^{any.rd} = Ref(3)
   r.get()

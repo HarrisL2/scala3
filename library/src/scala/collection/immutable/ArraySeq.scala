@@ -27,14 +27,13 @@ import scala.runtime.ScalaRunTime
 import scala.util.Sorting
 import scala.util.hashing.MurmurHash3
 
-/**
-  * An immutable array.
-  *
-  * Supports efficient indexed access and has a small memory footprint.
-  *
-  * @define coll immutable array
-  * @define Coll `ArraySeq`
-  */
+/** An immutable array.
+ *
+ *  Supports efficient indexed access and has a small memory footprint.
+ *
+ *  @define coll immutable array
+ *  @define Coll `ArraySeq`
+ */
 sealed abstract class ArraySeq[+A]
   extends AbstractSeq[A]
     with IndexedSeq[A]
@@ -44,16 +43,18 @@ sealed abstract class ArraySeq[+A]
     with Serializable{
 
   /** The tag of the element type. This does not have to be equal to the element type of this ArraySeq. A primitive
-    * ArraySeq can be backed by an array of boxed values and a reference ArraySeq can be backed by an array of a supertype
-    * or subtype of the element type. */
+   *  ArraySeq can be backed by an array of boxed values and a reference ArraySeq can be backed by an array of a supertype
+   *  or subtype of the element type. 
+   */
   protected def elemTag: ClassTag[?]
 
   override def iterableFactory: SeqFactory[ArraySeq] = ArraySeq.untagged
 
   /** The wrapped mutable `Array` that backs this `ArraySeq`. Any changes to this array will break
-    * the expected immutability. Its element type does not have to be equal to the element type of this ArraySeq.
-    * A primitive ArraySeq can be backed by an array of boxed values and a reference ArraySeq can be backed by an
-    * array of a supertype or subtype of the element type. */
+   *  the expected immutability. Its element type does not have to be equal to the element type of this ArraySeq.
+   *  A primitive ArraySeq can be backed by an array of boxed values and a reference ArraySeq can be backed by an
+   *  array of a supertype or subtype of the element type. 
+   */
   def unsafeArray: Array[?]
 
   protected def evidenceIterableFactory: ArraySeq.type = ArraySeq
@@ -88,9 +89,9 @@ sealed abstract class ArraySeq[+A]
     ArraySeq.unsafeWrapArray(unsafeArray.appended[Any](elem)).asInstanceOf[ArraySeq[B]]
 
   /** Fast concatenation of two [[ArraySeq]]s.
-    *
-    * @return null if optimisation not possible.
-    */
+   *
+   *  @return null if optimisation not possible.
+   */
   private def appendedAllArraySeq[B >: A](that: ArraySeq[B]): ArraySeq[B] | Null = {
     // Optimise concatenation of two ArraySeqs
     // For ArraySeqs with sizes of [100, 1000, 10000] this is [3.5, 4.1, 5.2]x as fast
@@ -141,7 +142,7 @@ sealed abstract class ArraySeq[+A]
     }
 
     suffix match {
-      case that: ArraySeq[_] =>
+      case that: ArraySeq[?] =>
         val result = appendedAllArraySeq(that.asInstanceOf[ArraySeq[B]])
         if (result == null) genericResult
         else result
@@ -165,7 +166,7 @@ sealed abstract class ArraySeq[+A]
     }
 
     prefix match {
-      case that: ArraySeq[_] =>
+      case that: ArraySeq[?] =>
         val result = that.asInstanceOf[ArraySeq[B]].appendedAllArraySeq(this)
         if (result == null) genericResult
         else result
@@ -267,11 +268,10 @@ sealed abstract class ArraySeq[+A]
     }
 }
 
-/**
-  * $factoryInfo
-  * @define coll immutable array
-  * @define Coll `ArraySeq`
-  */
+/** $factoryInfo
+ *  @define coll immutable array
+ *  @define Coll `ArraySeq`
+ */
 @SerialVersionUID(3L)
 object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
   val untagged: SeqFactory[ArraySeq] = new ClassTagSeqFactory.AnySeqDelegate(self)
@@ -300,17 +300,16 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     ArraySeq.unsafeWrapArray(elements)
   }
 
-  /**
-   * Wrap an existing `Array` into an `ArraySeq` of the proper primitive specialization type
-   * without copying. Any changes to wrapped array will break the expected immutability.
+  /** Wraps an existing `Array` into an `ArraySeq` of the proper primitive specialization type
+   *  without copying. Any changes to wrapped array will break the expected immutability.
    *
-   * Note that an array containing boxed primitives can be wrapped in an `ArraySeq` without
-   * copying. For example, `val a: Array[Any] = Array(1)` is an array of `Object` at runtime,
-   * containing `Integer`s. An `ArraySeq[Int]` can be obtained with a cast:
-   * `ArraySeq.unsafeWrapArray(a).asInstanceOf[ArraySeq[Int]]`. The values are still
-   * boxed, the resulting instance is an [[ArraySeq.ofRef]]. Writing
-   * `ArraySeq.unsafeWrapArray(a.asInstanceOf[Array[Int]])` does not work, it throws a
-   * `ClassCastException` at runtime.
+   *  Note that an array containing boxed primitives can be wrapped in an `ArraySeq` without
+   *  copying. For example, `val a: Array[Any] = Array(1)` is an array of `Object` at runtime,
+   *  containing `Integer`s. An `ArraySeq[Int]` can be obtained with a cast:
+   *  `ArraySeq.unsafeWrapArray(a).asInstanceOf[ArraySeq[Int]]`. The values are still
+   *  boxed, the resulting instance is an [[ArraySeq.ofRef]]. Writing
+   *  `ArraySeq.unsafeWrapArray(a.asInstanceOf[Array[Int]])` does not work, it throws a
+   *  `ClassCastException` at runtime.
    */
   def unsafeWrapArray[T](x: Array[T]): ArraySeq[T] = ((x: @unchecked) match {
     case null              => null
@@ -332,9 +331,9 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     def length: Int = unsafeArray.length
     @throws[ArrayIndexOutOfBoundsException]
     def apply(i: Int): T = unsafeArray(i)
-    override def hashCode = MurmurHash3.arraySeqHash(unsafeArray)
+    override def hashCode() = MurmurHash3.arraySeqHash(unsafeArray)
     override def equals(that: Any): Boolean = that match {
-      case that: ofRef[_] =>
+      case that: ofRef[?] =>
         Array.equals(
           this.unsafeArray.asInstanceOf[Array[AnyRef]],
           that.unsafeArray.asInstanceOf[Array[AnyRef]])
@@ -363,7 +362,7 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     def length: Int = unsafeArray.length
     @throws[ArrayIndexOutOfBoundsException]
     def apply(i: Int): Byte = unsafeArray(i)
-    override def hashCode = MurmurHash3.arraySeqHash(unsafeArray)
+    override def hashCode() = MurmurHash3.arraySeqHash(unsafeArray)
     override def equals(that: Any) = that match {
       case that: ofByte => Arrays.equals(unsafeArray, that.unsafeArray)
       case _ => super.equals(that)
@@ -405,7 +404,7 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     def length: Int = unsafeArray.length
     @throws[ArrayIndexOutOfBoundsException]
     def apply(i: Int): Short = unsafeArray(i)
-    override def hashCode = MurmurHash3.arraySeqHash(unsafeArray)
+    override def hashCode() = MurmurHash3.arraySeqHash(unsafeArray)
     override def equals(that: Any) = that match {
       case that: ofShort => Arrays.equals(unsafeArray, that.unsafeArray)
       case _ => super.equals(that)
@@ -447,7 +446,7 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     def length: Int = unsafeArray.length
     @throws[ArrayIndexOutOfBoundsException]
     def apply(i: Int): Char = unsafeArray(i)
-    override def hashCode = MurmurHash3.arraySeqHash(unsafeArray)
+    override def hashCode() = MurmurHash3.arraySeqHash(unsafeArray)
     override def equals(that: Any) = that match {
       case that: ofChar => Arrays.equals(unsafeArray, that.unsafeArray)
       case _ => super.equals(that)
@@ -492,7 +491,7 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     def length: Int = unsafeArray.length
     @throws[ArrayIndexOutOfBoundsException]
     def apply(i: Int): Int = unsafeArray(i)
-    override def hashCode = MurmurHash3.arraySeqHash(unsafeArray)
+    override def hashCode() = MurmurHash3.arraySeqHash(unsafeArray)
     override def equals(that: Any) = that match {
       case that: ofInt => Arrays.equals(unsafeArray, that.unsafeArray)
       case _ => super.equals(that)
@@ -534,7 +533,7 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     def length: Int = unsafeArray.length
     @throws[ArrayIndexOutOfBoundsException]
     def apply(i: Int): Long = unsafeArray(i)
-    override def hashCode = MurmurHash3.arraySeqHash(unsafeArray)
+    override def hashCode() = MurmurHash3.arraySeqHash(unsafeArray)
     override def equals(that: Any) = that match {
       case that: ofLong => Arrays.equals(unsafeArray, that.unsafeArray)
       case _ => super.equals(that)
@@ -576,7 +575,7 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     def length: Int = unsafeArray.length
     @throws[ArrayIndexOutOfBoundsException]
     def apply(i: Int): Float = unsafeArray(i)
-    override def hashCode = MurmurHash3.arraySeqHash(unsafeArray)
+    override def hashCode() = MurmurHash3.arraySeqHash(unsafeArray)
     override def equals(that: Any) = that match {
       case that: ofFloat =>
         val array = unsafeArray
@@ -618,7 +617,7 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     def length: Int = unsafeArray.length
     @throws[ArrayIndexOutOfBoundsException]
     def apply(i: Int): Double = unsafeArray(i)
-    override def hashCode = MurmurHash3.arraySeqHash(unsafeArray)
+    override def hashCode() = MurmurHash3.arraySeqHash(unsafeArray)
     override def equals(that: Any) = that match {
       case that: ofDouble =>
         val array = unsafeArray
@@ -660,7 +659,7 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     def length: Int = unsafeArray.length
     @throws[ArrayIndexOutOfBoundsException]
     def apply(i: Int): Boolean = unsafeArray(i)
-    override def hashCode = MurmurHash3.arraySeqHash(unsafeArray)
+    override def hashCode() = MurmurHash3.arraySeqHash(unsafeArray)
     override def equals(that: Any) = that match {
       case that: ofBoolean => Arrays.equals(unsafeArray, that.unsafeArray)
       case _ => super.equals(that)
@@ -699,7 +698,7 @@ object ArraySeq extends StrictOptimizedClassTagSeqFactory[ArraySeq] { self =>
     def length: Int = unsafeArray.length
     @throws[ArrayIndexOutOfBoundsException]
     def apply(i: Int): Unit = unsafeArray(i)
-    override def hashCode = MurmurHash3.arraySeqHash(unsafeArray)
+    override def hashCode() = MurmurHash3.arraySeqHash(unsafeArray)
     override def equals(that: Any) = that match {
       case that: ofUnit => unsafeArray.length == that.unsafeArray.length
       case _ => super.equals(that)

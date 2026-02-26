@@ -47,10 +47,10 @@ sealed abstract class ArrayBuilder[T]
 
   protected def resize(size: Int): Unit
 
-  /** Add all elements of an array. */
+  /** Adds all elements of an array. */
   def addAll(xs: Array[? <: T]): this.type = addAll(xs, 0, xs.length)
 
-  /** Add a slice of an array. */
+  /** Adds a slice of an array. */
   def addAll(xs: Array[? <: T], offset: Int, length: Int): this.type = {
     val offset1 = offset.max(0)
     val length1 = length.max(0)
@@ -79,8 +79,7 @@ sealed abstract class ArrayBuilder[T]
   }
 }
 
-/** A companion object for array builders.
- */
+/** A companion object for array builders. */
 object ArrayBuilder {
 
   /** Creates a new arraybuilder of type `T`.
@@ -148,12 +147,7 @@ object ArrayBuilder {
       if(elems ne null) java.util.Arrays.fill(elems.asInstanceOf[Array[AnyRef]], null)
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case x: ofRef[_] => (size == x.size) && (elems == x.elems)
-      case _ => false
-    }
-
-    override def toString = "ArrayBuilder.ofRef"
+    override def toString() = "ArrayBuilder.ofRef"
   }
 
   /** A class for array builders for arrays of `byte`s. It can be reused. */
@@ -190,12 +184,7 @@ object ArrayBuilder {
       else mkArray(size)
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case x: ofByte => (size == x.size) && (elems == x.elems)
-      case _ => false
-    }
-
-    override def toString = "ArrayBuilder.ofByte"
+    override def toString() = "ArrayBuilder.ofByte"
   }
 
   /** A class for array builders for arrays of `short`s. It can be reused. */
@@ -232,12 +221,7 @@ object ArrayBuilder {
       else mkArray(size)
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case x: ofShort => (size == x.size) && (elems == x.elems)
-      case _ => false
-    }
-
-    override def toString = "ArrayBuilder.ofShort"
+    override def toString() = "ArrayBuilder.ofShort"
   }
 
   /** A class for array builders for arrays of `char`s. It can be reused. */
@@ -274,12 +258,7 @@ object ArrayBuilder {
       else mkArray(size)
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case x: ofChar => (size == x.size) && (elems == x.elems)
-      case _ => false
-    }
-
-    override def toString = "ArrayBuilder.ofChar"
+    override def toString() = "ArrayBuilder.ofChar"
   }
 
   /** A class for array builders for arrays of `int`s. It can be reused. */
@@ -316,12 +295,7 @@ object ArrayBuilder {
       else mkArray(size)
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case x: ofInt => (size == x.size) && (elems == x.elems)
-      case _ => false
-    }
-
-    override def toString = "ArrayBuilder.ofInt"
+    override def toString() = "ArrayBuilder.ofInt"
   }
 
   /** A class for array builders for arrays of `long`s. It can be reused. */
@@ -358,12 +332,7 @@ object ArrayBuilder {
       else mkArray(size)
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case x: ofLong => (size == x.size) && (elems == x.elems)
-      case _ => false
-    }
-
-    override def toString = "ArrayBuilder.ofLong"
+    override def toString() = "ArrayBuilder.ofLong"
   }
 
   /** A class for array builders for arrays of `float`s. It can be reused. */
@@ -400,12 +369,7 @@ object ArrayBuilder {
       else mkArray(size)
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case x: ofFloat => (size == x.size) && (elems == x.elems)
-      case _ => false
-    }
-
-    override def toString = "ArrayBuilder.ofFloat"
+    override def toString() = "ArrayBuilder.ofFloat"
   }
 
   /** A class for array builders for arrays of `double`s. It can be reused. */
@@ -442,12 +406,7 @@ object ArrayBuilder {
       else mkArray(size)
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case x: ofDouble => (size == x.size) && (elems == x.elems)
-      case _ => false
-    }
-
-    override def toString = "ArrayBuilder.ofDouble"
+    override def toString() = "ArrayBuilder.ofDouble"
   }
 
   /** A class for array builders for arrays of `boolean`s. It can be reused. */
@@ -485,12 +444,7 @@ object ArrayBuilder {
       else mkArray(size)
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case x: ofBoolean => (size == x.size) && (elems == x.elems)
-      case _ => false
-    }
-
-    override def toString = "ArrayBuilder.ofBoolean"
+    override def toString() = "ArrayBuilder.ofBoolean"
   }
 
   /** A class for array builders for arrays of `Unit` type. It can be reused. */
@@ -527,13 +481,8 @@ object ArrayBuilder {
       ans
     }
 
-    override def equals(other: Any): Boolean = other match {
-      case x: ofUnit => (size == x.size)
-      case _ => false
-    }
-
     protected def resize(size: Int): Unit = capacity = size
 
-    override def toString = "ArrayBuilder.ofUnit"
+    override def toString() = "ArrayBuilder.ofUnit"
   }
 }

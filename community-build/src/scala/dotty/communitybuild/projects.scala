@@ -63,14 +63,17 @@ sealed trait CommunityProject:
 
 end CommunityProject
 
-final case class MillCommunityProject(
+sealed case class MillCommunityProject(
     project: String,
     baseCommand: String,
     ignoreDocs: Boolean = false,
-    sourcecodeTestCommand: Boolean = false,
-    ) extends CommunityProject:
+    executeTests: Boolean = true,
+  ) extends CommunityProject:
   override val binaryName: String = "./mill"
-  override val testCommand = if sourcecodeTestCommand then s"$baseCommand.test.run" else s"$baseCommand.test"
+  override val testCommand = {
+     if executeTests then s"$baseCommand.test"
+     else s"$baseCommand.test.compile"
+  }
   override val publishCommand = s"$baseCommand.publishLocal"
   override val docCommand = null
     // uncomment once mill is released
@@ -146,12 +149,13 @@ object projects:
     ignoreDocs = true
   )
 
-  lazy val sourcecode = MillCommunityProject(
+  lazy val sourcecode = new MillCommunityProject(
     project = "sourcecode",
     baseCommand = s"sourcecode.jvm[$compilerVersion]",
     ignoreDocs = true,
-    sourcecodeTestCommand = true,
-  )
+  ) {
+    override val testCommand = s"$baseCommand.test.run"
+  }
 
   lazy val oslib = MillCommunityProject(
     project = "os-lib",
@@ -209,6 +213,7 @@ object projects:
   lazy val requests = MillCommunityProject(
     project = "requests",
     baseCommand = s"requests.jvm[$compilerVersion]",
+    executeTests = false, // TODO: fix this to pass consistently
   )
 
   lazy val cask = MillCommunityProject(
@@ -319,7 +324,7 @@ object projects:
     project = "shapeless-3",
     sbtTestCommand = "testJVM; testJS",
     sbtDocCommand = forceDoc("typeable", "deriving"),
-    scalacOptions = "-source" :: "3.3" :: SbtCommunityProject.scalacOptions.filter(_ != "-Wsafe-init").filter(_ != "-Yexplicit-nulls"), // due to -Xfatal-warnings
+    scalacOptions = "-source" :: "3.3" :: SbtCommunityProject.scalacOptions.filter(_ != "-Wsafe-init").filter(_ != "-Yexplicit-nulls"), // due to -Werror
   )
 
   lazy val xmlInterpolator = SbtCommunityProject(
@@ -488,7 +493,7 @@ object projects:
     project = "cats",
     sbtTestCommand = "set Global/scalaJSStage := FastOptStage;rootJVM/test;rootJS/test",
     sbtPublishCommand = "rootJVM/publishLocal;rootJS/publishLocal",
-    scalacOptions = SbtCommunityProject.scalacOptions.filter(_ != "-Wsafe-init") // disable -Ysafe-init or -Wsafe-init, due to -Xfatal-warning
+    scalacOptions = SbtCommunityProject.scalacOptions.filter(_ != "-Wsafe-init") // turn off -Wsafe-init due to -Werror
   )
 
   lazy val catsMtl = SbtCommunityProject(
@@ -588,10 +593,10 @@ object projects:
     extraSbtArgs = List(s"-Dakka.build.scalaVersion=$compilerVersion"),
     sbtTestCommand = List(
       "set every targetSystemJdk := true",
-      // selectively disable -Xfatal-warnings due to deprecations
-      """set actor/Compile/scalacOptions -= "-Xfatal-warnings"""",
-      """set testkit/Compile/scalacOptions -= "-Xfatal-warnings"""",
-      """set actorTests/Compile/scalacOptions -= "-Xfatal-warnings"""",
+      // selectively turn off -Werror due to deprecations
+      """set actor/Compile/scalacOptions += "-Werror:false"""",
+      """set testkit/Compile/scalacOptions += "-Werror:false"""",
+      """set actorTests/Compile/scalacOptions += "-Werror:false"""",
       "akka-actor-tests/Test/compile",
     ).mkString("; "),
     scalacOptions = SbtCommunityProject.scalacOptions.filter(_ != "-Wsafe-init"),

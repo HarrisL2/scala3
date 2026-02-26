@@ -2,11 +2,11 @@ package dotty.tools.dotc
 package config
 
 import dotty.tools.dotc.config.PathResolver.Defaults
-import dotty.tools.dotc.config.Settings.{Setting, SettingGroup, SettingCategory, Deprecation}
+import dotty.tools.dotc.config.Settings.{Setting, SettingAlias, SettingGroup, SettingCategory, Deprecation}
 import dotty.tools.dotc.config.SourceVersion
 import dotty.tools.dotc.core.Contexts.*
 import dotty.tools.dotc.rewrites.Rewrites
-import dotty.tools.io.{AbstractFile, Directory, JDK9Reflectors, PlainDirectory, NoAbstractFile}
+import dotty.tools.io.{AbstractFile, Directory, PlainDirectory, NoAbstractFile}
 import Setting.ChoiceWithHelp
 import ScalaSettingCategories.*
 
@@ -40,7 +40,7 @@ abstract class ScalaSettings extends SettingGroup, AllScalaSettings:
   val forkSettings: List[Setting[?]] = settingsByCategory(ForkSetting).sortBy(_.name)
   val advancedSettings: List[Setting[?]] = settingsByCategory(AdvancedSetting).sortBy(_.name)
   val verboseSettings: List[Setting[?]] = settingsByCategory(VerboseSetting).sortBy(_.name)
-  val settingsByAliases: Map[String, Setting[?]] = allSettings.flatMap(s => s.aliases.map(_ -> s)).toMap
+  val settingsByAliases: Map[String, Setting[?]] = allSettings.flatMap(s => s.aliases.map(_.name -> s)).toMap
 
 
 trait AllScalaSettings extends CommonScalaSettings, PluginSettings, VerboseSettings, WarningSettings, XSettings, YSettings:
@@ -62,7 +62,8 @@ trait AllScalaSettings extends CommonScalaSettings, PluginSettings, VerboseSetti
 
   /* Decompiler settings */
   val printTasty: Setting[Boolean] = BooleanSetting(RootSetting, "print-tasty", "Prints the raw tasty.", aliases = List("--print-tasty"))
-  val printLines: Setting[Boolean] = BooleanSetting(RootSetting, "print-lines", "Show source code line numbers.", aliases = List("--print-lines"))
+  @deprecated(message = "Scheduled for removal in 3.9.0, no-op since 3.8.3", since = "3.8.3")
+  val printLines: Setting[Boolean] = BooleanSetting(RootSetting, "print-lines", "Show source code line numbers.", aliases = List("--print-lines"), deprecation = Deprecation.removed(Some("3.9.0")))
 
   /* Scala.js-related settings */
   val scalajsGenStaticForwardersForNonTopLevelObjects: Setting[Boolean] = BooleanSetting(RootSetting, "scalajs-genStaticForwardersForNonTopLevelObjects", "Generate static forwarders even for non-top-level objects (Scala.js only).")
@@ -146,8 +147,8 @@ private sealed trait PluginSettings:
 private sealed trait VerboseSettings:
   self: SettingGroup =>
   val Vhelp: Setting[Boolean] = BooleanSetting(VerboseSetting, "V", "Print a synopsis of verbose options.")
-  val Vprint: Setting[List[String]] = PhasesSetting(VerboseSetting, "Vprint", "Print out program after", aliases = List("-Xprint"))
-  val XshowPhases: Setting[Boolean] = BooleanSetting(VerboseSetting, "Vphases", "List compiler phases.", aliases = List("-Xshow-phases"))
+  val Vprint: Setting[List[String]] = PhasesSetting(VerboseSetting, "Vprint", "Print out program after", aliases = SettingAlias("-Xprint", Deprecation()) :: Nil)
+  val XshowPhases: Setting[Boolean] = BooleanSetting(VerboseSetting, "Vphases", "List compiler phases.", aliases = SettingAlias("-Xshow-phases", Deprecation()) :: Nil)
 
   val Vprofile: Setting[Boolean] = BooleanSetting(VerboseSetting, "Vprofile", "Show metrics about sources and internal representations to estimate compile-time complexity.")
   val VprofileSortedBy = ChoiceSetting(VerboseSetting, "Vprofile-sorted-by", "key", "Show metrics about sources and internal representations sorted by given column name", List("name", "path", "lines", "tokens", "tasty", "complexity"), "")
@@ -161,7 +162,7 @@ private sealed trait WarningSettings:
   self: SettingGroup =>
 
   val Whelp: Setting[Boolean] = BooleanSetting(WarningSetting, "W", "Print a synopsis of warning options.")
-  val Werror: Setting[Boolean] = BooleanSetting(WarningSetting, "Werror", "Fail the compilation if there are any warnings.", aliases = List("-Xfatal-warnings"))
+  val Werror: Setting[Boolean] = BooleanSetting(WarningSetting, "Werror", "Fail the compilation if there are any warnings.", aliases = SettingAlias("-Xfatal-warnings", Deprecation()) :: Nil)
   val Wall: Setting[Boolean] = BooleanSetting(WarningSetting, "Wall", "Enable all warning settings.")
   private val WvalueDiscard: Setting[Boolean] = BooleanSetting(WarningSetting, "Wvalue-discard", "Warn when non-Unit expression results are unused.")
   private val WNonUnitStatement = BooleanSetting(WarningSetting, "Wnonunit-statement", "Warn when block statements are non-Unit expressions.")
@@ -290,12 +291,16 @@ private sealed trait WarningSettings:
   )
 
   object WshadowHas:
-    def allOr(s: String)(using Context) =
-      Wshadow.value.pipe(us => us.contains("all") || us.contains(s))
+    // Is any choice set for -Wshadow?
+    def any(using Context): Boolean = Wall.value || Wshadow.value.nonEmpty
+
+    def allOr(s: String)(using Context): Boolean =
+      Wall.value || Wshadow.value.pipe(us => us.contains("all") || us.contains(s))
     def privateShadow(using Context) =
       allOr("private-shadow")
     def typeParameterShadow(using Context) =
       allOr("type-parameter-shadow")
+  end WshadowHas
 
   val WsafeInit: Setting[Boolean] = BooleanSetting(WarningSetting, "Wsafe-init", "Ensure safe initialization of objects.")
 
@@ -362,7 +367,7 @@ private sealed trait XSettings:
 
   /** Pipeline compilation options */
   val XjavaTasty: Setting[Boolean] = BooleanSetting(AdvancedSetting, "Xjava-tasty", "Pickler phase should compute TASTy for .java defined symbols for use by build tools", aliases = List("-Xpickle-java", "-Yjava-tasty", "-Ypickle-java"), preferPrevious = true)
-  val XearlyTastyOutput: Setting[AbstractFile] = OutputSetting(AdvancedSetting, "Xearly-tasty-output", "directory|jar", "Destination to write generated .tasty files to for use in pipelined compilation.", NoAbstractFile, aliases = List("-Xpickle-write", "-Yearly-tasty-output", "-Ypickle-write"), preferPrevious = true)
+  val XearlyTastyOutput: Setting[AbstractFile] = OutputSetting(AdvancedSetting, "Xearly-tasty-output", "directory|jar", "Destination to write generated .tasty files to for use in pipelined compilation.", NoAbstractFile, aliases = List("-Xpickle-write", "-Yearly-tasty-output", "-Ypickle-write"), ignoreInvalidArgs = true, preferPrevious = true)
   val XallowOutlineFromTasty: Setting[Boolean] = BooleanSetting(AdvancedSetting, "Xallow-outline-from-tasty", "Allow outline TASTy to be loaded with the -from-tasty option.", aliases = List("-Yallow-outline-from-tasty"))
 
   val XmixinForceForwarders = ChoiceSetting(
@@ -406,7 +411,6 @@ private sealed trait YSettings:
   val Ylog: Setting[List[String]] = PhasesSetting(ForkSetting, "Ylog", "Log operations during")
   val YlogClasspath: Setting[Boolean] = BooleanSetting(ForkSetting, "Ylog-classpath", "Output information about what classpath is being applied.")
   val YdisableFlatCpCaching: Setting[Boolean] = BooleanSetting(ForkSetting, "YdisableFlatCpCaching", "Do not cache flat classpath representation of classpath elements from jars across compiler instances.")
-  val YnoStdlibPatches: Setting[Boolean] = BooleanSetting(ForkSetting, "Yno-stdlib-patches", "Do not patch stdlib files (temporary and only to be used for the stdlib migration)", false)
 
   val Yreporter: Setting[String] = StringSetting(ForkSetting, name = "Yreporter", helpArg = "<class>", descr = "Specify a dotty.tools.dotc.reporting.Reporter", default = "dotty.tools.dotc.reporting.ConsoleReporter")
 

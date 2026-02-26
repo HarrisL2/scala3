@@ -738,6 +738,13 @@ trait ImplicitRunInfo:
                 .suchThat(companion => companion.is(Module) && companion.owner == sym.owner)
                 .symbol)
 
+            // The companion of `js.|` defines an implicit conversions from
+            // `A | Unit` to `js.UndefOrOps[A]`. To keep this conversion in scope
+            // in Scala 3, where we re-interpret `js.|` as a real union, we inject
+            // it in the scope of `Unit`.
+            if t.isRef(defn.UnitClass) && ctx.settings.scalajs.value then
+              companions += JSDefinitions.jsdefn.UnionOpsModuleRef
+
             if sym.isClass then
               for p <- t.parents do companions ++= iscopeRefs(p)
             else
@@ -1200,7 +1207,7 @@ trait Implicits:
 
               def tryConversionForSelection(using Context) =
                 val converted = tryConversion
-                if !ctx.reporter.hasErrors && !selProto.isMatchedBy(converted.tpe) then
+                if !ctx.reporter.hasErrors && !selProto.isMatchedBy(converted.tpe, keepConstraint = false) then
                   // this check is needed since adapting relative to a `SelectionProto` can succeed
                   // even if the term is not a subtype of the `SelectionProto`
                   err.typeMismatch(converted, selProto)
@@ -1574,7 +1581,7 @@ trait Implicits:
       /** Check if `ord` respects the contract of `Ordering`.
        *
        *  More precisely, we check that its `compare` method respects the invariants listed
-       *  in https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#compare-T-T-
+       *  in https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Comparator.html#compare(T,T)
        */
       def validateOrdering(ord: Ordering[Candidate]): Unit =
         for

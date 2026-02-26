@@ -41,7 +41,6 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
   private var enclosingDef: untpd.Tree = untpd.EmptyTree
   private var myCtx: Context = super.printerContext
   private var printPos = ctx.settings.YprintPos.value
-  private val printLines = ctx.settings.printLines.value
 
   override def printerContext: Context = myCtx
 
@@ -110,8 +109,17 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
   override def toTextRef(tp: SingletonType): Text = controlled {
     tp match {
       case tp: ThisType if !printDebug =>
-        if (tp.cls.isAnonymousClass) keywordStr("this")
-        if (tp.cls.is(ModuleClass)) fullNameString(tp.cls.sourceModule)
+        val cls = tp.cls
+        if cls.isAnonymousClass then
+          keywordStr("this")
+        else if cls.is(ModuleClass) then
+          if cls.isStatic then
+            fullNameString(tp.cls.sourceModule)
+          else cls.owner.thisType match
+            case tp: SingletonType =>
+              toTextRef(tp) ~ "." ~ nameString(cls)
+            case _ => // owner is a term, just print the name
+              nameString(cls)
         else super.toTextRef(tp)
       case tp: TermRef if !printDebug =>
         if tp.symbol.is(Package) then fullNameString(tp.symbol)
@@ -170,7 +178,7 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
   protected def funMiddleText(isContextual: Boolean, isPure: Boolean, refs: GeneralCaptureSet | Null): Text =
     val (printPure, refsText) =
       if refs == null then (isPure, Str(""))
-      else if isUniversalCaptureSet(refs) then (false, Str(""))
+      else if isElidableUniversal(refs) then (false, Str(""))
       else (isPure, toTextGeneralCaptureSet(refs))
     arrow(isContextual, printPure) ~ refsText
 
@@ -334,7 +342,7 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
         try toText(tp.ref)
         catch case ex: Throwable => "..."
       case sel: cc.PathSelectionProto =>
-        "?.{ " ~ toText(sel.select.symbol) ~ "}"
+        "?.{ " ~ toText(sel.selector) ~ "}"
       case AnySelectionProto =>
         "a type that can be selected or applied"
       case tp: SelectionProto =>
@@ -354,8 +362,12 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
         ~ "]"
       case IgnoredProto(ignored) =>
         "?" ~ ("(ignored: " ~ toText(ignored) ~ ")").provided(printDebug)
-      case tp @ PolyProto(targs, resType) =>
-        "[applied to [" ~ toTextGlobal(targs, ", ") ~ "] returning " ~ toText(resType)
+      case tp @ PolyProto(targs, resultType) =>
+        "[applied to ["
+        ~ toTextGlobal(targs, ", ")
+        ~ "] returning "
+        ~ toText(resultType)
+        ~ "]"
       case _ =>
         super.toText(tp)
     }
@@ -477,7 +489,7 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
       case id @ Ident(name) =>
         val txt = tree.typeOpt match {
           case tp: NamedType if name != nme.WILDCARD =>
-            toTextPrefixOf(tp) ~ withPos(selectionString(tp), tree.sourcePos)
+            toTextPrefixOf(tp) ~ selectionString(tp)
           case _ =>
             toText(name)
         }
@@ -513,8 +525,8 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
         typeApplyText(tree)
       case Literal(c) =>
         tree.typeOpt match {
-          case ConstantType(tc) => withPos(toText(tc), tree.sourcePos)
-          case _ => withPos(toText(c), tree.sourcePos)
+          case ConstantType(tc) => toText(tc)
+          case _ => toText(c)
         }
       case New(tpt) =>
         keywordStr("new ") ~ {
@@ -598,7 +610,7 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
       case tree @ Inlined(call, bindings, body) =>
         val bodyText = if bindings.isEmpty then toText(body) else blockText(bindings :+ body)
         if homogenizedView || !ctx.settings.XprintInline.value then bodyText
-        else if tree.inlinedFromOuterScope then stringText("{{") ~ stringText("/* inlined from outside */") ~ bodyText ~ stringText("}}")
+        else if tree.inlinedFromOuterScope then literalText("{{") ~ literalText("/* inlined from outside */") ~ bodyText ~ literalText("}}")
         else keywordText("{{") ~ keywordText("/* inlined from ") ~ toText(call) ~ keywordText(" */") ~ bodyText ~ keywordText("}}")
       case tpt: untpd.DerivedTypeTree =>
         "<derived typetree watching " ~ tpt.watched.showSummary() ~ ">"
@@ -701,7 +713,7 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
         toTextTemplate(tree)
       case Annotated(arg, annot) =>
         def captureSet =
-          annot.asInstanceOf[tpd.Tree].toCaptureSet
+          CaptureSet(annot.asInstanceOf[tpd.Tree].retainedSet.retainedElements*)
         def toTextAnnot =
           toTextLocal(arg) ~~ annotText(annot.symbol.enclosingClass, annot)
         def toTextRetainsAnnot =
@@ -725,8 +737,8 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
       case SymbolLit(str) =>
         "'" + str
       case InterpolatedString(id, segments) =>
-        def strText(str: Literal) = withPos(escapedString(str.const.stringValue), tree.sourcePos)
-        def segmentText(segment: Tree) = segment match {
+        def strText(str: Literal) = escapedString(str.const.stringValue)
+        def segmentText(segment: Tree): Text = segment match {
           case Thicket(List(str: Literal, expr)) => strText(str) ~ "{" ~ toTextGlobal(expr) ~ "}"
           case str: Literal => strText(str)
         }
@@ -964,14 +976,8 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
     tree.hasType && tree.symbol.exists && ctx.settings.YprintSyms.value
 
   protected def nameIdText[T <: Untyped](tree: NameTree[T]): Text =
-    if (tree.hasType && tree.symbol.exists && tree.symbol.isType == tree.name.isTypeName) {
-      val str = nameString(tree.symbol)
-      tree match {
-        case tree: RefTree => withPos(str, tree.sourcePos)
-        case tree: MemberDef => withPos(str, tree.sourcePos.withSpan(tree.nameSpan))
-        case _ => str
-      }
-    }
+    if tree.hasType && tree.symbol.exists && tree.symbol.isType == tree.name.isTypeName
+    then nameString(tree.symbol)
     else toText(tree.name) ~ idText(tree)
 
   private def toTextOwner(tree: Tree[?]) =
@@ -1161,6 +1167,7 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
       case Select(qual, nme.CONSTRUCTOR) => recur(qual)
       case id @ Ident(tpnme.BOUNDTYPE_ANNOT) => "@" ~ toText(id.symbol.name)
       case New(tpt) => recur(tpt)
+      case t: tpd.TypeTree if t.tpe.isInstanceOf[AppliedType] => "@" ~ toText(t.tpe)
       case _ =>
         val annotSym = sym.orElse(tree.symbol.enclosingClass)
         if annotSym.exists then annotText(annotSym) else s"@${t.show}"
@@ -1275,11 +1282,4 @@ class RefinedPrinter(_ctx: Context) extends PlainPrinter(_ctx) {
   }
 
   override def plain: PlainPrinter = new PlainPrinter(_ctx)
-
-  private def withPos(txt: Text, pos: SourcePosition): Text =
-    if (!printLines || !pos.exists) txt
-    else txt match {
-      case Str(s, _) => Str(s, LineRange(pos.line, pos.endLine))
-      case _ => txt
-    }
 }

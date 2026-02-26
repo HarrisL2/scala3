@@ -30,9 +30,7 @@ import scala.language.implicitConversions
 // MacRoman vs. UTF-8: see https://groups.google.com/d/msg/jruby-developers/-qtwRhoE1WM/whSPVpTNV28J
 // -Dfile.encoding: see https://bugs.java.com/view_bug.do?bug_id=4375816
 
-/** A class for character encoding/decoding preferences.
- *
- */
+/** A class for character encoding/decoding preferences. */
 class Codec(val charSet: Charset) {
   type Configure[T] = (T => T, Boolean)
   type Handler      = CharacterCodingException => Int
@@ -46,7 +44,7 @@ class Codec(val charSet: Charset) {
   private var _onCodingException: Handler       = e => throw e
 
   /** The name of the Codec. */
-  override def toString: String = name
+  override def toString(): String = name
 
   // these methods can be chained to configure the variables above
   def onMalformedInput(newAction: Action): this.type              = { _onMalformedInput = newAction ; this }

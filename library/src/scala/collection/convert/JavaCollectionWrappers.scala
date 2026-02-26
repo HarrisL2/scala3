@@ -26,7 +26,7 @@ import scala.util.Try
 import scala.util.chaining._
 import scala.util.control.ControlThrowable
 
-/** Wrappers for exposing Scala collections as Java collections and vice-versa */
+/** Wrappers for exposing Scala collections as Java collections and vice-versa. */
 @SerialVersionUID(3L)
 // not private[convert] because `WeakHashMap` uses JMapWrapper
 private[collection] object JavaCollectionWrappers extends Serializable {
@@ -38,10 +38,10 @@ private[collection] object JavaCollectionWrappers extends Serializable {
     def nextElement(): A = underlying.next()
     override def remove(): Nothing = throw new UnsupportedOperationException
     override def equals(other: Any): Boolean = other match {
-      case that: IteratorWrapper[_] => this.underlying == that.underlying
+      case that: IteratorWrapper[?] => this.underlying == that.underlying
       case _ => false
     }
-    override def hashCode: Int = underlying.hashCode()
+    override def hashCode(): Int = underlying.hashCode()
   }
 
   @SerialVersionUID(3L)
@@ -49,10 +49,10 @@ private[collection] object JavaCollectionWrappers extends Serializable {
     def hasNext = underlying.hasNext
     def next(): A = underlying.next
     override def equals(other: Any): Boolean = other match {
-      case that: JIteratorWrapper[_] => this.underlying == that.underlying
+      case that: JIteratorWrapper[?] => this.underlying == that.underlying
       case _ => false
     }
-    override def hashCode: Int = underlying.hashCode()
+    override def hashCode(): Int = underlying.hashCode()
   }
 
   @SerialVersionUID(3L)
@@ -60,10 +60,10 @@ private[collection] object JavaCollectionWrappers extends Serializable {
     def hasNext = underlying.hasMoreElements
     def next(): A = underlying.nextElement
     override def equals(other: Any): Boolean = other match {
-      case that: JEnumerationWrapper[_] => this.underlying == that.underlying
+      case that: JEnumerationWrapper[?] => this.underlying == that.underlying
       case _ => false
     }
-    override def hashCode: Int = underlying.hashCode()
+    override def hashCode(): Int = underlying.hashCode()
   }
 
   trait IterableWrapperTrait[A] extends ju.AbstractCollection[A] {
@@ -76,10 +76,10 @@ private[collection] object JavaCollectionWrappers extends Serializable {
   @SerialVersionUID(3L)
   class IterableWrapper[A](val underlying: Iterable[A]^) extends ju.AbstractCollection[A] with IterableWrapperTrait[A] with Serializable {
     override def equals(other: Any): Boolean = other match {
-      case that: IterableWrapper[_] => this.underlying == that.underlying
+      case that: IterableWrapper[?] => this.underlying == that.underlying
       case _ => false
     }
-    override def hashCode: Int = underlying.hashCode()
+    override def hashCode(): Int = underlying.hashCode()
   }
 
   @SerialVersionUID(3L)
@@ -91,10 +91,10 @@ private[collection] object JavaCollectionWrappers extends Serializable {
     override def iterableFactory: mutable.ArrayBuffer.type = mutable.ArrayBuffer
     override def isEmpty: Boolean = !underlying.iterator().hasNext
     override def equals(other: Any): Boolean = other match {
-      case that: JIterableWrapper[_] => this.underlying == that.underlying
+      case that: JIterableWrapper[?] => this.underlying == that.underlying
       case _ => false
     }
-    override def hashCode: Int = underlying.hashCode()
+    override def hashCode(): Int = underlying.hashCode()
   }
 
   @SerialVersionUID(3L)
@@ -108,10 +108,10 @@ private[collection] object JavaCollectionWrappers extends Serializable {
     override def isEmpty = underlying.isEmpty
     override def iterableFactory: mutable.ArrayBuffer.type = mutable.ArrayBuffer
     override def equals(other: Any): Boolean = other match {
-      case that: JCollectionWrapper[_] => this.underlying == that.underlying
+      case that: JCollectionWrapper[?] => this.underlying == that.underlying
       case _ => false
     }
-    override def hashCode: Int = underlying.hashCode()
+    override def hashCode(): Int = underlying.hashCode()
   }
 
   @SerialVersionUID(3L)
@@ -285,13 +285,13 @@ private[collection] object JavaCollectionWrappers extends Serializable {
             // specified in the javadocs of java.util.Map.Entry.hashCode
             //
             // See https://github.com/scala/bug/issues/10663
-            override def hashCode = {
+            override def hashCode() = {
               (if (k == null) 0 else k.hashCode()) ^
               (if (v == null) 0 else v.hashCode())
             }
 
             override def equals(other: Any) = other match {
-              case e: ju.Map.Entry[_, _] => k == e.getKey && v == e.getValue
+              case e: ju.Map.Entry[?, ?] => k == e.getKey && v == e.getValue
               case _ => false
             }
           }
@@ -301,7 +301,7 @@ private[collection] object JavaCollectionWrappers extends Serializable {
           prev match {
             case Some(k) =>
               underlying match {
-                case mm: mutable.Map[a, _] =>
+                case mm: mutable.Map[a, ?] =>
                   mm -= k
                   prev = None
                 case _ =>
@@ -548,11 +548,11 @@ private[collection] object JavaCollectionWrappers extends Serializable {
     }
 
     override def equals(other: Any): Boolean = other match {
-      case that: DictionaryWrapper[_, _] => this.underlying == that.underlying
+      case that: DictionaryWrapper[?, ?] => this.underlying == that.underlying
       case _ => false
     }
 
-    override def hashCode: Int = underlying.hashCode()
+    override def hashCode(): Int = underlying.hashCode()
   }
 
   @SerialVersionUID(3L)

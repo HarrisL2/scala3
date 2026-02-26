@@ -20,12 +20,13 @@ import language.experimental.captureChecking
 import java.util.{concurrent => juc}
 import java.{lang => jl, util => ju}
 
-import scala.collection.JavaConverters._
 import scala.language.implicitConversions
 
 /** Defines implicit converter methods from Java to Scala collections. */
 @deprecated("Use `scala.jdk.CollectionConverters` instead", "2.13.0")
 trait ToScalaImplicits {
+  import scala.collection.JavaConverters.*
+
   /** Implicitly converts a Java `Iterator` to a Scala `Iterator`.
    *  @see [[JavaConverters.asScalaIterator]]
    */
@@ -80,6 +81,7 @@ trait ToScalaImplicits {
 /** Defines implicit conversions from Scala to Java collections. */
 @deprecated("Use `scala.jdk.CollectionConverters` instead", "2.13.0")
 trait ToJavaImplicits {
+  import scala.collection.JavaConverters.*
   /** Implicitly converts a Scala `Iterator` to a Java `Iterator`.
    *  @see [[JavaConverters.asJavaIterator]]
    */
@@ -170,15 +172,16 @@ object ImplicitConversionsToScala extends ToScalaImplicits
  * It is recommended to use explicit conversions provided by [[collection.JavaConverters]] instead.
  * Implicit conversions may cause unexpected issues. Example:
  *
- * {{{
+ * ```
  *   import collection.convert.ImplicitConversions._
  *   case class StringBox(s: String)
  *   val m = Map(StringBox("one") -> "uno")
  *   m.get("one")
- * }}}
+ * ```
  *
  * The above example returns `null` instead of producing a type error at compile-time. The map is
  * implicitly converted to a `java.util.Map` which provides a method `get(x: AnyRef)`.
+ 
  */
 @deprecated("Use `scala.jdk.CollectionConverters` instead", "2.13.0")
 object ImplicitConversions extends ToScalaImplicits with ToJavaImplicits

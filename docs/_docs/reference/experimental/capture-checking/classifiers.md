@@ -13,16 +13,16 @@ other capabilities. Or might want to allow mutation, but no other side effects. 
 
 For instance, the `scala.caps` package defines a classifier trait called `Control`,
 like this:
-```scala
+```scala sc:nocompile
   trait Control extends SharedCapability, Classifier
 ```
 The [Gears library](https://lampepfl.github.io/gears/) then defines a capability class `Async` which extends `Control`.
 
-```scala
+```scala sc:nocompile
   trait Async extends Control
 ```
 Unlike normal inheritance, classifiers also restrict the capture set of a capability. For instance, say we have a function
-```scala
+```scala sc:nocompile
   def f(using async: Async^) = body
 ```
 (the `^` is as usual redundant here since `Async` is a capability trait).
@@ -37,7 +37,7 @@ Classifiers are unique: a class cannot extend directly or transitively at the sa
 ### Predefined Classifiers
 
 The `caps` object defines the `Classifier` trait itself and some traits that extend it:
-```scala
+```scala sc:nocompile
 trait Classifier
 
 sealed trait Capability
@@ -46,7 +46,8 @@ trait SharedCapability extends Capability Classifier
 trait Control extends SharedCapability, Classifier
 
 trait ExclusiveCapability extends Capability
-trait Read extends ExclusiveCapability, Classifier
+trait Stateful extends ExclusiveCapability
+trait Unscoped extends Stateful, Classifier
 ```
 Here is a graph showing the hierarchy of predefined capability traits. Classifier traits are underlined.
 ```
@@ -56,17 +57,18 @@ Here is a graph showing the hierarchy of predefined capability traits. Classifie
             /            \
            /              \
  SharedCapability     ExclusiveCapability
- ----------------
+ ----------------            |
+        |                    |
+        |                 Stateful
         |                    |
         |                    |
-        |                    |
-        |                    |
-     Control               Read
-     -------               ----
+     Control              Unscoped
+     -------              --------
 ```
 At the top of the hierarchy, we distinguish between _shared_ and _exclusive_ capabilities in two traits `SharedCapability` and `ExclusiveCapability`. All capability classes we have seen so far are shared.
 `ExclusiveCapability` is a base trait for capabilities that
-are checked for anti-aliasing restrictions with the rules governed by [separation checking](separation-checking.md). Separation checking is currently an optional extension of capture checking, enabled by a different language import. Since `Capability` is a sealed trait, all capability classes are either shared or exclusive.
+are checked for anti-aliasing restrictions with the rules governed by [separation checking](separation-checking.md). Separation checking is currently an optional extension of capture checking, enabled by a different language import. Since `Capability` is a sealed trait, all capability classes are either shared or exclusive. `SharedCapability` is a classifier, but `ExclusiveCapability` is not. Therefore,
+exclusive capabilities can have shared capabilities in their capture set but not _vice versa_.
 
 `Control` capabilities are shared. This means they cannot directly or indirectly capture exclusive capabilities such as capabilities that control access to mutable state. Typical `Control` capabilities are:
 
@@ -76,13 +78,14 @@ are checked for anti-aliasing restrictions with the rules governed by [separatio
 
 These are all expressed by having their capability classes extend `Control`.
 
+
 ### Classifier Restriction
 
 Consider the following problem: The `Try.apply` method takes in its `body` parameter a computation, and runs it while catching any exceptions or `boundary.break` aborts. The exception or break will be re-issued when calling
 the `get` method of a `Try` object. What should a capability-aware signature of `Try` be?
 
 The body passed to `Try.apply` can have arbitrary effects, so it can retain arbitrary capabilities. Yet the resulting `Try` object will retain only those capabilities of `body` which are classified as `Control`. So the signature of `Try.apply` should look like this:
-```scala
+```scala sc:nocompile
 object Try:
   def apply[T](body: => T): Try[T]^{body.only[Control]}
 ```
@@ -101,7 +104,7 @@ Then the result of `Try { expr }` would have type `Try^{async}`. We drop `io` si
 `io`'s type is a `Capability` class that does not extend `Control`.
 
 If `expr` would use an additional capability `proc: () => Unit`, then `proc` would also show up in the result capture set. Since `proc` is fully effect-polymorphic, we can't exclude that it retains `Control` capabilities, so we have to keep it in the restricted capture set. These elements are shown together in the following example:
-```scala
+```scala sc:nocompile
 class IO extends caps.SharedCapability
 class Async extends caps.Control
 

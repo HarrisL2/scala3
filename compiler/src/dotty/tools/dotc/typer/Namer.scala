@@ -12,7 +12,7 @@ import ast.desugar, ast.desugar.*
 import ProtoTypes.*
 import util.Spans.*
 import util.Property
-import collection.mutable
+import collection.mutable, mutable.ListBuffer
 import tpd.tpes
 import Variances.alwaysInvariant
 import config.{Config, Feature}
@@ -140,8 +140,10 @@ class Namer { typer: Typer =>
 
     def conflict(conflicting: Symbol) =
       val other =
-        if conflicting.is(PhantomSymbol) then conflicting.companionClass
-        else conflicting
+        if conflicting.is(PhantomSymbol) then
+          conflicting.companionClass.orElse(conflicting)
+        else
+          conflicting
       report.error(AlreadyDefined(name, owner, other), ctx.source.atSpan(span))
       conflictsDetected = true
 
@@ -896,20 +898,16 @@ class Namer { typer: Typer =>
           original.mods.withAnnotations:
             original.mods.annotations.mapConserve: annotTree =>
               val cls = typedAheadAnnotationClass(annotTree)(using annotCtx)
-              if (cls eq sym)
-                report.error(em"An annotation class cannot be annotated with iself", annotTree.srcPos)
-                annotTree
-              else
-                val ann =
-                  if cls.is(JavaDefined) then Checking.checkNamedArgumentForJavaAnnotation(annotTree, cls.asClass)
-                  else annotTree
-                val ann1 = Annotation.deferred(cls)(typedAheadExpr(ann)(using annotCtx))
-                sym.addAnnotation(ann1)
-                ann
+              val ann =
+                if cls.is(JavaDefined) then Checking.checkNamedArgumentForJavaAnnotation(annotTree, cls.asClass)
+                else annotTree
+              val ann1 = Annotation.deferred(cls)(typedAheadExpr(ann)(using annotCtx))
+              sym.addAnnotation(ann1)
+              ann
       case _ =>
     }
 
-    private def addInlineInfo(sym: Symbol) = original match {
+    private def addInlineInfo(sym: Symbol): Unit = original match {
       case original: untpd.DefDef if sym.isInlineMethod =>
         def rhsToInline(using Context): tpd.Tree =
           if !original.symbol.exists && !hasDefinedSymbol(original) then
@@ -1001,7 +999,7 @@ class Namer { typer: Typer =>
     private def normalizeFlags(denot: SymDenotation)(using Context): Unit =
       if denot.is(Method)
           && denot.hasAnnotation(defn.ConsumeAnnot)
-          && denot.owner.derivesFrom(defn.Caps_Mutable)
+          && denot.owner.derivesFrom(defn.Caps_Stateful)
       then
         denot.setFlag(Mutable)
 
@@ -1187,7 +1185,7 @@ class Namer { typer: Typer =>
      *                      extension method.
      */
     private def exportForwarders(exp: Export, pathMethod: Symbol)(using Context): List[tpd.MemberDef] =
-      val buf = new mutable.ListBuffer[tpd.MemberDef]
+      val buf = ListBuffer.empty[tpd.MemberDef]
       val Export(expr, selectors) = exp
       if expr.isEmpty then
         report.error(em"Export selector must have prefix and `.`", exp.srcPos)
@@ -1266,8 +1264,8 @@ class Namer { typer: Typer =>
             n += 1
 
       /** Add a forwarder with name `alias` or its type name equivalent to `mbr`,
-        *  provided `mbr` is accessible and of the right implicit/non-implicit kind.
-        */
+       *  provided `mbr` is accessible and of the right implicit/non-implicit kind.
+       */
       def addForwarder(alias: TermName, mbr: SingleDenotation, span: Span): Unit =
 
         def adaptForwarderParams(acc: List[List[tpd.Tree]], tp: Type, prefss: List[List[tpd.Tree]])
@@ -1513,12 +1511,17 @@ class Namer { typer: Typer =>
         forwarders
     end exportForwarders
 
-    /** Add forwarders as required by the export statements in this class */
-    private def processExports(using Context): Unit =
+    /** Add forwarders as required by the export statements in this class.
+     *  @return true if forwarders were added
+     */
+    private def processExports(using Context): Boolean =
+
+      var exported = false
 
       def processExport(exp: Export, pathSym: Symbol)(using Context): Unit =
         for forwarder <- exportForwarders(exp, pathSym) do
           forwarder.symbol.entered
+          exported = true
 
       def exportPathSym(path: Tree, ext: ExtMethods)(using Context): Symbol =
         def fail(msg: String): Symbol =
@@ -1561,6 +1564,8 @@ class Namer { typer: Typer =>
       // import contexts for nothing.
       if hasExport(rest) then
         process(rest)
+      // was a forwarder entered for an export
+      exported
     end processExports
 
     /** Ensure constructor is completed so that any parameter accessors
@@ -1728,7 +1733,7 @@ class Namer { typer: Typer =>
        *
        *  so that an implicit `I` can be passed to `B`. See i7613.scala for more examples.
        */
-      def addUsingTraits(parents: List[Type]): List[Type] =
+      def addUsingTraits(parents: List[Type]): List[Type] = {
         lazy val existing = parents.map(_.classSymbol).toSet
         def recur(parents: List[Type]): List[Type] = parents match
           case parent :: parents1 =>
@@ -1747,7 +1752,11 @@ class Namer { typer: Typer =>
           case nil =>
             Nil
         if cls.isRealClass then recur(parents) else parents
-      end addUsingTraits
+      }
+
+      def addAssumeSafe(sym: Symbol): Unit =
+        if ctx.compilationUnit.safeMode && sym.isClass && sym.isStatic then
+          sym.addAnnotation(Annotation(defn.AssumeSafeAnnot, sym.span))
 
       completeConstructor(denot)
       denot.info = tempInfo.nn
@@ -1782,9 +1791,10 @@ class Namer { typer: Typer =>
       cls.setNoInitsFlags(parentsKind(parents), untpd.bodyKind(rest))
       cls.setStableConstructor()
       enterParentRefinementSyms(parentRefinements.toList)
-      processExports(using localCtx)
-      defn.patchStdLibClass(cls)
       addConstructorProxies(cls)
+      if processExports(using localCtx) then
+        addConstructorProxies(cls)
+      addAssumeSafe(cls)
       cleanup()
     }
   }
@@ -1793,7 +1803,7 @@ class Namer { typer: Typer =>
   private enum CanForward:
     case Yes
     case No(whyNot: String)
-    case Skip  // for members that have never forwarders
+    case Skip  // for members that never have forwarders
 
   class SuspendCompleter extends LazyType, SymbolLoaders.SecondCompleter {
 
@@ -2226,10 +2236,15 @@ class Namer { typer: Typer =>
         // `default-getter-variance.scala`.
         AnnotatedType(defaultTp, Annotation(defn.UncheckedVarianceAnnot, sym.span))
       else
+        inline def isJavaEnumValue = tp match
+          case tp: TermRef => tp.termSymbol.isAllOf(JavaDefined | Enum)
+          case _ => false
         // don't strip @uncheckedVariance annot for default getters
         TypeOps.simplify(tp.widenTermRefExpr,
             if defaultTp.exists then TypeOps.SimplifyKeepUnchecked() else null)
         match
+          // For final members pointing to Java enum values, preserve the singleton type. See i24750.
+          case _ if sym.is(Final) && isJavaEnumValue => tp
           case ctp: ConstantType if sym.isInlineVal => ctp
           case tp if isTracked => tp
           case tp => TypeComparer.widenInferred(tp, pt, Widen.Unions)

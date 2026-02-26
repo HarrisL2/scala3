@@ -12,7 +12,7 @@ class Ref[T](init: T) extends caps.Mutable:
 
     val self3 = () => this
     self3().set(x)  // error
-    val self4: () => Ref[T]^ = () => this // error
+    val self4: () => Ref[T]^ = () => this // error // error separation
     self4().set(x) // error
 
     def self5() = this
@@ -37,6 +37,7 @@ def test =
   r3.x.set(33) // error
 
   val r4 = () => Ref2(22)
+  val r4x = r4().x
   r4().x.set(33) // ok
   val ref2: Ref2[Int] = Ref2(22)
   val r5: () => Ref2[Int]^ = () => ref2 // error
