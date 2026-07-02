@@ -37,7 +37,7 @@ class DropdownHandler:
   private def getURLContent(url: String): Future[String] = fetch(url).flatMap(_.text())
 
   window.sessionStorage.getItem(KEY) match
-    case null => // If no key, returns null
+    case v if v == null => // If no key, returns null (warning workaround)
       js.typeOf(Globals.versionsDictionaryUrl) match
         case "undefined" =>
           window.sessionStorage.setItem(KEY, UNDEFINED_VERSIONS)

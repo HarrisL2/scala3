@@ -11,6 +11,7 @@ import org.scalajs.dom.html.Input
 import scala.scalajs.js.timers._
 import scala.concurrent.duration.{span => dspan, _}
 import scala.util.chaining._
+import scala.compiletime.uninitialized
 
 import java.net.URI
 
@@ -205,7 +206,7 @@ class SearchbarComponent(engine: PageSearchEngine, inkuireEngine: InkuireJSSearc
         span(cls := "search-error")(s)
       )
 
-  var timeoutHandle: SetTimeoutHandle = null
+  var timeoutHandle: SetTimeoutHandle = uninitialized
   def handleNewQuery(query: String) =
     resultsDiv.scrollTop = 0
     resultsDiv.onscroll = (event: Event) => { }
@@ -350,7 +351,7 @@ class SearchbarComponent(engine: PageSearchEngine, inkuireEngine: InkuireJSSearc
     val selectedElement = resultsDiv.querySelector("[selected]")
     if selectedElement != null then {
       selectedElement.removeAttribute("selected")
-      def recur(elem: Element): Element = {
+      def recur(elem: Element): Element | Null = {
         val prev = elem.previousElementSibling
         if prev == null then null
         else {
@@ -370,7 +371,7 @@ class SearchbarComponent(engine: PageSearchEngine, inkuireEngine: InkuireJSSearc
   }
   private def handleArrowDown() = {
     val selectedElement = resultsDiv.querySelector("[selected]")
-    def recur(elem: Element): Element = {
+    def recur(elem: Element): Element | Null = {
       val next = elem.nextElementSibling
       if next == null then null
       else {
@@ -392,7 +393,7 @@ class SearchbarComponent(engine: PageSearchEngine, inkuireEngine: InkuireJSSearc
       val firstResult = resultsDiv.firstElementChild
       if firstResult != null then {
         val toSelect = if firstResult.classList.contains("scaladoc-searchbar-row") && firstResult.hasAttribute("result") then firstResult else recur(firstResult)
-        toSelect.setAttribute("selected", "")
+        toSelect.nn.setAttribute("selected", "")
         resultsDiv.scrollTop = toSelect.asInstanceOf[html.Element].offsetTop - (2 * toSelect.asInstanceOf[html.Element].clientHeight)
       }
     }

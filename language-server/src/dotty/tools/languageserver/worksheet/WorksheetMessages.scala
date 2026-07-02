@@ -8,7 +8,7 @@ import org.eclipse.lsp4j.{ Range, VersionedTextDocumentIdentifier }
 
 /** The parameter for the `worksheet/run` request. */
 case class WorksheetRunParams(textDocument: VersionedTextDocumentIdentifier) {
-  def this() = this(null)
+  def this() = this(null.asInstanceOf)
 }
 
 /** The response to a `worksheet/run` request. */
@@ -18,5 +18,5 @@ case class WorksheetRunResult(success: Boolean) {
 
 /** The parameters to the `worksheet/publishOutput` notification. */
 case class WorksheetRunOutput(textDocument: VersionedTextDocumentIdentifier, range: Range, content: String) {
-  def this() = this(null, null, null)
+  def this() = this(null.asInstanceOf, null.asInstanceOf, null.asInstanceOf)
 }

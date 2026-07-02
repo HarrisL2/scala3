@@ -472,11 +472,11 @@ class DottyLanguageServer extends LanguageServer
     val tp = Interactive.enclosingType(trees, pos)
     val tpw = tp.widenTermRefExpr
 
-    if (tp.isError || tpw == NoType) null // null here indicates that no response should be sent
+    if (tp.isError || tpw == NoType) null.asInstanceOf // null here indicates that no response should be sent
     else {
       Interactive.enclosingSourceSymbols(path, pos) match {
         case Nil =>
-          null
+          null.asInstanceOf
         case symbols =>
           val docComments = symbols.flatMap(ParsedComment.docOf)
           val content = hoverContent(Some(tpw.show), docComments)
@@ -867,7 +867,7 @@ object DottyLanguageServer {
     item
   }
 
-  def markupContent(content: String): lsp4j.MarkupContent = {
+  def markupContent(content: String): lsp4j.MarkupContent | Null = {
     if content.isEmpty then
       null
     else {
@@ -892,7 +892,7 @@ object DottyLanguageServer {
       buf.append(comment.renderAsMarkdown)
     }
 
-    markupContent(buf.toString)
+    markupContent(buf.toString).nn
   }
 
   /** Create an lsp4j.SymbolInfo from a Symbol and a SourcePosition */
@@ -923,7 +923,7 @@ object DottyLanguageServer {
       else
         SK.Field
     }
-    def containerName(sym: Symbol): String = {
+    def containerName(sym: Symbol): String | Null = {
       val owner = if (sym.owner.exists && sym.owner.isPackageObject) sym.owner.owner else sym.owner
       if (owner.exists && !owner.isEmptyPackage) {
           owner.name.stripModuleClassSuffix.show

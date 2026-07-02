@@ -127,6 +127,8 @@ import java.util.regex.{ Pattern, Matcher }
  *  that can be queried for the `MatchData` of the last match:
  *
  *  ```scala sc:compile sc-compile-with:date-pattern
+ *  import scala.language.unsafeNulls
+ *
  *  val dates = "Important dates in history: 2004-01-20, 1958-09-05, 2010-10-06, 2011-07-15"
  *  val mi = date.findAllIn(dates)
  *  while (mi.hasNext) {
@@ -174,6 +176,8 @@ import java.util.regex.{ Pattern, Matcher }
  *
  *  ```scala sc:compile
  *  import java.util.Calendar
+ *  import scala.language.unsafeNulls
+ *
  *  val date = raw"(\d{4})-(\d{2})-(\d{2})".r
  *  val dates = "Important dates in history: 2004-01-20, 1958-09-05, 2010-10-06, 2011-07-15"
  *  val redacted    = date.replaceAllIn(dates, "XXXX-XX-XX")
@@ -252,6 +256,8 @@ class Regex private[matching](val pattern: Pattern, groupNames: String*) extends
    *  For example:
    *
    *  ```scala sc:compile
+   *  import scala.language.unsafeNulls
+   *
    *  val p1 = "ab*c".r
    *  val p1Matches = "abbbc" match {
    *    case p1() => true               // no groups
@@ -549,6 +555,7 @@ class Regex private[matching](val pattern: Pattern, groupNames: String*) extends
    *
    *  ```scala sc:compile
    *  import scala.util.matching.Regex._
+   *  import scala.language.unsafeNulls
    *
    *  val vars = Map("x" -> "a var", "y" -> """some \$ and \ signs""")
    *  val text = "A text with variables %x, %y and %z."

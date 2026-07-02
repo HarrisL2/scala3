@@ -76,6 +76,7 @@ import scala.runtime.ScalaRunTime.nullForGC
  *  This ensures they will be released even if composition fails:
  *  ```scala sc:compile
  *  import scala.util.Using
+ *  import scala.language.unsafeNulls
  *
  *  case class X(x: String)(implicit mgr: Using.Manager) extends AutoCloseable {
  *   override def close() = println(s"CLOSE $x")

@@ -123,6 +123,8 @@ import scala.language.implicitConversions
  *
  *  Compose multiple `Catch`s with `or` to build a `Catch` that provides default values varied by exception.
  *  ```scala sc:compile sc-compile-with:exception-imports-5
+ *  import scala.language.unsafeNulls
+ *
  *  val formatDefaulting: Catch[Int] = failAsValue(classOf[NumberFormatException])(0)
  *  val nullDefaulting: Catch[Int] = failAsValue(classOf[NullPointerException])(-1)
  *  val otherDefaulting: Catch[Int] = nonFatalCatch withApply(_ => -100)

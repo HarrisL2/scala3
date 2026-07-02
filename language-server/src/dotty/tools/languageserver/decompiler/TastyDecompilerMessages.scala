@@ -8,12 +8,12 @@ import org.eclipse.lsp4j.TextDocumentIdentifier
 
 /** The parameter for the `tasty/decompile` request. */
 case class TastyDecompileParams(textDocument: TextDocumentIdentifier) {
-  def this() = this(null)
+  def this() = this(null.asInstanceOf)
 }
 
 /** The response to a `tasty/decompile` request. */
-case class TastyDecompileResult(tastyTree: String = null, scala: String = null, error: Int = 0) {
-  def this() = this(null, null, 0)
+case class TastyDecompileResult(tastyTree: String = null.asInstanceOf, scala: String = null.asInstanceOf, error: Int = 0) {
+  def this() = this(null.asInstanceOf, null.asInstanceOf, 0)
 }
 
 object TastyDecompileResult {
